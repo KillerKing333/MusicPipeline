@@ -9,6 +9,8 @@ namespace MusicPipeline.Orchestrator;
 public static class Orchestrator
 {
     // So I don't need to invoke this class itself
+    //yes, you can call the methods directy from the class without an instance of the class.
+    //Orchestrator.Start(); in program.cs
     private static readonly string LogFile = @"C:\MusicTools\MusicPipeline\Sandbox\csLogFile.log";
     private static readonly string ProfileFile = @"C:\MusicTools\MusicPipeline\Sandbox\csProfileFile.json";
     // Need tools
