@@ -4,6 +4,7 @@ using MusicPipeline.Results;
 using MusicPipeline.Profiles;
 using MusicPipeline.Pipeline.Helpers.Execute;
 using MusicPipeline.Pipeline.Helpers.Parser;
+using MusicPipeline.Pipeline.Helpers.Download;
 using MusicPipeline.Songs;
 using MusicPipeline.Colours; 
 using MusicPipeline.Tools.LogEngine;
@@ -30,13 +31,15 @@ class Downloader
 	private int maxDownloadThreads = 0;
 	private bool cleanSweep = false;
 	private DateTime start = new DateTime();
-	private List<Result?> res = new();
+	private Dictionary<int, Result?> res = new();
+	private Dictionary<int, List<SongIdentifier>> songs = new(); // TODO: Finish up the SongInfo classes
 	#endregion private fields
 
 	public async Task<List<Result>> Download(string profileFile)
 	{
 		activeProfile = await ProfileManager.LoadActiveProfile(profileFile);
-
+		// Set all the values from the profile.
+		// They need to be class fields so the downloader can access
 		backupDir = activeProfile.BackupDir;
 		l = activeProfile.LogEngine;
 		l.user = "Downloader";
@@ -52,20 +55,18 @@ class Downloader
 		maxDownloadThreads = activeProfile.MaxDownloadThreads;
 		cleanSweep = activeProfile.CleanSweepDownload; // Note: Make sure that the profile value of CleanSweepDownload is correct before running
 		customArguments = activeProfile.CustomYTDLPArguments;
-		// TODO add the ytdlp flags to profile file
 
-		res = new List<Result?>();
 
-		DateTime start = DateTime.UtcNow;
-		await l.Out($"start = {start}", DefaultColours.Debug);
+		DateTime start = DateTime.UtcNow; // Official start time
+		await l.Out($"start = {start}", DefaultColours.Debug); // Debugging
 
-		if (Directory.Exists(configDir)) {
-			IEnumerable<string> allSubFiles = Directory.EnumerateFiles(configDir, "run_errors_playlist*.txt", SearchOption.AllDirectories);
-			foreach (string file in allSubFiles) {
-				await l.Out($"File found {file}", DefaultColours.Debug);
+		if (Directory.Exists(configDir)) { // Stuff if the config dir exists
+			IEnumerable<string> allSubFiles = Directory.EnumerateFiles(configDir, "run_errors_playlist*.txt", SearchOption.AllDirectories); // Find error files. Not sure why I called it sub?
+			foreach (string file in allSubFiles) { // For every one
+				await l.Out($"File found {file}", DefaultColours.Debug); // Debugging
 				// Temporary debug to check that it's finding the right files
 				// It is
-				File.Delete(file);
+				File.Delete(file); // BEGONE
 			}
 		}
 
@@ -99,21 +100,22 @@ class Downloader
 [12:00:21] [Downloader]  ==============================================
 		*/
 
+		// Banner
 		await l.Out("==============================================");
 		await l.Out("          YTDLP Song Downloader Step          ");
 		await l.Out("==============================================");
 
 		if (!Directory.Exists(backupDir)) {
-			await l.Out($"Main backup directory {backupDir} doesn't exist. Creating.");
-			Directory.CreateDirectory(backupDir);
+			await l.Out($"Main backup directory {backupDir} doesn't exist. Creating."); // Error msg
+			Directory.CreateDirectory(backupDir); // MAKE ITTT
 		}
 
 
 		if (cleanSweep) {
-			historyPath = $@"{configDir}\pipeline_null_history_{Guid.NewGuid()}.txt";
+			historyPath = $@"{configDir}\pipeline_null_history_{Guid.NewGuid()}.txt"; // If cleanSweep then fake file
 			//activeProfile.HistoryFile = historyPath;
 			//await ProfileManager.SaveProfile(profileFile, activeProfile);
-			await l.Out("Clean sweep activated");
+			await l.Out("Clean sweep active"); // Logging
 		}
 
 		// URLs should be sanitised already
@@ -127,11 +129,11 @@ class Downloader
 		// From JleruOHeP on https://stackoverflow.com/questions/23419396/can-you-assign-a-value-only-if-its-greater-less-than-the-current-value#comment35888947_23419396
 
 		//here i'll introduce a variable to help make things more clear
-		var morePlaylistsThanThreadsAllowed = maxDownloadThreads > playlists.Length;
+		bool morePlaylistsThanThreadsAllowed = maxDownloadThreads > playlists.Length;
 		//because your assignment following the colon would change nothing, a simple if is better.
 		if (morePlaylistsThanThreadsAllowed)
 			maxDownloadThreads = playlists.Length;
-
+			// Wait a second why doesn't it need curly braces??
 		//maxDownloadThreads = maxDownloadThreads > playlists.Count() ? playlists.Count() : maxDownloadThreads;
 
 		// I believe this effectively does
@@ -148,26 +150,28 @@ class Downloader
 		//ternary op works like this (condition) ? result if true : result if false
 		//you're doing an extra step of assinging the result of the ternary operator to a field.
 
-		Task? j = null;
-		await Parser.ParseYTDLPConfigFile(activeProfile);
-		activeProfile = await ProfileManager.LoadActiveProfile(profileFile);
-		YTDLPConfigFile = activeProfile.YTDLPConfigFile;
-		Parallel.For(0, maxDownloadThreads, async i => j = DownloadThread(i));
-		await j;
-		l.user = "Downloader";
-		List<Result>? results = new List<Result>();
-		foreach (Result? r in res) {
-			results.Add(r);
-			// Could also use addRange or something
+		Task? j = null; // Initialise a blank task to be assigned by each thread
+		// I don't know if this works with multiple threads lol it probably doesn't
+
+		await Parser.ParseYTDLPConfigFile(activeProfile); // Parse the config file, adding variables into the {} text
+		activeProfile = await ProfileManager.LoadActiveProfile(profileFile); // Get the new config file (If we move to the contained approach this will be reworked ofc)
+		YTDLPConfigFile = activeProfile.YTDLPConfigFile; // Set the new value
+		Parallel.For(0, maxDownloadThreads, async i => j = DownloadThread(i)); // Run the parallel for
+		await j; // Await the task
+		l.user = "Downloader"; // Set the user again after the threads mess with it (likely redundant now)
+		List<Result>? results = new List<Result>(); // An intermediary list
+		foreach (KeyValuePair<int, Result?> r in res) { // Go through each result from each thread
+			results.Add(r.Value); // Add the result to the main list
+			songs.Add(r.Key, await GetAffectedSongInfoInThread(r.Key)); // Get the songs for that thread
 		}
-		Profile currentActiveProfile = await ProfileManager.LoadActiveProfile(profileFile);
-		File.Delete(currentActiveProfile.YTDLPConfigFile);
-		currentActiveProfile.YTDLPConfigFile = "Null";
-		await ProfileManager.SaveProfile(profileFile, currentActiveProfile);
-		DateTime end = DateTime.UtcNow;
-		TimeSpan elapsed = end - start;
-		await l.Out($"elapsed = {elapsed}, end = {end}, start = {start}", DefaultColours.Debug);
-		results.Insert(0, new Result("Downloader", true, elapsed, "", await GetAffectedSongInfo()));
+		Profile currentActiveProfile = await ProfileManager.LoadActiveProfile(profileFile); // A copy of the profile for changing 
+		File.Delete(currentActiveProfile.YTDLPConfigFile); // Delete the temporary config file made with the new variables
+		currentActiveProfile.YTDLPConfigFile = "Null"; // Set it back to the default "Null" (Maybe change this to set it to what default profile uses?)
+		await ProfileManager.SaveProfile(profileFile, currentActiveProfile); // Save changes
+		DateTime end = DateTime.UtcNow; // The official end time
+		TimeSpan elapsed = end - start; // The elapsed TimeSpan
+		await l.Out($"elapsed = {elapsed}, end = {end}, start = {start}", DefaultColours.Debug); // Debugging
+		results.Insert(0, new Result("Downloader", true, elapsed, "", songs)); // Final Result
 		return results;
 	}
 
@@ -271,7 +275,7 @@ class Downloader
 					DateTime endError = DateTime.UtcNow;
 					TimeSpan elapsedError = endError - threadStart;
 					await log.Out($"elapsed = {elapsedError}, end = {endError}, start = {start}, threadStart = {threadStart}", DefaultColours.Debug);
-					res.Add(new Result("DownloaderThread", false, elapsedError, "YTDLPProcess is Null"));
+					res.Add(index, new Result("DownloaderThread", false, elapsedError, "YTDLPProcess is Null"));
 					return;
 				}
 
@@ -331,7 +335,8 @@ class Downloader
 				DateTime end = DateTime.UtcNow;
 				TimeSpan elapsed = end - threadStart;
 				await log.Out($"elapsed = {elapsed}, end = {end}, start = {start}, threadStart = {threadStart}", DefaultColours.Debug);
-				res.Add(new Result("DownloaderThread", true, elapsed, await GetErrorsInThread(index)));
+				KeyValuePair<bool, string> errors = await GetErrorsInThread(index);
+				res.Add(index, new Result("DownloaderThread", errors.Key, elapsed, errors.Value));
 				return;
 			}
 		}
@@ -340,7 +345,7 @@ class Downloader
 			DateTime end = DateTime.UtcNow;
 			TimeSpan elapsed = end - threadStart;
 			await log.Out($"elapsed = {elapsed}, end = {end}, start = {start}, threadStart = {threadStart}", DefaultColours.Debug);
-			res.Add(new Result("DownloaderThread", false, elapsed, ex.Message));
+			res.Add(index, new Result("DownloaderThread", elapsed, ex.Message));
 		}
 		finally
 		{
@@ -348,7 +353,7 @@ class Downloader
 		}
 	}
 
-	private async Task<List<SongIdentifier>> GetAffectedSongInfo()
+	private async Task<List<SongIdentifier>> GetAffectedSongInfoInThread(int index)
 	{
 		l.user = "Downloader";
 		await l.Out("TODO: URGENT: MAKE GetAffectedSongInfo", DefaultColours.Error, true);
@@ -371,14 +376,21 @@ class Downloader
 			syncedLyrics: false,
 			lyricsPath,
 			lore: false,
-			loreDate);
+			loreDate
+		);
+
+		// Parse URL
+		// Ignore errors
+			// Use a helper to get the list of every individual song
+			// Then 
+
 		return [songIdentifier];
 	}
 
-	private async Task<string> GetErrorsInThread(int threadIndex)
+	private async Task<KeyValuePair<bool, string>> GetErrorsInThread(int threadIndex)
 	{
 		l.user = "Downloader";
 		await l.Out("TODO: URGENT: MAKE GetErrorsInThread", DefaultColours.Error, true);
-		return "TODO";
+		return new(true, "TODO");
 	} 
 }

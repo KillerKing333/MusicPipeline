@@ -11,9 +11,9 @@ public class Result
 	public bool Outcome;
 	public TimeSpan Elapsed;
 	public string? Error;
-	public Dictionary<int, List<SongIdentifier>>? Songs;
+	public Dictionary<int, List<SongIdentifier>>? Songs; // The int is for multithreaded sections
 	
-	public Result(string step, bool outcome, TimeSpan elapsed, string error = "", Dictionary<int, List<SongIdentifier>>? songs = null)
+	public Result(string step, bool outcome, TimeSpan elapsed, string error, Dictionary<int, List<SongIdentifier>>? songs)
 	{
 		Step = step;
 		Outcome = outcome;
