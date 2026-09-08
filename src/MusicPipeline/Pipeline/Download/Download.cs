@@ -379,7 +379,11 @@ class Downloader
 			loreDate
 		);
 
+		string path = $@"{configDir}\run_errors_playlist{index+1}.txt";
 		// Parse URL
+		string playlistURL = await YTDLPHelpers.GetUrlFromRunLogFile(path);
+
+		Dictionary<
 		// Ignore errors
 			// Use a helper to get the list of every individual song
 			// Then 
