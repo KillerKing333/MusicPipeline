@@ -2,9 +2,8 @@ namespace MusicPipeline.Pipeline.Helpers.Download;
 
 public class YTDLPHelpers
 {
-	public void TestFunc(int j)
+	public static async Task<string> GetUrlFromRunLogFile(string path)
 	{
-		int l = j +5;
-		Console.WriteLine(l);
-	}	
+		return "Lol";
+	}
 }
