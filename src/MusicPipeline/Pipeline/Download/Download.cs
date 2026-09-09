@@ -1,4 +1,4 @@
-using System.Threading;
+//using System.Threading;
 using System.Diagnostics;
 using MusicPipeline.Results;
 using MusicPipeline.Profiles;
@@ -28,7 +28,7 @@ class Downloader
 	private int sleepInterval = 0;
 	private int maxSleepInterval = 0;
 	private int sleepRequests = 0;
-	private int maxDownloadThreads = 0;
+	private int maxDownloadThreads = 2;
 	private bool cleanSweep = false;
 	private DateTime start = new DateTime();
 	private Dictionary<int, Result?> res = new();
@@ -75,7 +75,7 @@ class Downloader
 		await WriteBanner(l);
 		await CreateBackupDirectory(l);
 		await SetCleanSweep(l, configDir, cleanSweep);
-		SetMaxDownloadThreads();
+		//SetMaxDownloadThreads();
 
 		// you can try extracting methods and giving good method names for the remainder of this constructor below :) GL!
 
@@ -89,7 +89,7 @@ class Downloader
 		await Parser.ParseYTDLPConfigFile(activeProfile); // Parse the config file, adding variables into the {} text
 		activeProfile = await ProfileManager.LoadActiveProfile(profileFile); // Get the new config file (If we move to the contained approach this will be reworked ofc)
 		YTDLPConfigFile = activeProfile.YTDLPConfigFile; // Set the new value
-		Parallel.For(0, maxDownloadThreads, async i => j = DownloadThread(i)); // Run the parallel for
+		Parallel.For(0, maxDownloadThreads, i => j = DownloadThread(i)); // Run the parallel for
 		await j; // Await the task
 		l.user = "Downloader"; // Set the user again after the threads mess with it (likely redundant now)
 		List<Result>? results = new List<Result>(); // An intermediary list
@@ -200,7 +200,7 @@ class Downloader
 		}
 
 		string errorLogPath = $@"{configDir}playlist${index}_run_errors.txt";
-		if (File.Exists(errorLogPath)) {File.Delete(errorLogPath);}
+		if (File.Exists(errorLogPath)) File.Delete(errorLogPath);
 
 		await log.Out($"Processing Playlist URL: {playlists[index]}", colourCode);
 
@@ -343,7 +343,7 @@ class Downloader
 		}
 		finally
 		{
-			if (cleanSweep) {File.Delete(historyPath);}
+			if (cleanSweep) File.Delete(historyPath);
 		}
 	}
 
