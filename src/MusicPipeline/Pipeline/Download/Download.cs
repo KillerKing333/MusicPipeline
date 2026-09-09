@@ -28,7 +28,7 @@ class Downloader
 	private int sleepInterval = 0;
 	private int maxSleepInterval = 0;
 	private int sleepRequests = 0;
-	private int maxDownloadThreads = 2;
+	private int maxDownloadThreads = 0;
 	private bool cleanSweep = false;
 	private DateTime start = new DateTime();
 	private Dictionary<int, Result?> res = new();
@@ -75,7 +75,7 @@ class Downloader
 		await WriteBanner(l);
 		await CreateBackupDirectory(l);
 		await SetCleanSweep(l, configDir, cleanSweep);
-		//SetMaxDownloadThreads();
+		SetMaxDownloadThreads();
 
 		// you can try extracting methods and giving good method names for the remainder of this constructor below :) GL!
 
