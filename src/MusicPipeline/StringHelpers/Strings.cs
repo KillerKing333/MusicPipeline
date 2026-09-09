@@ -2,7 +2,7 @@ namespace MusicPipeline.Strings;
 
 public class StringHelpers 
 {
-	public static async Task<Dictionary<int, string>> GetLinesDict(string allText)
+	public static async Task<Dictionary<int, string>> SplitLinesDict(string allText)
 	{
 		List<string> lines = new(allText.Split("\n"));
 		Dictionary<int, string>> res = new();
