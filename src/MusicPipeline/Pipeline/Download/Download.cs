@@ -377,7 +377,7 @@ class Downloader
 		string playlistURL = await YTDLPHelpers.GetUrlFromRunLogFile(path);
 
 		// Get all the songs
-		Dictionary<int, SongIdentifier> allSongs = YTDLPHelpers.GetAllSongsFromRunLogFile(path);
+		Dictionary<int, SongIdentifier> allSongs = await YTDLPHelpers.GetAllSongsFromRunLogFile(path);
 		// Ignore errors
 			// Use a helper to get the list of every individual song
 			// Then 
