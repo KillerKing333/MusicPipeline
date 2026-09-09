@@ -54,104 +54,37 @@ class Downloader
 		sleepRequests = activeProfile.SleepRequests;
 		maxDownloadThreads = activeProfile.MaxDownloadThreads;
 		cleanSweep = activeProfile.CleanSweepDownload; // Note: Make sure that the profile value of CleanSweepDownload is correct before running
+													   // if you can define what it means for "the profile value of CleanSweepDownload is correct"
+													   // you could set it to NOT run when it's not correct :)
 		customArguments = activeProfile.CustomYTDLPArguments;
 
+		var iAmDebugging = true;
 
-		DateTime start = DateTime.UtcNow; // Official start time
-		await l.Out($"start = {start}", DefaultColours.Debug); // Debugging
+		// for many of these methods that I extracted I provide arguments.
+		// none of them are really required in this context, but I wanted you to think about their inclusion.
+		// for example, once we start looking at WriteBanner()
+		// it's not really Download's responsibility to define how to write the log banner, it's actually LogEngine's responsibility.
+		// I didn't move that code to LogEngine yet, but I do recommend it.
+		// in code it would become
+		// await l.WriteBanner();
+		// similar could be done for many of these, but exercise caution with each individual consideration.
+		// ClearOutErrorFiles() does more than what LogEngine should be responsible for, so I would recommend against moving that code into LogEngine.
+		DateTime officialStartTime = DateTime.UtcNow;
+		await LogStartTime(l, iAmDebugging, officialStartTime);
+		await ClearOutErrorFiles(l);
+		await WriteBanner(l);
+		await CreateBackupDirectory(l);
+		await SetCleanSweep(l, configDir, cleanSweep);
+		SetMaxDownloadThreads();
 
-		if (Directory.Exists(configDir)) { // Stuff if the config dir exists
-			IEnumerable<string> allSubFiles = Directory.EnumerateFiles(configDir, "run_errors_playlist*.txt", SearchOption.AllDirectories); // Find error files. Not sure why I called it sub?
-			foreach (string file in allSubFiles) { // For every one
-				await l.Out($"File found {file}", DefaultColours.Debug); // Debugging
-				// Temporary debug to check that it's finding the right files
-				// It is
-				File.Delete(file); // BEGONE
-			}
-		}
+		// you can try extracting methods and giving good method names for the remainder of this constructor below :) GL!
 
 		// Won't be bothering with the vpn stuff, I want to carefully consider how to do it, and whether it's even needed first
-
-		//would this work with a single out? or is Out() this specifically one line at a time?
-		/*var stepHeader = 
-@"==============================================
-		  YTDLP Song Downloader Step          
-==============================================";
-		await l.Out(stepHeader);*/
-		//try the above while commenting out the below to let me know if it works.
-		//that's a string literal. leading @ makes the string literal and everything in it will literally be included like newline characters.
-		// That does work but might have some issues, also asthetically it looks better as multiple lines
-		/*
-[12:00:11] [Cookies]  ==============================================
-[12:00:11] [Cookies]                  Cookie Checker
-[12:00:11] [Cookies]  ==============================================
-
-[12:00:21] [Downloader]  ==============================================
-                  YTDLP Song Downloader Step
-==============================================
-[12:00:21] [Downloader]  Clean sweep activated
-		*/
-
-		// Vs
-
-		/*
-[12:00:21] [Downloader]  ==============================================
-[12:00:21] [Downloader]            YTDLP Song Downloader Step          
-[12:00:21] [Downloader]  ==============================================
-		*/
-
-		// Banner
-		await l.Out("==============================================");
-		await l.Out("          YTDLP Song Downloader Step          ");
-		await l.Out("==============================================");
-
-		if (!Directory.Exists(backupDir)) {
-			await l.Out($"Main backup directory {backupDir} doesn't exist. Creating."); // Error msg
-			Directory.CreateDirectory(backupDir); // MAKE ITTT
-		}
-
-
-		if (cleanSweep) {
-			historyPath = $@"{configDir}\pipeline_null_history_{Guid.NewGuid()}.txt"; // If cleanSweep then fake file
-			//activeProfile.HistoryFile = historyPath;
-			//await ProfileManager.SaveProfile(profileFile, activeProfile);
-			await l.Out("Clean sweep active"); // Logging
-		}
-
 		// URLs should be sanitised already
-
-		// Ok how tf does threading work i'm stuck
-		// WAIT
-		// If i just make these all private fields
-		// And then use foreach parallel to get the index variable
-		// Tada!
-
 		// From JleruOHeP on https://stackoverflow.com/questions/23419396/can-you-assign-a-value-only-if-its-greater-less-than-the-current-value#comment35888947_23419396
-
-		//here i'll introduce a variable to help make things more clear
-		bool morePlaylistsThanThreadsAllowed = maxDownloadThreads > playlists.Length;
-		//because your assignment following the colon would change nothing, a simple if is better.
-		if (morePlaylistsThanThreadsAllowed)
-			maxDownloadThreads = playlists.Length;
-			// Wait a second why doesn't it need curly braces??
-		//maxDownloadThreads = maxDownloadThreads > playlists.Count() ? playlists.Count() : maxDownloadThreads;
-
-		// I believe this effectively does
-		/*
-		if (maxDownloadThreads < playlist.Count()) {
-			maxDownloadThreads = maxDownloadThreads;
-		} else {
-			maxDownloadThreads = playlist.Count();
-		}
-
-		But I'm not 100% sure how the ternary operator works
-		*/
-		//you got it right but stated it in a weird way.
-		//ternary op works like this (condition) ? result if true : result if false
-		//you're doing an extra step of assinging the result of the ternary operator to a field.
-
+	
 		Task? j = null; // Initialise a blank task to be assigned by each thread
-		// I don't know if this works with multiple threads lol it probably doesn't
+						// I don't know if this works with multiple threads lol it probably doesn't
 
 		await Parser.ParseYTDLPConfigFile(activeProfile); // Parse the config file, adding variables into the {} text
 		activeProfile = await ProfileManager.LoadActiveProfile(profileFile); // Get the new config file (If we move to the contained approach this will be reworked ofc)
@@ -160,7 +93,8 @@ class Downloader
 		await j; // Await the task
 		l.user = "Downloader"; // Set the user again after the threads mess with it (likely redundant now)
 		List<Result>? results = new List<Result>(); // An intermediary list
-		foreach (KeyValuePair<int, Result?> r in res) { // Go through each result from each thread
+		foreach (KeyValuePair<int, Result?> r in res)
+		{ // Go through each result from each thread
 			results.Add(r.Value); // Add the result to the main list
 			songs.Add(r.Key, await GetAffectedSongInfoInThread(r.Key)); // Get the songs for that thread
 		}
@@ -169,10 +103,70 @@ class Downloader
 		currentActiveProfile.YTDLPConfigFile = "Null"; // Set it back to the default "Null" (Maybe change this to set it to what default profile uses?)
 		await ProfileManager.SaveProfile(profileFile, currentActiveProfile); // Save changes
 		DateTime end = DateTime.UtcNow; // The official end time
-		TimeSpan elapsed = end - start; // The elapsed TimeSpan
-		await l.Out($"elapsed = {elapsed}, end = {end}, start = {start}", DefaultColours.Debug); // Debugging
+		TimeSpan elapsed = end - officialStartTime; // The elapsed TimeSpan
+		await l.Out($"elapsed = {elapsed}, end = {end}, start = {officialStartTime}", DefaultColours.Debug); // Debugging
 		results.Insert(0, new Result("Downloader", true, elapsed, "", songs)); // Final Result
 		return results;
+	}
+
+	private void SetMaxDownloadThreads()
+	{
+		bool morePlaylistsThanThreadsAllowed = maxDownloadThreads > playlists.Length;
+		if (morePlaylistsThanThreadsAllowed)
+			maxDownloadThreads = playlists.Length;
+		// curly braces are optional when there's only one statement.
+		// I always favor leaving off the curly braces for single statements because it's beautiful.
+		// the indentation is technically optional, but I do include it for readability.
+	}
+
+	private async Task SetCleanSweep(LogEngine l, string configDir, bool isCleanSweep)
+	{
+		if (isCleanSweep)
+		{
+			// If cleanSweep then fake file
+			//activeProfile.HistoryFile = historyPath;
+			//await ProfileManager.SaveProfile(profileFile, activeProfile);
+			historyPath = $@"{configDir}\pipeline_null_history_{Guid.NewGuid()}.txt";
+			await l.Out("Clean sweep active"); // Logging
+		}
+	}
+
+	private async Task CreateBackupDirectory(LogEngine l)
+	{
+		if (Directory.Exists(backupDir))
+			return;
+
+		await l.Out($"Main backup directory {backupDir} doesn't exist. Creating.");
+		Directory.CreateDirectory(backupDir);
+	}
+
+	private async Task LogStartTime(LogEngine l, bool IAmDebugging, DateTime officialStartTime)
+	{
+		if (IAmDebugging)
+			await l.Out($"start = {officialStartTime}", DefaultColours.Debug);
+	}
+
+	private async Task WriteBanner(LogEngine l)
+	{
+		await l.Out("==============================================");
+		await l.Out("          YTDLP Song Downloader Step          ");
+		await l.Out("==============================================");
+	}
+
+	//extract method :)
+	private async Task ClearOutErrorFiles(LogEngine l)
+	{
+		if (Directory.Exists(configDir))
+		{ // Stuff if the config dir exists
+			IEnumerable<string> allSubFiles = Directory.EnumerateFiles(configDir, "run_errors_playlist*.txt", SearchOption.AllDirectories); // Find error files. Not sure why I called it sub?
+			foreach (string file in allSubFiles)
+			{ // For every one
+				await l.Out($"File found {file}", DefaultColours.Debug); // Debugging
+																		 // Temporary debug to check that it's finding the right files
+																		 // It is
+				File.Delete(file); // BEGONE
+			}
+		}
 	}
 
 	private async Task DownloadThread(int index)
@@ -383,7 +377,7 @@ class Downloader
 		// Parse URL
 		string playlistURL = await YTDLPHelpers.GetUrlFromRunLogFile(path);
 
-		Dictionary<
+		//Dictionary<
 		// Ignore errors
 			// Use a helper to get the list of every individual song
 			// Then 
