@@ -75,16 +75,17 @@ class Downloader
 		await WriteBanner(l);
 		await CreateBackupDirectory(l);
 		await SetCleanSweep(l, configDir, cleanSweep);
+		//v From JleruOHeP on https://stackoverflow.com/questions/23419396/can-you-assign-a-value-only-if-its-greater-less-than-the-current-value#comment35888947_23419396
 		SetMaxDownloadThreads();
 
 		// you can try extracting methods and giving good method names for the remainder of this constructor below :) GL!
 
 		// Won't be bothering with the vpn stuff, I want to carefully consider how to do it, and whether it's even needed first
 		// URLs should be sanitised already
-		// From JleruOHeP on https://stackoverflow.com/questions/23419396/can-you-assign-a-value-only-if-its-greater-less-than-the-current-value#comment35888947_23419396
 	
 		Task? j = null; // Initialise a blank task to be assigned by each thread
 						// I don't know if this works with multiple threads lol it probably doesn't
+						// Ey looks like it does!
 
 		await Parser.ParseYTDLPConfigFile(activeProfile); // Parse the config file, adding variables into the {} text
 		activeProfile = await ProfileManager.LoadActiveProfile(profileFile); // Get the new config file (If we move to the contained approach this will be reworked ofc)
@@ -156,11 +157,9 @@ class Downloader
 	//extract method :)
 	private async Task ClearOutErrorFiles(LogEngine l)
 	{
-		if (Directory.Exists(configDir))
-		{ // Stuff if the config dir exists
+		if (Directory.Exists(configDir)) { // Stuff if the config dir exists
 			IEnumerable<string> allSubFiles = Directory.EnumerateFiles(configDir, "run_errors_playlist*.txt", SearchOption.AllDirectories); // Find error files. Not sure why I called it sub?
-			foreach (string file in allSubFiles)
-			{ // For every one
+			foreach (string file in allSubFiles) { // For every one
 				await l.Out($"File found {file}", DefaultColours.Debug); // Debugging
 																		 // Temporary debug to check that it's finding the right files
 																		 // It is
@@ -377,7 +376,8 @@ class Downloader
 		// Parse URL
 		string playlistURL = await YTDLPHelpers.GetUrlFromRunLogFile(path);
 
-		//Dictionary<
+		// Get all the songs
+		Dictionary<int, SongIdentifier> allSongs = YTDLPHelpers.GetAllSongsFromRunLogFile(path);
 		// Ignore errors
 			// Use a helper to get the list of every individual song
 			// Then 
