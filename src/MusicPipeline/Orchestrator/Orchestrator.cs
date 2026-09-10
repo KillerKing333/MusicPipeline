@@ -1,4 +1,6 @@
+using System;
 using System.Text.Json; // System comes first
+using System.Text.RegularExpressions;
 using MusicPipeline.Profiles; // These are in whatever order they're first used
 using MusicPipeline.Results;
 using MusicPipeline.Pipeline;
@@ -18,7 +20,10 @@ public class Orchestrator
 	// Need tools
 	// 
 	public async Task Start(string profileFile = @"C:\MusicTools\MusicPipeline\Sandbox\Config\csProfiles.json")
-	{		
+	{	
+		string machineName = Environment.MachineName;
+		//if (Regex.IsMatch(machineName, @"")) {
+		//}
 		//Profile oldActiveProfile = DefaultProfiles.DefaultProfile;
 		/* First use of Profiles*/ Profile oldActiveProfile = await ProfileManager.LoadActiveProfile(profileFile);
 		string logFile = oldActiveProfile.DiagLogFile;
@@ -34,6 +39,7 @@ public class Orchestrator
 		await l.Out("Test", DefaultColours.Error, true);
 		await l.Out("Other Test", DefaultColours.Warning);
 		await l.Out("Test Number 2", true);
+		await l.Out(machineName);
 		await l.Out(JsonSerializer.Serialize(oldActiveProfile), 54);
 		activeProfile.ScannerSleepIntervalSec = 30;
 		activeProfile.CleanSweepDownload = true;
