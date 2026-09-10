@@ -22,8 +22,9 @@ public class Orchestrator
 	{	
 		string machineName = Environment.MachineName;
 		//if (machineName != "FILIPS_MICRO_PC")) {
-			//string rootDir = Directory.GetParent(Directory.GetCurrentDirectory());
-			//profileFile = @"curDir"
+			string rootDir = Directory.GetCurrentDirectory(); // This is always the directory with the .csproj, so Repo/src/MusicPipeline
+			string upperRoot = Directory.GetParent(rootDir).Parent.FullName;
+			string tempprofileFile = $@"{upperRoot}\csProfilesPortable.json";
 		//}
 		//Profile oldActiveProfile = DefaultProfiles.DefaultProfile;
 		/* First use of Profiles*/ Profile oldActiveProfile = await ProfileManager.LoadActiveProfile(profileFile);
@@ -41,7 +42,8 @@ public class Orchestrator
 		await l.Out("Other Test", DefaultColours.Warning);
 		await l.Out("Test Number 2", true);
 		await l.Out(machineName);
-		await l.Out(Directory.GetCurrentDirectory());
+		await l.Out(upperRoot);
+		await l.Out(tempprofileFile);
 		await l.Out(JsonSerializer.Serialize(oldActiveProfile), 54);
 		activeProfile.ScannerSleepIntervalSec = 30;
 		activeProfile.CleanSweepDownload = true;
