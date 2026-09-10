@@ -9,6 +9,10 @@ using MusicPipeline.Colours; // Colours always before Logging
 using MusicPipeline.Tools.LogEngine; // Tools last
 namespace MusicPipeline.Orchestrator;
 
+
+// TODO: Add this to sublime settings on windows machines
+// "default_line_ending": "unix"
+// In user settings preferences -> settings
 public class Orchestrator
 {
 	// Class Colour code is 213

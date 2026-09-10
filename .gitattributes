@@ -12,6 +12,9 @@
 *.props text eol=lf
 *.targets text eol=lf
 *.md text eol=lf
+# Force Sublime project and workspace files to use LF
+*.sublime-project text eol=lf
+*.sublime-workspace text eol=lf
 
 # Treat binary files as binary so Git doesn't mess with them
 *.png binary

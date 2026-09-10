@@ -98,6 +98,7 @@ class Downloader
 		{ // Go through each result from each thread
 			results.Add(r.Value); // Add the result to the main list
 			songs.Add(r.Key, await GetAffectedSongInfoInThread(r.Key)); // Get the songs for that thread
+			// TODO: MAKE THIS await CheckWarningsInThread(r.Key);
 		}
 		Profile currentActiveProfile = await ProfileManager.LoadActiveProfile(profileFile); // A copy of the profile for changing 
 		File.Delete(currentActiveProfile.YTDLPConfigFile); // Delete the temporary config file made with the new variables
@@ -379,10 +380,10 @@ class Downloader
 		// Get all the songs
 		var data = await YTDLPHelpers.GetAllSongsFromRunLogFile(path);
 		Dictionary<int, SongIdentifier> allSongs = data.songs;
-		int totalSongs = data.total;
+		int totalSongs = data.total; // Some things may want to check that the total is the same as the number of 
 		// Ignore errors
 			// Use a helper to get the list of every individual song
-			// Then 
+			// Then go through each one thats labelled as an error
 
 		return [songIdentifier];
 	}
