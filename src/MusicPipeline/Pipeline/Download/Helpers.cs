@@ -37,12 +37,12 @@ public class YTDLPHelpers
 		Dictionary<int, string> allFileLinesNumbered = new(await StringHelpers.SplitLinesDict(allFileText));
 		Dictionary<int, int> songToLine = new();
 		foreach (KeyValuePair<int, string> kvp in allFileLinesNumbered) {
-			KeyValuePair<int, int> 
+			//KeyValuePair<int, int> 
 			if (Regex.IsMatch(kvp.Value, SongDeclarePattern)) {
 				matchCollection = Regex.Matches(kvp.Value, SongDeclarePattern);
 				foreach (Match match in matchCollection) {
 					if (i == 0) {
-						songToLine. = 
+						//songToLine. = 
 					}
 				}
 			}
