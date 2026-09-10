@@ -12,6 +12,8 @@ namespace MusicPipeline.Orchestrator;
 
 // TODO: Add this to sublime settings on windows machines
 // "default_line_ending": "unix"
+// "trim_trailing_white_space_on_save": "not_on_caret",
+// "ensure_newline_at_eof_on_save": true
 // In user settings preferences -> settings
 public class Orchestrator
 {
