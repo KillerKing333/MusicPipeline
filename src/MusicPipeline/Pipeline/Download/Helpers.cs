@@ -57,22 +57,36 @@ public class YTDLPHelpers
 
 		}*/
 		bool inSong = false;
-		List<(int line, int song)> songStarts = new();
-		List<(int line, int song)> songEnds = new();
+		Dictionary<int, int> songStarts = new();
+		Dictionary<int, int> songEnds = new();
 		foreach (KeyValuePair<int, string> kvp in allFileLinesNumbered) {
 			if (Regex.IsMatch(kvp.Value, SongDeclarePattern)) {
 				matchCollection = Regex.Matches(kvp.Value, SongDeclarePattern);
 				// So we have the current line number as well as the matches
 				if (!inSong) {
 					inSong = true;
-					songStarts.Add((kvp.Key, int.Parse(matchCollection[0].Value)));
+					songStarts.Add(kvp.Key, int.Parse(matchCollection[0].Value));
 				} else {
 					inSong = false;
-					songEnds.Add((kvp.Key, int.Parse(matchCollection[0].Value)));
+					songEnds.Add(kvp.Key, int.Parse(matchCollection[0].Value));
 				}
 			}
 		}
-		
+		// Now we have list of start
+		inSong = false;
+		Dictionary<int, List<string>> songs= new();
+		foreach (KeyValuePair<int, string> kvp in allFileLinesNumbered) {
+			if (songStarts.TryGetValue(kvp.Key, out int value)) {
+				inSong = true;
+				if (songs.TryGetValue(value, out List<string>? val)) {
+					// Add the line to the list
+				} else {
+					songs.Add(value, new(kvp.Key));
+				}
+			}
+		}
+
+
 		// Go through each match and check it for being a song
 
 		return new();
