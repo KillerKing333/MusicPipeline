@@ -56,4 +56,44 @@ public class SongIdentifier
 			LoreDate = loreDate;
 		}
 	}
+
+	[SetsRequiredMembers]
+	public SongIdentifier(List<string> scriptOutput, string step)
+	{
+		SongIdentifier id = this;
+		switch (step) {
+			case "YTDLP": 
+				id = await IdentifierHelper.GetIdentifierFromYTDLPOutput(scriptOutput);
+				break;
+			// TODO: Add more cases with each step
+		}
+		Title = id.Title;
+		Artist = id.Artist;
+		Album = id.Album;
+		Paths = id.Paths;
+		//PermenantID = id ?? Hasher.GetHashForSong(id.Title, id.Artist, id.Album);
+		// Can't get an id from the ytdlp output, if the given output can somehow get an id, the helper function should handle all that
+		PermenantID = id.PermenantID;
+		Type = id.Type;
+		SizeMB = id.SizeMB;
+		SizesCompressed = id.SizesCompressed;
+		Instrumental = id.Instrumental;
+		Lyrics = id.Lyrics;
+		if (id.Lyrics) {
+			SyncedLyrics = id.SyncedLyrics;
+			// TODO: make this code properly support different extensions and actually providing lyric paths
+			if (SyncedLyrics) {
+				// From LukeH https://stackoverflow.com/a/2201648/22942130
+				int index = id.Paths[0].FullName.IndexOf(id.Paths[0].Extension);
+				string cleanPath = ( index < 0)
+					? id.Paths[0].FullName
+					: id.Paths[0].FullName.Remove(index, id.Paths[0].Extension.Length);
+				LyricsPath = id.LyricsPath ?? new FileInfo($"{cleanPath}.lrc"); 
+			}
+		}
+		Lore = id.Lore;
+		if (id.Lore) {
+			LoreDate = id.LoreDate;
+		}
+	}
 }

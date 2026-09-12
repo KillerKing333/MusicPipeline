@@ -59,33 +59,41 @@ public class YTDLPHelpers
 		bool inSong = false;
 		Dictionary<int, int> songStarts = new();
 		Dictionary<int, int> songEnds = new();
-		foreach (KeyValuePair<int, string> kvp in allFileLinesNumbered) {
+		foreach (KeyValuePair<int, string> kvp in allFileLinesNumbered) { // Loops through all the lines
 			if (Regex.IsMatch(kvp.Value, SongDeclarePattern)) {
 				matchCollection = Regex.Matches(kvp.Value, SongDeclarePattern);
 				// So we have the current line number as well as the matches
-				if (!inSong) {
+				if (!inSong) { // Adds the song data to the 2 lists
 					inSong = true;
 					songStarts.Add(kvp.Key, int.Parse(matchCollection[0].Value));
 				} else {
 					inSong = false;
-					songEnds.Add(kvp.Key, int.Parse(matchCollection[0].Value));
+					songEnds.Add(kvp.Key - 1, int.Parse(matchCollection[0].Value)); // Adds the previous line number
 				}
 			}
 		}
 		// Now we have list of start
 		inSong = false;
+		int songNum = 0;
 		Dictionary<int, List<string>> songs= new();
 		foreach (KeyValuePair<int, string> kvp in allFileLinesNumbered) {
 			if (songStarts.TryGetValue(kvp.Key, out int value)) {
 				inSong = true;
-				if (songs.TryGetValue(value, out List<string>? val)) {
-					// Add the line to the list
-				} else {
-					songs.Add(value, new(kvp.Key));
-				}
+				songNum = value;
+				songs.Add(value, new(kvp.Key));
+			}
+			if (inSong)
+				songs[songNum].Add(kvp.Value);
+			if (songEnds.TryGetValue(kvp.Key, out int endVal) && endVal == songNum) {
+				inSong = false;
+			} else if (endVal != songNum) {
+				//await l.Out("Oh dear"); // IF I ever get round to making that system where the activeProfile is contained in the ProfileManager class, then use that here
+				// TODO: Handle this (If it's even a possible case??)
 			}
 		}
-
+		// So we now have a dictionary of all the text for each song
+		// Now we need to make a songIdentifier from that
+		// I shall make another helper method!
 
 		// Go through each match and check it for being a song
 

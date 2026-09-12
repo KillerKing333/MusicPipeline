@@ -1,3 +1,4 @@
+using System.Text.RegularExpressions;
 using MusicPipeline.Metrics;
 using MusicPipeline.Alerts;
 namespace MusicPipeline.Songs;
@@ -7,6 +8,37 @@ public class IdentifierFile
 	public required Metrics.Metric Metrics {get; set;}
 	public required SongIdentifier[] Tracks {get; set;}
 	public Alerts.Alert[]? Alerts {get; set;}
+}
+
+
+public class IdentifierHelper
+{
+	private static readonly List<string> Expressions =
+	[
+		// TODO: Handle expressions
+
+	];
+	public static async Task<SongIdentifier> GetIdentifierFromYTDLPOutput(List<string> output)
+	{
+		// Ok so
+		// For each line we run another function which matches it with the possible regexes and then returns a matchCollection
+		// Then somehow handle those™
+		foreach (string line in output) {
+
+		}
+
+		return new(["Null"], "YTDLP");
+	}
+
+	private static async Task<MatchCollection> FindMatchesInLine(string line)
+	{
+		foreach (string expression in Expressions) {
+			if (Regex.Matches(line, expression).Count > 0) {
+				// Do something
+			}
+		}
+		return null;
+	}
 }
 
 
