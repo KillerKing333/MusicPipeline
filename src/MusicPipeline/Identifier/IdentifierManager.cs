@@ -18,7 +18,7 @@ public class IdentifierHelper
 		// TODO: Handle expressions
 
 	];
-	public static async Task<SongIdentifier> GetIdentifierFromYTDLPOutput(List<string> output)
+	public static SongIdentifier GetIdentifierFromYTDLPOutput(List<string> output)
 	{
 		// Ok so
 		// For each line we run another function which matches it with the possible regexes and then returns a matchCollection
@@ -30,7 +30,7 @@ public class IdentifierHelper
 		return new(["Null"], "YTDLP");
 	}
 
-	private static async Task<MatchCollection> FindMatchesInLine(string line)
+	private static MatchCollection FindMatchesInLine(string line)
 	{
 		foreach (string expression in Expressions) {
 			if (Regex.Matches(line, expression).Count > 0) {

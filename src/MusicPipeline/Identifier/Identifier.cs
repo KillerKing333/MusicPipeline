@@ -63,7 +63,7 @@ public class SongIdentifier
 		SongIdentifier id = this;
 		switch (step) {
 			case "YTDLP": 
-				id = await IdentifierHelper.GetIdentifierFromYTDLPOutput(scriptOutput);
+				id = IdentifierHelper.GetIdentifierFromYTDLPOutput(scriptOutput);
 				break;
 			// TODO: Add more cases with each step
 		}
