@@ -34,6 +34,13 @@ public class YTDLPHelpers
 		MatchCollection? matchCollection = null;
 		string allFileText = await File.ReadAllTextAsync(path);
 		Dictionary<int, string> allFileLinesNumbered = new(await StringHelpers.SplitLinesDict(allFileText));
+
+		Console.WriteLine(allFileText);
+		Console.WriteLine(allFileLinesNumbered);
+		foreach (KeyValuePair<int, string> x in allFileLinesNumbered) {
+			Console.WriteLine($"{x.Key} : {x.Value}");
+		}
+
 		/*Dictionary<(int line, int song), (int line, int songEnd)> songToLine = new();
 		foreach (KeyValuePair<int, string> kvp in allFileLinesNumbered) {
 			int curSong = 0;
@@ -72,6 +79,15 @@ public class YTDLPHelpers
 				}
 			}
 		}
+
+		Console.WriteLine(songStarts);
+		Console.WriteLine(songEnds);
+		foreach (KeyValuePair<int, int> x in songStarts) {
+			Console.WriteLine(x.Key);
+			Console.WriteLine(x.Value);
+		}
+
+
 		// Now we have list of start
 		inSong = false;
 		int songNum = 0;
@@ -93,11 +109,14 @@ public class YTDLPHelpers
 		}
 
 		Console.WriteLine(songs);
-		foreach (var x in songs) {
+		foreach (KeyValuePair<int, List<string>> x in songs) {
 			Console.WriteLine(x);
 			Console.WriteLine(x.Key);
-			Console.WriteLine(x.Value);
+			foreach (string v in x.Value) {
+				Console.WriteLine(v);
+			}
 		}
+
 		// So we now have a dictionary of all the text for each song
 		// Now we need to make a songIdentifier from that
 		// I shall make another helper method!
