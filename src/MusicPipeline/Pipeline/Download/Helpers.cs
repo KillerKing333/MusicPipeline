@@ -91,6 +91,13 @@ public class YTDLPHelpers
 				// TODO: Handle this (If it's even a possible case??)
 			}
 		}
+
+		Console.WriteLine(songs);
+		foreach (var x in songs) {
+			Console.WriteLine(x);
+			Console.WriteLine(x.Key);
+			Console.WriteLine(x.Value);
+		}
 		// So we now have a dictionary of all the text for each song
 		// Now we need to make a songIdentifier from that
 		// I shall make another helper method!
