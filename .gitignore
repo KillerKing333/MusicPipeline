@@ -477,6 +477,11 @@ Config/.cache
 # Ignore local test data caches
 Sandbox_Backup/
 Sandbox_Mobile/
+Sandbox/Config/cookies.txt
+Sandbox/Config/*.txt
+Sandbox/Config/*.json
+Sandbox/Config/*.tmp
+Sandbox/*.txt
 *.log
 
 
