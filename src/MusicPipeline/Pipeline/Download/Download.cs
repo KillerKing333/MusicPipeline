@@ -87,7 +87,7 @@ class Downloader
 						// I don't know if this works with multiple threads lol it probably doesn't
 						// Ey looks like it does!
 
-		await Parser.ParseYTDLPConfigFile(activeProfile); // Parse the config file, adding variables into the {} text
+		await Parser.ParseYTDLPConfigFile(); // Parse the config file, adding variables into the {} text
 		activeProfile = await ProfileManager.LoadActiveProfile(); // Get the new config file (If we move to the contained approach this will be reworked ofc)
 		YTDLPConfigFile = activeProfile.YTDLPConfigFile; // Set the new value
 		Parallel.For(0, maxDownloadThreads, i => j = DownloadThread(i)); // Run the parallel for

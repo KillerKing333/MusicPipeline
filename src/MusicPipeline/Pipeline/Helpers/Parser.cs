@@ -10,8 +10,9 @@ namespace MusicPipeline.Pipeline.Helpers.Parser;
 
 public class Parser
 {
-	public static async Task ParseYTDLPConfigFile(Profile context)
+	public static async Task ParseYTDLPConfigFile()
 	{
+		Profile context = await ProfileManager.LoadActiveProfile();
 		// TODO: Make this function
 		// TODO: Make this use the active profile
 		// No idea why it wont work
@@ -57,9 +58,9 @@ public class Parser
 		string parentDir = Path.GetDirectoryName(YTDLPOriginalConfigFilePath);
 		string tempFilePath = $@"{parentDir}/yt-dlp{Guid.NewGuid()}.conf";
 		await File.WriteAllTextAsync(tempFilePath, String.Join("\n", parsedLines));
-		Profile activeProfile = await ProfileManager.LoadActiveProfile(context.ProfileFile);
+		Profile activeProfile = await ProfileManager.LoadActiveProfile();
 		activeProfile.YTDLPConfigFile = tempFilePath;
-		await ProfileManager.SaveProfile(context.ProfileFile, activeProfile);
+		await ProfileManager.SaveProfile(activeProfile);
 		// Make a temp file
 		// Change the profileFile to include an override
 		// At the end of Download then remove the override
