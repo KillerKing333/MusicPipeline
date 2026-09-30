@@ -133,6 +133,9 @@ public class ProfileFile
 
 public class ProfileManager
 {
+	// Need a new Profile ActiveProfile which works by getting and setting to the Profile File but that will need more work
+	// Some kind of way to have it work asynchronously, but also let you set and get properties of it by fetching from the file instead of fetching from ram
+	// Hmmmmmmmm
 	private static LogEngine? logger = null;
 	private static async Task<string> GetProfileFilePathAsync()
 	{
