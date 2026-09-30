@@ -79,6 +79,12 @@ maybe csProfiles.json in Config/
 
 then once thats centralised I can make it just a property of ProfileManager
 
+Ok guess it isnt that easy lol
+Need some new thing which will work with the async and also allow setting and getting to go via the actual on disk file
+poor person's swap
+This will need some thinking in what C# allows
+Ain't just a logic problem
+
 
 TODO:
 Make the profile initialise to defaults
