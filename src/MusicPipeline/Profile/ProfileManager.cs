@@ -236,10 +236,6 @@ public class ProfileManager
 			await DefaultProfiles.DefaultProfile.LogEngine.Out($"Wrote new profile {profile.Name} to {profileFile} successfully.", DefaultColours.Success, true);
 		}
 	}
-	private static void SaveProfile(Profile? profile = null, bool overrideParam = false)
-	{
-		// TODO
-	}
 
 	public static async Task SwitchProfileAsync()
 	{

@@ -40,7 +40,7 @@ public class Orchestrator
 		Console.WriteLine("Did that work??");
 		oldActiveProfile.LogEngine = logger;
 		oldActiveProfile.Name = "Current Working Profile";
-		await ProfileManager.SaveProfile(oldActiveProfile);
+		await ProfileManager.SaveProfileAsync(oldActiveProfile);
 		Profile activeProfile = await ProfileManager.LoadActiveProfileAsync();
 		LogEngine? l = activeProfile.LogEngine;
 		l?.user = "Orchestrator";
@@ -51,7 +51,7 @@ public class Orchestrator
 		await l.Out(JsonSerializer.Serialize(oldActiveProfile), 54);
 		activeProfile.ScannerSleepIntervalSec = 30;
 		activeProfile.CleanSweepDownload = true;
-		await ProfileManager.SaveProfile(activeProfile);
+		await ProfileManager.SaveProfileAsync(activeProfile);
 		Profiles.Profile newActiveProfile = await ProfileManager.LoadActiveProfileAsync();
 		await l.Out(newActiveProfile.ScannerSleepIntervalSec.ToString(), 36);
 		

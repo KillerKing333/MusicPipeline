@@ -103,7 +103,7 @@ class Downloader
 		Profile currentActiveProfile = await ProfileManager.LoadActiveProfileAsync(); // A copy of the profile for changing 
 		File.Delete(currentActiveProfile.YTDLPConfigFile); // Delete the temporary config file made with the new variables
 		currentActiveProfile.YTDLPConfigFile = "Null"; // Set it back to the default "Null" (Maybe change this to set it to what default profile uses?)
-		await ProfileManager.SaveProfile(currentActiveProfile); // Save changes
+		await ProfileManager.SaveProfileAsync(currentActiveProfile); // Save changes
 		DateTime end = DateTime.UtcNow; // The official end time
 		TimeSpan elapsed = end - officialStartTime; // The elapsed TimeSpan
 		await l.Out($"elapsed = {elapsed}, end = {end}, start = {officialStartTime}", DefaultColours.Debug); // Debugging

@@ -60,7 +60,7 @@ public class Parser
 		await File.WriteAllTextAsync(tempFilePath, String.Join("\n", parsedLines));
 		Profile activeProfile = await ProfileManager.LoadActiveProfileAsync();
 		activeProfile.YTDLPConfigFile = tempFilePath;
-		await ProfileManager.SaveProfile(activeProfile);
+		await ProfileManager.SaveProfileAsync(activeProfile);
 		// Make a temp file
 		// Change the profileFile to include an override
 		// At the end of Download then remove the override
