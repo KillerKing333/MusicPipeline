@@ -56,13 +56,11 @@ public class Orchestrator
 		await l.Out(newActiveProfile.ScannerSleepIntervalSec.ToString(), 36);
 		
  		// First use of Results
-		Result Step1Result = await Cookies.CookieCheck(profileFile);
-		await Handler.HandleResult(Step1Result, profileFile);
+		List<Result> Step1Results = await Cookies.CookieCheck(profileFile);
+		await Handler.HandleResults(Step1Results, profileFile);
 		var d = new Downloader();
 		List<Result> Step2Results = await d.Download(profileFile);
-		foreach (Result r in Step2Results) {
-			await Handler.HandleResult(r, profileFile);
-		}
+		await Handler.HandleResults(Step2Results, profileFile);
 		
 	}
 
