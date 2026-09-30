@@ -134,16 +134,16 @@ public class ProfileFile
 public class ProfileManager
 {
 	private static LogEngine? logger = null;
-	private static async Task<string> GetProfileFilePath()
+	private static async Task<string> GetProfileFilePathAsync()
 	{
 		string rootDir = Directory.GetCurrentDirectory(); // repo/src/MusicPipeline, aka where the .csproj is
 		string? upperRoot = Directory.GetParent(rootDir)?.Parent?.FullName;
 		return $"{upperRoot}/Config/csProfiles.json";
 	}
 	
-	public async static Task<Profile> LoadActiveProfile()
+	public async static Task<Profile> LoadActiveProfileAsync()
 	{
-		string profileFile = await GetProfileFilePath();
+		string profileFile = await GetProfileFilePathAsync();
 		// Skipping this. Not sure why it's here to begin with
 		// Oh if the file doesn't exist
 		// Oops
@@ -156,7 +156,7 @@ public class ProfileManager
 		catch (FileNotFoundException) {
 			//Console.WriteLine("Caught a FileNotFoundException");
 			//await logger.Out("The profile file doesn't exist, creating a new DefaultProfile", DefaultColours.Error, true);
-			await SaveProfile(DefaultProfiles.DefaultProfile);
+			await SaveProfileAsync(DefaultProfiles.DefaultProfile);
 		}
 		catch {
 			//Console.WriteLine("Caught something else");
@@ -177,7 +177,7 @@ public class ProfileManager
 			return activeProfile;
 		} else {
 			await DefaultProfiles.DefaultProfile.LogEngine.Out($"No profiles were found in the file {profileFile}. A default profile has been initialised.", "ProfileManager", DefaultColours.Error, true);
-			await SaveProfile(DefaultProfiles.DefaultProfile);
+			await SaveProfileAsync(DefaultProfiles.DefaultProfile);
 			return DefaultProfiles.DefaultProfile;
 		}
 #pragma warning restore CS8602 // I hope I am not disabling this warning innapropriatly, I think my code is safe enough to warrant it
@@ -195,9 +195,9 @@ public class ProfileManager
 		// Done
 	}
 
-	public static async Task SaveProfile(Profile? profile = null, bool overrideParam = false/*, bool fullDebugOverride = false*/)
+	public static async Task SaveProfileAsync(Profile? profile = null, bool overrideParam = false/*, bool fullDebugOverride = false*/)
 	{
-		string profileFile = await GetProfileFilePath();
+		string profileFile = await GetProfileFilePathAsync();
 		// TODO: fix
 		//next step of todo, name what is broken :)
 		// i think i fixed it already actually lol
@@ -212,7 +212,7 @@ public class ProfileManager
 			profile = DefaultProfiles.DefaultProfile;
 			logger = DefaultProfiles.DefaultProfile.LogEngine;
 		} else if (await SafetyCheck.CheckProfileToBeSaved(profile) & !overrideParam) {await logger.Out("A new profile that matchs a default profile exactly is being added. Please check that this is intentional, and if so pass override", "ProfileManager", DefaultColours.Error, true); return;}
-		ProfileFile Existing = await GetProfileFile();
+		ProfileFile Existing = await GetProfileFileAsync();
 		if (Existing.ActiveProfileName == "ERROR")
 		{
 			await DefaultProfiles.DefaultProfile.LogEngine.Out($"Failed to get ProfileFile from {profileFile}, creating new file", DefaultColours.Error, true);
@@ -236,18 +236,22 @@ public class ProfileManager
 			await DefaultProfiles.DefaultProfile.LogEngine.Out($"Wrote new profile {profile.Name} to {profileFile} successfully.", DefaultColours.Success, true);
 		}
 	}
-
-	public static async Task SwitchProfile()
+	private static void SaveProfile(Profile? profile = null, bool overrideParam = false)
 	{
-		string profileFile = await GetProfileFilePath();
 		// TODO
-		await (await GetProfileFile()).ActiveProfile.LogEngine.Out("Oopsies, this function doesn't exist yet!", "ProfileManager", DefaultColours.Warning, true);
+	}
+
+	public static async Task SwitchProfileAsync()
+	{
+		string profileFile = await GetProfileFilePathAsync();
+		// TODO
+		await (await GetProfileFileAsync()).ActiveProfile.LogEngine.Out("Oopsies, this function doesn't exist yet!", "ProfileManager", DefaultColours.Warning, true);
 		throw new NotImplementedException();
 	}
 
-	private static async Task<ProfileFile> GetProfileFile()
+	private static async Task<ProfileFile> GetProfileFileAsync()
 	{
-		string profileFile = await GetProfileFilePath();
+		string profileFile = await GetProfileFilePathAsync();
 #pragma warning disable CS8600, CS8603, CS8602 // Again, if the file exists it's so likely to be valid these warnings just clutter the output
 		if(Directory.Exists(Directory.GetParent(profileFile).ToString())) {
 			if (File.Exists(profileFile)) {
@@ -263,7 +267,7 @@ public class ProfileManager
 		} else {
 			await logger.Out($"Parent directory to profile file path {profileFile} doesn't exist. Creating", "ProfileManager");
 			Directory.CreateDirectory(Directory.GetParent(profileFile).Name);
-			return await GetProfileFile();
+			return await GetProfileFileAsync();
 		}
 #pragma warning restore CS8600, CS8603, CS8602
 	}

@@ -11,7 +11,7 @@ public static class Handler
 		// It complains endlessly when i miss it out
 		// "Profile is a namespace but being used a type"
 		// NOTHING USES IT AS A NAMESPACE
-		Profiles.Profile ActiveProfile = await ProfileManager.LoadActiveProfile();
+		Profiles.Profile ActiveProfile = await ProfileManager.LoadActiveProfileAsync();
 		LogEngine l = ActiveProfile.LogEngine;
 		l.user = "StepHandler";
 		string Success = "";

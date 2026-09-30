@@ -13,7 +13,7 @@ public class Scanner
     private LogEngine l;
 	public async void ScanLibrary()
     {
-        Profile activeProfile = await ProfileManager.LoadActiveProfile();
+        Profile activeProfile = await ProfileManager.LoadActiveProfileAsync();
         l = activeProfile.LogEngine;
         l.user = "LibraryScanner";
         string backupDir = activeProfile.BackupDir;
@@ -100,7 +100,7 @@ public class Scanner
 
     private async Task<IEnumerable<string>?> GetMasterFiles(string songFileSearchPattern, string lyricFileSearchPattern)
     {
-        string backupDir = (await ProfileManager.LoadActiveProfile()).BackupDir;
+        string backupDir = (await ProfileManager.LoadActiveProfileAsync()).BackupDir;
         //maybe tomorrow we'll break this method into smaller pieces because it's doing too many disparate things.
         // FYI, doesn't need to know colour code as the LogEngine works out the correct colour from the Username
         // As long as you use "LibraryScanner" then it'll get the right colour
@@ -125,7 +125,7 @@ public class Scanner
 
     private async Task<Dictionary<string,IEnumerable<string>?>?> GetCompressedFiles(string songFileSearchPattern)
     {
-        List<string> compressedDirs = (await ProfileManager.LoadActiveProfile()).CompressedDirs;
+        List<string> compressedDirs = (await ProfileManager.LoadActiveProfileAsync()).CompressedDirs;
         Dictionary<string,IEnumerable<string>?>? compressedFiles = null;
         IEnumerable<string>? directoryFiles = null;
         foreach (string mobileDir in compressedDirs) {
