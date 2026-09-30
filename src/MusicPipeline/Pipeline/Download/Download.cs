@@ -35,9 +35,9 @@ class Downloader
 	private Dictionary<int, List<SongIdentifier>> songs = new(); // TODO: Finish up the SongInfo classes
 	#endregion private fields
 
-	public async Task<List<Result>> Download(string profileFile)
+	public async Task<List<Result>> Download()
 	{
-		activeProfile = await ProfileManager.LoadActiveProfile(profileFile);
+		activeProfile = await ProfileManager.LoadActiveProfile();
 		// Set all the values from the profile.
 		// They need to be class fields so the downloader can access
 		backupDir = activeProfile.BackupDir;
@@ -88,7 +88,7 @@ class Downloader
 						// Ey looks like it does!
 
 		await Parser.ParseYTDLPConfigFile(activeProfile); // Parse the config file, adding variables into the {} text
-		activeProfile = await ProfileManager.LoadActiveProfile("C:/MusicTools/MusicPipeline/Sandbox/Config/csProfiles.json"); // Get the new config file (If we move to the contained approach this will be reworked ofc)
+		activeProfile = await ProfileManager.LoadActiveProfile(); // Get the new config file (If we move to the contained approach this will be reworked ofc)
 		YTDLPConfigFile = activeProfile.YTDLPConfigFile; // Set the new value
 		Parallel.For(0, maxDownloadThreads, i => j = DownloadThread(i)); // Run the parallel for
 		await j; // Await the task
@@ -100,10 +100,10 @@ class Downloader
 			songs.Add(r.Key, await GetAffectedSongInfoInThread(r.Key)); // Get the songs for that thread
 			// TODO: MAKE THIS await CheckWarningsInThread(r.Key);
 		}
-		Profile currentActiveProfile = await ProfileManager.LoadActiveProfile(profileFile); // A copy of the profile for changing 
+		Profile currentActiveProfile = await ProfileManager.LoadActiveProfile(); // A copy of the profile for changing 
 		File.Delete(currentActiveProfile.YTDLPConfigFile); // Delete the temporary config file made with the new variables
 		currentActiveProfile.YTDLPConfigFile = "Null"; // Set it back to the default "Null" (Maybe change this to set it to what default profile uses?)
-		await ProfileManager.SaveProfile(profileFile, currentActiveProfile); // Save changes
+		await ProfileManager.SaveProfile(currentActiveProfile); // Save changes
 		DateTime end = DateTime.UtcNow; // The official end time
 		TimeSpan elapsed = end - officialStartTime; // The elapsed TimeSpan
 		await l.Out($"elapsed = {elapsed}, end = {end}, start = {officialStartTime}", DefaultColours.Debug); // Debugging

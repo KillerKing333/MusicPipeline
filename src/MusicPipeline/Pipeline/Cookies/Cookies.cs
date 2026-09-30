@@ -22,11 +22,10 @@ class Cookies
 	/// </para>
 	/// </remarks>
 	/// <returns>Returns a List of Results</returns>
-	/// <param name="profileFile">String, the profile file to get global values from.</param>
-	public static async Task<List<Result>> CookieCheck(string profileFile)
+	public static async Task<List<Result>> CookieCheck()
 	{
 		//in C# local variables should start with lower case, camel case.
-		Profiles.Profile activeProfile = await ProfileManager.LoadActiveProfile(profileFile);
+		Profiles.Profile activeProfile = await ProfileManager.LoadActiveProfile();
 		LogEngine? l = activeProfile.LogEngine;
 		l.user = "Cookies";
 		await l.Out("Profile Done", DefaultColours.Debug);

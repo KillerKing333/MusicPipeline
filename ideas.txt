@@ -52,6 +52,34 @@ Should be possible
 
 
 
+Putting everything in ProfileManager:
+Ok so the profilemanager needs to find it by manually going up to a set place inside the repo
+this will need to be changed when this is prod but that's not a problem for now
+like how the program.cs does this
+string? tempProfileFile = null;
+if (!machineName.Contains("MICRO_PC")) {
+	//Console.WriteLine("Finding portable profile file");
+	string rootDir = Directory.GetCurrentDirectory(); // This is always the directory with the .csproj, so Repo/src/MusicPipeline
+	//Console.WriteLine(rootDir);
+	string? upperRoot = Directory.GetParent(rootDir)?.Parent?.FullName;
+	//Console.WriteLine(upperRoot);
+	//Console.WriteLine($"rootDir = {rootDir}, upperRoot = {upperRoot}, machineName = {machineName}");
+	tempProfileFile = $"{upperRoot}/Config/csProfilesPortable.json";
+	//Console.WriteLine(tempProfileFile);
+	//await ProfileManager.SaveProfile(tempProfileFile, DefaultProfiles.DefaultProfile, true, true);// Temporary debug
+}
+using (var fs = File.Open(@"C:/Users/23fpybus_cheneyschoo/SublimeContained/Music/MusicPipeline/Sandbox/Config/csLogFile.log", FileMode.Open))
+{
+    Console.WriteLine(fs.CanRead);
+    Console.WriteLine(fs.CanWrite);
+}
+We need to go up and find some kind of file
+maybe csProfiles.json in Config/
+
+
+then once thats centralised I can make it just a property of ProfileManager
+
+
 TODO:
 Make the profile initialise to defaults
 Make lyrics actually remove lyrics if a song is instrumental

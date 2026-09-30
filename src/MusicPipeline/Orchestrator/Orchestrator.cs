@@ -28,7 +28,7 @@ public class Orchestrator
 		Console.WriteLine($"profileFile = {profileFile}");
 		Console.WriteLine($"Loading profile");
 		// Aha. ProfileManager is where the stack overflow starts
-		/* First use of Profiles*/ Profile oldActiveProfile = await ProfileManager.LoadActiveProfile(profileFile);
+		/* First use of Profiles*/ Profile oldActiveProfile = await ProfileManager.LoadActiveProfile();
 		Console.WriteLine(JsonSerializer.Serialize(oldActiveProfile, new JsonSerializerOptions { WriteIndented = true }));
 		string logFile = oldActiveProfile.DiagLogFile;
 		Console.WriteLine($"logFile = {logFile}");
@@ -40,8 +40,8 @@ public class Orchestrator
 		Console.WriteLine("Did that work??");
 		oldActiveProfile.LogEngine = logger;
 		oldActiveProfile.Name = "Current Working Profile";
-		await ProfileManager.SaveProfile(profileFile, oldActiveProfile);
-		Profile activeProfile = await ProfileManager.LoadActiveProfile(profileFile);
+		await ProfileManager.SaveProfile(oldActiveProfile);
+		Profile activeProfile = await ProfileManager.LoadActiveProfile();
 		LogEngine? l = activeProfile.LogEngine;
 		l?.user = "Orchestrator";
 		await l.WipeAsync();
@@ -51,16 +51,16 @@ public class Orchestrator
 		await l.Out(JsonSerializer.Serialize(oldActiveProfile), 54);
 		activeProfile.ScannerSleepIntervalSec = 30;
 		activeProfile.CleanSweepDownload = true;
-		await ProfileManager.SaveProfile(profileFile, activeProfile);
-		Profiles.Profile newActiveProfile = await ProfileManager.LoadActiveProfile(profileFile);
+		await ProfileManager.SaveProfile(activeProfile);
+		Profiles.Profile newActiveProfile = await ProfileManager.LoadActiveProfile();
 		await l.Out(newActiveProfile.ScannerSleepIntervalSec.ToString(), 36);
 		
  		// First use of Results
-		List<Result> Step1Results = await Cookies.CookieCheck(profileFile);
-		await Handler.HandleResults(Step1Results, profileFile);
+		List<Result> Step1Results = await Cookies.CookieCheck();
+		await Handler.HandleResults(Step1Results);
 		var d = new Downloader();
-		List<Result> Step2Results = await d.Download(profileFile);
-		await Handler.HandleResults(Step2Results, profileFile);
+		List<Result> Step2Results = await d.Download();
+		await Handler.HandleResults(Step2Results);
 		
 	}
 

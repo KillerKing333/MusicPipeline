@@ -5,13 +5,13 @@ namespace MusicPipeline.StepHandler;
 
 public static class Handler
 {
-	public static async Task HandleResult(Result result, string profileFile)
+	public static async Task HandleResult(Result result)
 	{
 		//I don't know if Sublime points it out, but the leading "Profiles" on the line below is not required because you have a using statement for it up above.
 		// It complains endlessly when i miss it out
 		// "Profile is a namespace but being used a type"
 		// NOTHING USES IT AS A NAMESPACE
-		Profiles.Profile ActiveProfile = await ProfileManager.LoadActiveProfile(profileFile);
+		Profiles.Profile ActiveProfile = await ProfileManager.LoadActiveProfile();
 		LogEngine l = ActiveProfile.LogEngine;
 		l.user = "StepHandler";
 		string Success = "";
@@ -23,17 +23,17 @@ public static class Handler
 		// As in, make it handle the songs and things that were affected by the step and do what's necessary
 	}
 
-	public static async Task HandleResults(List<Result> results, string profileFile)
+	public static async Task HandleResults(List<Result> results)
 	{
 		foreach (Result result in results) {
-			await HandleResult(result, profileFile);
+			await HandleResult(result);
 		}
 	}
 
-	public static async Task HandleResults(IEnumerable<Result> results, string profileFile)
+	public static async Task HandleResults(IEnumerable<Result> results)
 	{
 		foreach (Result result in results) {
-			await HandleResult(result, profileFile);
+			await HandleResult(result);
 		}
 	}
 }
