@@ -32,6 +32,9 @@ public class Profile
 	public string YTDLPConfigFileOriginal {get; set;} = "Null";
 	public string YTDLPConfigFile {get; set;} = "Null";
 	public string CustomYTDLPArguments {get; set;} = "Null";
+	public string SongFileSearchPattern {get; set;} = "Null";
+	public string LyricFileSearchPattern {get; set;} = "Null";
+	//public string Property {get; set;} = "Null";
 	public int SleepInterval {get; set;} = 0;
 	public int MaxSleepInterval {get; set;} = 0;
 	public int SleepRequests {get; set;} = 0;
@@ -44,6 +47,7 @@ public class Profile
 	public int StartingWebServerPort {get; set;} = 0;
 	public int NormalIntervalSec {get; set;} = 0;
 	public int CleanIntervalSec {get; set;} = 0;
+	//public int Property {get; set;} = 0;
 	public bool NormalStep1 {get; set;} = false;
 	public bool NormalStep2 {get; set;} = false;
 	public bool NormalStep3 {get; set;} = false;
@@ -55,6 +59,7 @@ public class Profile
 	public bool CleanSweepLyrics {get; set;} = false;
 	public bool CleanSweepCompress {get; set;} = false;
 	public bool CleanSweepLore {get; set;} = false;
+	//public bool Property {get; set;} = false;
 	public string[] Playlists {get; set;} = ["Null"];
 	public int LastCleanRunEpoch {get; set;} = 0;
 	public int LastNormalRunEpoch {get; set;} = 0;

@@ -136,6 +136,7 @@ public class ProfileManager
 	// Need a new Profile ActiveProfile which works by getting and setting to the Profile File but that will need more work
 	// Some kind of way to have it work asynchronously, but also let you set and get properties of it by fetching from the file instead of fetching from ram
 	// Hmmmmmmmm
+	// TODO: Make an UpdateProfileValue function that takes a property of the profile and thread-safely updates the file
 	private static LogEngine? logger = null;
 	private static async Task<string> GetProfileFilePathAsync()
 	{

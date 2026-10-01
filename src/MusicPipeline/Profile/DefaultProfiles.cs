@@ -27,6 +27,8 @@ public static class DefaultProfiles
 		YTDLPConfigFileOriginal = @"C:/MusicTools/MusicPipeline/Sandbox/Config/yt-dlp.conf.original",
 		YTDLPConfigFile = "Null",
 		CustomYTDLPArguments = "--ppa\" \"EmbedThumbnail+ffmpeg_o:-vf crop=ih:ih",
+		SongFileSearchPattern = "*.m4a",
+		LyricFileSearchPattern = "*.lrc",
 		SleepInterval = 4,
 		MaxSleepInterval = 12, 
 		SleepRequests = 3,
