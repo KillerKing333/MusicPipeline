@@ -22,10 +22,9 @@ public class Orchestrator
 	//Orchestrator.Start(); in program.cs
 	// Need tools
 	// 
-	public async Task Start(string profileFile)
+	public async Task Start()
 	{	
 		//Profile oldActiveProfile = DefaultProfiles.DefaultProfile;
-		Console.WriteLine($"profileFile = {profileFile}");
 		Console.WriteLine($"Loading profile");
 		// Aha. ProfileManager is where the stack overflow starts
 		/* First use of Profiles*/ Profile oldActiveProfile = await ProfileManager.LoadActiveProfileAsync();

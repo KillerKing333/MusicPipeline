@@ -8,7 +8,7 @@ using MusicPipeline.Orchestrator;
 
 var orc = new Orchestrator();
 //Console.WriteLine(orc);
-string machineName = Environment.MachineName;
+/*string machineName = Environment.MachineName;
 //Console.WriteLine(machineName);
 string? tempProfileFile = null;
 if (!machineName.Contains("MICRO_PC")) {
@@ -27,8 +27,8 @@ using (var fs = File.Open(@"C:/Users/23fpybus_cheneyschoo/SublimeContained/Music
     Console.WriteLine(fs.CanRead);
     Console.WriteLine(fs.CanWrite);
 }
-Console.WriteLine("Starting Orchestrator");
-await orc.Start(tempProfileFile ?? @"C:/MusicTools/MusicPipeline/Sandbox/Config/csProfiles.json");
+Console.WriteLine("Starting Orchestrator");*/
+await orc.Start();
 /*var fields = typeof(DefaultProfiles).GetFields();
 foreach (System.Reflection.FieldInfo field in fields) {
 	Console.WriteLine($"name {field.Name}, declaringtype {field.DeclaringType}, Member type {field.MemberType}, FieldType {field.FieldType}");
