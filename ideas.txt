@@ -86,9 +86,33 @@ This will need some thinking in what C# allows
 Ain't just a logic problem
 
 
+Could potentially make an UpdateProfileValue function that takes a property of the profile and thread-safely updates the file?
+put that on the todo
+
+
+
+
+
+For mobile app or future playback app
+beets
+https://beets.io/
+super powerful library which supports loadsss of customisability
+Could import album by album in threads, take the tagged music and make my cataloguing compatible
+Could add direct access to beets and beets support into the app
+use its searching and tagging
+or make my own
+beet stats looks useful
+beets lyrics supports lots of providers, could intergrate it
+azure translation free tier supports a lot of stuff right now
+
+
+Look into musicbrainz
+
 TODO:
 Make the profile initialise to defaults
 Make lyrics actually remove lyrics if a song is instrumental
+Make an UpdateProfileValue function that takes a property of the profile and thread-safely updates the file
+Make use of beets
 
 in website use the official wikipedia algorithm to find colours
 https://en.wikipedia.org/wiki/ANSI_escape_code
