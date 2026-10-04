@@ -92,9 +92,6 @@ class Downloader
 		YTDLPConfigFile = activeProfile.YTDLPConfigFile; // Set the new value
 		Parallel.For(0, maxDownloadThreads, i => j = DownloadThread(i)); // Run the parallel for
 		await j; // Await the task
-		l.user = "Downloader"; // Set the user again after the threads mess with it (likely redundant now)
-		//if we give Downloader its own logger, we can avoid stuff like above.
-		//the Downloader's logger can always be the user "Downloader" without the possibility of changing it.
 		List<Result>? results = new List<Result>(); // An intermediary list
 		foreach (KeyValuePair<int, Result?> r in res)
 		{ // Go through each result from each thread
@@ -157,21 +154,16 @@ class Downloader
 	//good method name!
 	private async Task ClearOutErrorFiles(LogEngine l)
 	{
-		//you can use variable names in place of comments if it helps code readability.
-		bool theConfigDirectoryExists = Directory.Exists(configDir);
-		//if (theConfigDirectoryExists)
-		//{
-		//the three lines above would replace your one line below, eliminating the comment.
 		//writing comments is not a sin, but preferring expressive code over comments is encouraged.
-		if (Directory.Exists(configDir)) { // Stuff if the config dir exists
-			IEnumerable<string> allSubFiles = Directory.EnumerateFiles(configDir, "run_errors_playlist*.txt", SearchOption.AllDirectories); // Find error files. Not sure why I called it sub?
-			//I would recommend naming the above variable "errorFiles"
-			foreach (string file in allSubFiles) { // For every one
-				await l.Out($"File found {file}", DefaultColours.Debug); // Debugging
-																		 // Temporary debug to check that it's finding the right files
-																		 // It is
-				File.Delete(file); // BEGONE :)
-			}
+		if (!Directory.Exists(configDir)) { // Stuff if the config dir exists
+			return;	
+		}
+		IEnumerable<string> errorFiles = Directory.EnumerateFiles(configDir, "run_errors_playlist*.txt", SearchOption.AllDirectories); // Find error files. Not sure why I called it sub?
+		foreach (string file in errorFiles) { // For every one
+			await l.Out($"File found {file}", DefaultColours.Debug); // Debugging
+																	 // Temporary debug to check that it's finding the right files
+																	 // It is
+			File.Delete(file); // BEGONE :)
 		}
 
 		//oh! one more thing you can do with this method is invert the first if.
@@ -195,6 +187,7 @@ class Downloader
 		Purple = 135,
 		Forest = 22,
 		Cyan = 51
+		// TODO: add more cases by looking through https://color-palette.hexdocs.pm/ansi_color_codes.html once necessary.
 	}
 
 	private async Task DownloadThread(int index)
@@ -228,7 +221,6 @@ class Downloader
 			case 6:
 				colourCode = (int)ColoUUUrCode.Cyan;
 				break;
-			// TODO: add more cases by looking through https://color-palette.hexdocs.pm/ansi_color_codes.html once necessary.
 		}
 
 		string errorLogPath = $@"{configDir}playlist${index}_run_errors.txt";
@@ -427,4 +419,5 @@ static class DownloaderExtension
 {
 	//I attack with an extension method!!
 	public static int ConvertZeroBasedIndexToOneBasedIndex(this int zeroBasedIndex) => zeroBasedIndex + 1;
+	// Touché
 }
