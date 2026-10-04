@@ -19,10 +19,10 @@ public static class Handler
 		//I do think sublime is incorrectly flagging that though.
 
 		
-		Profiles.Profile ActiveProfile = await ProfileManager.LoadActiveProfileAsync();
+		Profile activeProfile = await ProfileManager.LoadActiveProfileAsync();
 
 		//on sublime does it give any indication about a possible null reference for the item below?
-		LogEngine l = ActiveProfile.LogEngine;
+		LogEngine l = activeProfile.LogEngine ?? new(activeProfile.DiagLogFile);
 		//I ask because VS does a green squiggly line, and it's so annoying.
 		//It happens at work too, and there are two ways to deal with it.
 		//one is at the file level, and one at the project level.
@@ -34,17 +34,15 @@ public static class Handler
 		//it does in VS.
 
 		l.user = "StepHandler";
-		string Success = "";
-		// Cookie Verification finished successfully/with errors in (elapsed time)
-		if (result.Outcome) {Success = "successfully";} else {Success = "with errors";}
+		
 
 		//here's another way to write success and assignment with a ternary operator.
 		//google says: "ternary" comes from the Latin word ternarius, which means "consisting of three items." :)
-		string success2 = result.Outcome ? "successfully" : "with errors";
+		string success = result.Outcome ? "successfully" : "with errors";
 		//condition ? result if true : result if false
 
-		string ElapsedTime = result.Elapsed.ToString(@"dd\:hh\:mm\:ss\.ffff");
-		await l.Out($"{result.Step} finished {Success} in {ElapsedTime}");
+		string elapsedTime = result.Elapsed.ToString(@"dd\:hh\:mm\:ss\.ffff");
+		await l.Out($"{result.Step} finished {success} in {elapsedTime}");
 		// TODO: Metrics database etc
 		// As in, make it handle the songs and things that were affected by the step and do what's necessary
 	}
