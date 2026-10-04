@@ -8,6 +8,7 @@ using MusicPipeline.Pipeline.Helpers.Download;
 using MusicPipeline.Songs;
 using MusicPipeline.Colours; 
 using MusicPipeline.Tools.LogEngine;
+using System.Runtime.InteropServices;
 namespace MusicPipeline.Pipeline;
 
 class Downloader
@@ -40,34 +41,34 @@ class Downloader
 		activeProfile = await ProfileManager.LoadActiveProfileAsync();
 		// Set all the values from the profile.
 		// They need to be class fields so the downloader can access
+		//	^ downloader can access it just like how it's happening in the lines below.
+		//	it doesn't need to be assigned to these new private fields.
+		//	question though: who SHOULD own what? right now profile owns everything.
 		backupDir = activeProfile.BackupDir;
+		//directory information: do you want profile managing that?
 		l = activeProfile.LogEngine;
+		//for logging, I think while we're in the Downloader, it should get its own logger.
 		l.user = "Downloader";
 		YTDLPPath = activeProfile.YTDLPExe;
 		cookiePath = activeProfile.CookieFile;
-		historyPath = activeProfile.HistoryFile;
+		historyPath = activeProfile.HistoryFile;		
 		playlists = activeProfile.Playlists;
+		//location of these above files all also relating to directory, probably should belong to profile? (like they already do)
 		configDir = $@"{activeProfile.RootDir}\Config";
 		cacheDir = $@"{configDir}/.cache";
+		//these two above take root dir from profile, but then change it to be their own thing.
+		//i'm thinking if root directory really belongs to profile, these two should too.
 		sleepInterval = activeProfile.SleepInterval;
 		maxSleepInterval = activeProfile.MaxSleepInterval;
 		sleepRequests = activeProfile.SleepRequests;
+		//the above 3 should probably belong to Downloader, would you agree? sleeping feels like the job of a downloader.
 		maxDownloadThreads = activeProfile.MaxDownloadThreads;
+		//I think this one (above) definitely should belong to downloader!
 		cleanSweep = activeProfile.CleanSweepDownload; // Note: Make sure that the profile value of CleanSweepDownload is correct before running
-													   // if you can define what it means for "the profile value of CleanSweepDownload is correct"
-													   // you could set it to NOT run when it's not correct :)
 		customArguments = activeProfile.CustomYTDLPArguments;
 
 		var iAmDebugging = true;
 
-		// for many of these methods that I extracted I provide arguments.
-		// none of them are really required in this context, but I wanted you to think about their inclusion.
-		// for example, once we start looking at WriteBanner()
-		// it's not really Download's responsibility to define how to write the log banner, it's actually LogEngine's responsibility.
-		// I didn't move that code to LogEngine yet, but I do recommend it.
-		// in code it would become
-		// await l.WriteBanner();
-		// similar could be done for many of these, but exercise caution with each individual consideration.
 		// ClearOutErrorFiles() does more than what LogEngine should be responsible for, so I would recommend against moving that code into LogEngine.
 		DateTime officialStartTime = DateTime.UtcNow;
 		await LogStartTime(l, iAmDebugging, officialStartTime);
@@ -77,22 +78,23 @@ class Downloader
 		await SetCleanSweep(l, configDir, cleanSweep);
 		//v From JleruOHeP on https://stackoverflow.com/questions/23419396/can-you-assign-a-value-only-if-its-greater-less-than-the-current-value#comment35888947_23419396
 		SetMaxDownloadThreads();
-
-		// you can try extracting methods and giving good method names for the remainder of this constructor below :) GL!
-
 		// Won't be bothering with the vpn stuff, I want to carefully consider how to do it, and whether it's even needed first
 		// URLs should be sanitised already
 	
 		Task? j = null; // Initialise a blank task to be assigned by each thread
 						// I don't know if this works with multiple threads lol it probably doesn't
-						// Ey looks like it does!
-
+						// Ey looks like it does! sweet!
+		
+		//i recommend renaming the below method.
+		//it parses files, but the main output is that it writes files.
 		await Parser.ParseYTDLPConfigFile(); // Parse the config file, adding variables into the {} text
 		activeProfile = await ProfileManager.LoadActiveProfileAsync(); // Get the new config file (If we move to the contained approach this will be reworked ofc)
 		YTDLPConfigFile = activeProfile.YTDLPConfigFile; // Set the new value
 		Parallel.For(0, maxDownloadThreads, i => j = DownloadThread(i)); // Run the parallel for
 		await j; // Await the task
 		l.user = "Downloader"; // Set the user again after the threads mess with it (likely redundant now)
+		//if we give Downloader its own logger, we can avoid stuff like above.
+		//the Downloader's logger can always be the user "Downloader" without the possibility of changing it.
 		List<Result>? results = new List<Result>(); // An intermediary list
 		foreach (KeyValuePair<int, Result?> r in res)
 		{ // Go through each result from each thread
@@ -116,9 +118,6 @@ class Downloader
 		bool morePlaylistsThanThreadsAllowed = maxDownloadThreads > playlists.Length;
 		if (morePlaylistsThanThreadsAllowed)
 			maxDownloadThreads = playlists.Length;
-		// curly braces are optional when there's only one statement.
-		// I always favor leaving off the curly braces for single statements because it's beautiful.
-		// the indentation is technically optional, but I do include it for readability.
 	}
 
 	private async Task SetCleanSweep(LogEngine l, string configDir, bool isCleanSweep)
@@ -155,18 +154,47 @@ class Downloader
 		await l.Out("==============================================");
 	}
 
-	//extract method :)
+	//good method name!
 	private async Task ClearOutErrorFiles(LogEngine l)
 	{
+		//you can use variable names in place of comments if it helps code readability.
+		bool theConfigDirectoryExists = Directory.Exists(configDir);
+		//if (theConfigDirectoryExists)
+		//{
+		//the three lines above would replace your one line below, eliminating the comment.
+		//writing comments is not a sin, but preferring expressive code over comments is encouraged.
 		if (Directory.Exists(configDir)) { // Stuff if the config dir exists
 			IEnumerable<string> allSubFiles = Directory.EnumerateFiles(configDir, "run_errors_playlist*.txt", SearchOption.AllDirectories); // Find error files. Not sure why I called it sub?
+			//I would recommend naming the above variable "errorFiles"
 			foreach (string file in allSubFiles) { // For every one
 				await l.Out($"File found {file}", DefaultColours.Debug); // Debugging
 																		 // Temporary debug to check that it's finding the right files
 																		 // It is
-				File.Delete(file); // BEGONE
+				File.Delete(file); // BEGONE :)
 			}
 		}
+
+		//oh! one more thing you can do with this method is invert the first if.
+		//if the config directory doesn't exist, we don't want to do anything.
+		//if (!Directory.Exists(configDir)) {return;}
+		//if that's your first line of the method, then everything else can come after it, one layer less deep in indentation.
+
+		//this is a nice small method with no issues around indentation, but it's an easy trap to fall into, code becoming super nested and thus indented.
+		//they call it "arrow code" because the triangular shape the code body starts to take on with lots of indentation.
+		//like the tip of an arrow.
+		//anyways I wanted to mention this technique so you'd be aware of one way to save an indent :)
+	}
+
+	//I wrote an enum for ya
+	//it's used in the below method
+	public enum ColoUUUrCode
+	{
+		Peach = 217,
+		Magenta = 201,
+		Yellow = 33,
+		Purple = 135,
+		Forest = 22,
+		Cyan = 51
 	}
 
 	private async Task DownloadThread(int index)
@@ -177,30 +205,36 @@ class Downloader
 		await log.Out($"Index = {index} Playlist = {playlists[index]}, customArgs = {customArguments}", DefaultColours.Debug);
 		int? colourCode = null;
 		// I know this isn't technically the same order as the original but the testing only has one playlist and I prefer the peach colour. Sue me.
-		switch (index + 1) {
+
+		//this +1 on the index confused me there for a minute! haha
+		//i'll do something extra silly with it for revenge!
+		//alternatively the cases could have started at 0 and counted up.
+		switch (index.ConvertZeroBasedIndexToOneBasedIndex()) {
 			case 1:
-				colourCode = 217; // Peach
+				colourCode = (int)ColoUUUrCode.Peach;
 				break; 
 			case 2:
-				colourCode = 201;  // Magenta
+				colourCode = (int)ColoUUUrCode.Magenta;
 				break; 
 			case 3:
-				colourCode = 33; // Yellow
+				colourCode = (int)ColoUUUrCode.Yellow;
 				break; 
 			case 4:
-				colourCode = 135; // Purple
+				colourCode = (int)ColoUUUrCode.Purple;
 				break; 
 			case 5:
-				colourCode = 22; // Forest
+				colourCode = (int)ColoUUUrCode.Forest;
 				break; 
 			case 6:
-				colourCode = 51; // Cyan
+				colourCode = (int)ColoUUUrCode.Cyan;
 				break;
 			// TODO: add more cases by looking through https://color-palette.hexdocs.pm/ansi_color_codes.html once necessary.
 		}
 
 		string errorLogPath = $@"{configDir}playlist${index}_run_errors.txt";
-		if (File.Exists(errorLogPath)) File.Delete(errorLogPath);
+
+		if (File.Exists(errorLogPath)) 
+			File.Delete(errorLogPath);
 
 		await log.Out($"Processing Playlist URL: {playlists[index]}", colourCode);
 
@@ -387,4 +421,10 @@ class Downloader
 		await l.Out("TODO: URGENT: MAKE GetErrorsInThread", DefaultColours.Error, true);
 		return new(true, "TODO");
 	} 
+}
+
+static class DownloaderExtension
+{
+	//I attack with an extension method!!
+	public static int ConvertZeroBasedIndexToOneBasedIndex(this int zeroBasedIndex) => zeroBasedIndex + 1;
 }
