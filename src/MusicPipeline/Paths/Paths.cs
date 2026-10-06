@@ -3,6 +3,9 @@ namespace MusicPipeline;
 public class MyPath
 {
 	// Hehe idk what I'm doing
+	// ~ is UserDir
+	// Others are [$VarName]
+	// I guess I make regexes for those at some point
 	public string path {get => GetStringPath();}
 	public required string FullPath {get; set;}
 	public string? ConfigDir {get; set;}
@@ -21,6 +24,7 @@ public class MyPath
 	{
 		// I don't even know how the path syntax works yet so um
 		// TODO: this
+
 		return "Shan't";
 	}
 }
