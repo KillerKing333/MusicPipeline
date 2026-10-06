@@ -1,6 +1,6 @@
 namespace MusicPipeline;
 
-public class Path
+public class MyPath
 {
 	// Hehe idk what I'm doing
 	public string path {get => GetStringPath();}
@@ -13,11 +13,11 @@ public class Path
 	public string GetStringPath()
 	{
 		// Handle path somehow
-		string res = TakeFullPathWithPathSyntaxAndTurnItIntoAStringUsingTheGivenPathObjectForDirectoryReferences(this);
+		string res = TakeFullPathWithMyPathSyntaxAndTurnItIntoAStringUsingTheGivenPathObjectForDirectoryReferences(this);
 		return res;
 	}
 
-	internal string TakeFullPathWithPathSyntaxAndTurnItIntoAStringUsingTheGivenPathObjectForDirectoryReferences(Path path)
+	internal string TakeFullPathWithMyPathSyntaxAndTurnItIntoAStringUsingTheGivenPathObjectForDirectoryReferences(MyPath path)
 	{
 		// I don't even know how the path syntax works yet so um
 		// TODO: this
