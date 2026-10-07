@@ -202,6 +202,7 @@ public class ProfileManager
 	public static async Task SaveProfileAsync(Profile? profile = null, bool overrideParam = false/*, bool fullDebugOverride = false*/)
 	{
 		string profileFile = await GetProfileFilePathAsync();
+		Console.WriteLine("Saving a profile");
 		// TODO: fix
 		//next step of todo, name what is broken :)
 		// i think i fixed it already actually lol
@@ -213,12 +214,15 @@ public class ProfileManager
 		}*/
 
 		if (profile == null) {
+			Console.WriteLine("Profile is null");
 			profile = DefaultProfiles.DefaultProfile;
 			logger = DefaultProfiles.DefaultProfile.LogEngine;
 		} else if (await SafetyCheck.CheckProfileToBeSaved(profile) & !overrideParam) {await logger.Out("A new profile that matchs a default profile exactly is being added. Please check that this is intentional, and if so pass override", "ProfileManager", DefaultColours.Error, true); return;}
+		Console.WriteLine("Getting existing profile file");
 		ProfileFile Existing = await GetProfileFileAsync();
 		if (Existing.ActiveProfileName == "ERROR")
 		{
+			Console.WriteLine("Error Profile");
 			await DefaultProfiles.DefaultProfile.LogEngine.Out($"Failed to get ProfileFile from {profileFile}, creating new file", DefaultColours.Error, true);
 		}
 		if (Existing.ProfileAlreadyExists(profile) || Existing.ActiveProfileName=="ERROR") {
@@ -227,7 +231,8 @@ public class ProfileManager
 			Existing.Profiles.Add(profile);
 		}
 		ProfileFile ProfileFile = new ProfileFile(Existing.Profiles, profile.Name);
-
+		
+		Console.WriteLine("Writing Profile file");
 		var Options = new JsonSerializerOptions { WriteIndented = true };
 		string JsonToWrite = JsonSerializer.Serialize(ProfileFile, Options);
 		File.WriteAllText(profileFile, JsonToWrite);
