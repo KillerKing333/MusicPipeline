@@ -65,8 +65,8 @@ public class MyPath
 		FormattedPath = formattedPath;
 		// Returns C:\Users\(Username) on my machine
 		UserDir = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile).Replace(@"\", "/");
-		ScriptDir = Directory.GetCurrentDirectory();
-		RootDir = Directory.GetParent(ScriptDir)?.Parent?.FullName;
+		ScriptDir = Directory.GetCurrentDirectory().Replace(@"\", "/");
+		RootDir = Directory.GetParent(ScriptDir)?.Parent?.FullName.Replace(@"\", "/");
 		ConfigDir = $"{RootDir}/Sandbox/Config";
 	}
 }
