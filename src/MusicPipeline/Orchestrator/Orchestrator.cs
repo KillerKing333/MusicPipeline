@@ -54,12 +54,17 @@ public class Orchestrator
 		Profiles.Profile newActiveProfile = await ProfileManager.LoadActiveProfileAsync();
 		await l.Out(newActiveProfile.ScannerSleepIntervalSec.ToString(), 36);
 		
+
+
+
+ 		
  		// First use of Results
 		List<Result> Step1Results = await Cookies.CookieCheck();
 		await Handler.HandleResults(Step1Results);
 		var d = new Downloader();
 		List<Result> Step2Results = await d.Download();
 		await Handler.HandleResults(Step2Results);
+		
 		
 	}
 

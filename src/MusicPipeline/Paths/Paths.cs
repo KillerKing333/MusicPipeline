@@ -1,8 +1,13 @@
 using System.Text.RegularExpressions;
+using System.Diagnostics.CodeAnalysis;
 namespace MusicPipeline;
 
 public class MyPath
 {
+
+	// TODO: Warn user when a string doesn't end a 
+	// [$Var]
+
 	// Hehe idk what I'm doing
 	// ~ is UserDir
 	// Others are [$VarName]
@@ -15,6 +20,11 @@ public class MyPath
 	public string? RootDir {get; set;}
 	public string? UserDir {get; set;}
 	public string? ScriptDir {get; set;}
+
+	public override string ToString()
+	{
+		return TakeFullPathWithMyPathSyntaxAndTurnItIntoAStringUsingTheGivenPathObjectForDirectoryReferences(this);
+	}
 
 	public string GetStringPath()
 	{
@@ -31,14 +41,28 @@ public class MyPath
 
 		// Find every ~ and replace with UserDir
 		// Find every thing between [$ and ] and replace the whole thing with that property in this class. same logic as the parser
+		Match match = Regex.Match(path.FormattedPath, @"\[\$(\w+)\]");
+		if (!match.Success) 
+			goto Return;
+		string? replace = typeof(MyPath)?.GetProperty(match.Groups[1].Value)?.GetValue(path)?.ToString();
+		if (replace is null) 
+			Console.WriteLine("Oh dear");
+		return Regex.Replace(path.FormattedPath, @"\[\$(\w+)\]", replace ?? "Null");
+		
+		
+		Return:
+			return path.FormattedPath.Replace("~", UserDir);
+
 		// Perfect
 		// TODO: this
 
-		return "Shan't";
+
 	}
 
+	[SetsRequiredMembers]
 	public MyPath(string formattedPath)
 	{
+		FormattedPath = formattedPath;
 		// Returns C:\Users\(Username) on my machine
 		UserDir = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
 		ScriptDir = Directory.GetCurrentDirectory();

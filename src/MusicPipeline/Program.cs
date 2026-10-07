@@ -1,5 +1,6 @@
 ﻿// See https://aka.ms/new-console-template for more information
 using System;
+using MusicPipeline;
 using MusicPipeline.Orchestrator;
 // using MusicPipeline.Profiles;
 // using System.Text.Json;
@@ -28,8 +29,18 @@ using (var fs = File.Open(@"C:/Users/23fpybus_cheneyschoo/SublimeContained/Music
     Console.WriteLine(fs.CanWrite);
 }
 Console.WriteLine("Starting Orchestrator");*/
-await orc.Start();
+//await orc.Start();
 
+
+string test = "RootDir";
+
+MyPath musicTestPath = new("[$UserDir]/Music/YT_Music_Backup");
+MyPath dynamicTestPath = new($"[${test}]/Config");
+MyPath tildaTestPath = new("~/Music/YT_Music_Backup");
+MyPath configTestPath = new("[$ConfigDir]/test.txt");
+MyPath scriptTestPath = new("[$ScriptDir]/Paths/Paths.cs");
+
+Console.WriteLine($"musicTestPath = {musicTestPath}, dynamicTestPath = {dynamicTestPath}, tildaTestPath = {tildaTestPath}, configTestPath = {configTestPath}, scriptTestPath = {scriptTestPath}");
 
 /*var fields = typeof(DefaultProfiles).GetFields();
 foreach (System.Reflection.FieldInfo field in fields) {
