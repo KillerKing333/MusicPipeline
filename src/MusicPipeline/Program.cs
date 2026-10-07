@@ -41,6 +41,7 @@ MyPath configTestPath = new("[$ConfigDir]/test.txt");
 MyPath scriptTestPath = new("[$ScriptDir]/Paths/Paths.cs");
 
 Console.WriteLine($"musicTestPath = {musicTestPath}, dynamicTestPath = {dynamicTestPath}, tildaTestPath = {tildaTestPath}, configTestPath = {configTestPath}, scriptTestPath = {scriptTestPath}");
+Console.WriteLine($"musicTestPath = {File.Exists(musicTestPath.ToString())}, dynamicTestPath = {File.Exists(dynamicTestPath.ToString())}, tildaTestPath = {File.Exists(tildaTestPath.ToString())}, configTestPath = {File.Exists(configTestPath.ToString())}, scriptTestPath = {File.Exists(scriptTestPath.ToString())}");
 
 /*var fields = typeof(DefaultProfiles).GetFields();
 foreach (System.Reflection.FieldInfo field in fields) {
