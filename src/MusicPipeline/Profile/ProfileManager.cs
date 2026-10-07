@@ -217,13 +217,13 @@ public class ProfileManager
 			Console.WriteLine("Profile is null");
 			profile = DefaultProfiles.DefaultProfile;
 			logger = DefaultProfiles.DefaultProfile.LogEngine;
-		} else if (await SafetyCheck.CheckProfileToBeSaved(profile) & !overrideParam) {await logger.Out("A new profile that matchs a default profile exactly is being added. Please check that this is intentional, and if so pass override", "ProfileManager", DefaultColours.Error, true); return;}
+		} else if (await SafetyCheck.CheckProfileToBeSaved(profile) & !overrideParam) {await (logger ?? new("Null")).Out("A new profile that matchs a default profile exactly is being added. Please check that this is intentional, and if so pass override", "ProfileManager", DefaultColours.Error, true); return;}
 		Console.WriteLine("Getting existing profile file");
 		ProfileFile Existing = await GetProfileFileAsync();
 		if (Existing.ActiveProfileName == "ERROR")
 		{
 			Console.WriteLine("Error Profile");
-			await DefaultProfiles.DefaultProfile.LogEngine.Out($"Failed to get ProfileFile from {profileFile}, creating new file", DefaultColours.Error, true);
+			await (DefaultProfiles.DefaultProfile.LogEngine ?? new ("Null")).Out($"Failed to get ProfileFile from {profileFile}, creating new file", DefaultColours.Error, true);
 		}
 		if (Existing.ProfileAlreadyExists(profile) || Existing.ActiveProfileName=="ERROR") {
 			Existing.Profiles = new List<Profile>() {profile};
@@ -231,7 +231,7 @@ public class ProfileManager
 			Existing.Profiles.Add(profile);
 		}
 		ProfileFile ProfileFile = new ProfileFile(Existing.Profiles, profile.Name);
-		
+
 		Console.WriteLine("Writing Profile file");
 		var Options = new JsonSerializerOptions { WriteIndented = true };
 		string JsonToWrite = JsonSerializer.Serialize(ProfileFile, Options);
@@ -242,7 +242,7 @@ public class ProfileManager
 			profile.LogEngine = l;
 			await l.Out($"Wrote new profile {profile.Name} to {profileFile} successfully.", DefaultColours.Success, true);
 		} else {
-			await DefaultProfiles.DefaultProfile.LogEngine.Out($"Wrote new profile {profile.Name} to {profileFile} successfully.", DefaultColours.Success, true);
+			await (DefaultProfiles.DefaultProfile.LogEngine ?? new ("Null")).Out($"Wrote new profile {profile.Name} to {profileFile} successfully.", DefaultColours.Success, true);
 		}
 	}
 
@@ -256,24 +256,23 @@ public class ProfileManager
 
 	private static async Task<ProfileFile> GetProfileFileAsync()
 	{
+		Console.WriteLine("Getting Profile File");
 		string profileFile = await GetProfileFilePathAsync();
-#pragma warning disable CS8600, CS8603, CS8602 // Again, if the file exists it's so likely to be valid these warnings just clutter the output
-		if(Directory.Exists(Directory.GetParent(profileFile).ToString())) {
+		if(Directory.Exists(Directory.GetParent(profileFile)?.ToString())) {
 			if (File.Exists(profileFile)) {
 				string jsonString = File.ReadAllText(profileFile);
-				ProfileFile Result =  JsonSerializer.Deserialize<ProfileFile>(jsonString);
+				ProfileFile Result =  JsonSerializer.Deserialize<ProfileFile>(jsonString) ?? new([DefaultProfiles.ErrorProfile], "ERROR");
 				return Result;
 			} else {
-				await DefaultProfiles.DefaultProfile.LogEngine.Out($"ProfileFile {profileFile} doesn't exist.", "ProfileManager", DefaultColours.Error, true);
+				await (DefaultProfiles.DefaultProfile.LogEngine ?? new ("Null")).Out($"ProfileFile {profileFile} doesn't exist.", "ProfileManager", DefaultColours.Error, true);
 				return new ProfileFile(new List<Profile>(){DefaultProfiles.ErrorProfile}, "ERROR");
 				//can't do anything after it has already returned, line below is unreachable.
 				// Yes I thought i swapped them a while ago
 			}
 		} else {
-			await logger.Out($"Parent directory to profile file path {profileFile} doesn't exist. Creating", "ProfileManager");
+			await (logger ?? new("Null")).Out($"Parent directory to profile file path {profileFile} doesn't exist. Creating", "ProfileManager");
 			Directory.CreateDirectory(Directory.GetParent(profileFile).Name);
 			return await GetProfileFileAsync();
 		}
-#pragma warning restore CS8600, CS8603, CS8602
 	}
 }
