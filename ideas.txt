@@ -16,15 +16,15 @@ use the new colour based system that lyrics.ps1 has in all track by track parall
 
 
 explanation of compressed directory and profile system
-eahc of these directorys is a collection of organisational subdirectories
+each of these directories is a collection of organisational subdirectories
 they only exist to make the artist album etc clear
 then the file name is the songs title
-essentially they should be transparent to this, but theyre important for output and for clearing up who owns what once you need to automatically put stuff into the database like this is doin
+essentially they should be transparent to this, but they're important for output and for clearing up who owns what once you need to automatically put stuff into the database like this is doing
 the YT_Music_Mobile or Backup folders are collections of these songs
 then each profile holds numerous compressed song collections
 or just one uncompressed one
-mobile is optional but ideally youd have a compressed version when actually using this
-the profile also has all the other things like device specfic stuff (thread counts for compression) the songs to download etc etc
+mobile is optional but ideally you'd have a compressed version when actually using this
+the profile also has all the other things like device specific stuff (thread counts for compression) the songs to download etc etc
 and eventually it'll have like the exact flags to use when downloading and all that
 
 
@@ -40,14 +40,14 @@ Here is why supplying your own TTML fails:
 * **No Local TTML Parser:** The macOS Apple Music app literally lacks code to read local `.ttml` files or parse TTML markup embedded in audio metadata. For local files, it only checks for standard static `USLT` text tags.
 * **Server-Side Rendering Only:** The animated karaoke UI—line highlighting, vocal suppression, and time-syncing—is rendered exclusively using data streams fetched from Apple's servers.
 
-**The Only Exception: Catalog Matching**
-If the song you own exists in the official Apple Music catalog (and has synced lyrics there), you can trick Apple Music into pulling Apple's server-side TTML for your local file:
+**The Only Exception: Catalogue Matching**
+If the song you own exists in the official Apple Music catalogue (and has synced lyrics there), you can trick Apple Music into pulling Apple's server-side TTML for your local file:
 
 1. Find the track on Apple Music, right-click, select **Copy Link**, and extract the track ID number at the end (e.g., `?i=149257852`).
 2. Use a metadata editor (like Mp3tag or Kid3) to add a custom tag named `ITUNESCATALOGID` containing that track ID.
-3. If **Sync Library** is enabled in Apple Music, the app matches your file to their catalog version and streams Apple's synced lyrics over your local audio.
+3. If **Sync Library** is enabled in Apple Music, the app matches your file to their catalogue version and streams Apple's synced lyrics over your local audio.
 
-If the song isn't in Apple's catalog or is a custom edit, Apple Music won't play synced lyrics no matter what format you feed it—which is why external tools like **LyricsX** exist."
+If the song isn't in Apple's catalogue or is a custom edit, Apple Music won't play synced lyrics no matter what format you feed it—which is why external tools like **LyricsX** exist."
 Should be possible
 
 
@@ -77,9 +77,9 @@ We need to go up and find some kind of file
 maybe csProfiles.json in Config/
 
 
-then once thats centralised I can make it just a property of ProfileManager
+then once that's centralised I can make it just a property of ProfileManager
 
-Ok guess it isnt that easy lol
+Ok guess it isn't that easy lol
 Need some new thing which will work with the async and also allow setting and getting to go via the actual on disk file
 poor person's swap
 This will need some thinking in what C# allows
@@ -90,6 +90,7 @@ Could potentially make an UpdateProfileValue function that takes a property of t
 put that on the todo
 
 
+Paths
 
 
 
@@ -102,7 +103,7 @@ Could add direct access to beets and beets support into the app
 use its searching and tagging
 or make my own
 beet stats looks useful
-beets lyrics supports lots of providers, could intergrate it
+beets lyrics supports lots of providers, could integrate it
 azure translation free tier supports a lot of stuff right now
 
 

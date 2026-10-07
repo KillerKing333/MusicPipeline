@@ -1,7 +1,27 @@
 using System.Text.RegularExpressions;
 using System.Diagnostics.CodeAnalysis;
+using System.Reflection;
 namespace MusicPipeline;
 
+
+
+/// <summary>
+/// A custom Path class for handling common paths across different systems.
+/// </summary>
+/// <remarks>
+/// <para>
+/// 	Handles a custom formatting system and automatic path finding
+/// </para>
+/// <para>
+/// 	Uses a format syntax of [$VarName] in a string, and the hardcoded ~ for UserDir
+/// </para>
+/// <para>
+/// 	Overrides ToString to support $"" and Console.Write natively
+/// </para>
+/// <para>
+/// 	Uses Reflection to convert any formatted string into a valid path.
+/// </para>
+/// </remarks>
 public class MyPath
 {
 
@@ -14,26 +34,44 @@ public class MyPath
 	// I guess I make regexes for those at some point
 	// Root script and config can be done from the running directory
 	// And ConfigDir is being kept as a variable so that I can make it use sandbox right now and move it to main repo later.
-	public string path {get => GetStringPath();}
+	public string path {get => ToString(); set => FormattedPath = Format(value);}
+	public string p {get => ToString(); set => FormattedPath = Format(value);}
 	public required string FormattedPath {get; set;}
-	public string? ConfigDir {get; set;}
-	public string? RootDir {get; set;}
-	public string? UserDir {get; set;}
-	public string? ScriptDir {get; set;}
 
+	// For format to work properly, order these in terms of which can be nested within the other on a normal system
+	// E.g. the path C:/Users/Test/MusicPipeline/src/MusicPipeline/Paths/Paths.cs
+	// Which could be said as [$UserDir]/MusicPipeline/src/Musicpipeline/Paths/Paths.cs
+	// Or ~/MusicPipeline/src/Musicpipeline/Paths/Paths.cs
+	// Or [$RootDir]/src/Musicpipeline/Paths/Paths.cs
+	// Or, most succinctly, [$ScriptDir]/Paths/Paths.cs
+
+	public string? UserDir {get; set;} // C:/Users/Test/
+	public string? RootDir {get; set;} // UserDir/MusicPipeline/
+	public string? ConfigDir {get; set;} // RootDir/Config
+	public string? ScriptDir {get; set;} // RootDir/src/MusicPipeline/
+
+
+	/// <summary>
+	///	An override of the ToString function which uses MyPath formatting.
+	/// </summary>
 	public override string ToString()
 	{
 		return TakeFullPathWithMyPathSyntaxAndTurnItIntoAStringUsingTheGivenPathObjectForDirectoryReferences(this);
 	}
 
-	public string GetStringPath()
-	{
-		// Handle path somehow
-		string res = TakeFullPathWithMyPathSyntaxAndTurnItIntoAStringUsingTheGivenPathObjectForDirectoryReferences(this);
-		return res;
-	}
 
-	internal string TakeFullPathWithMyPathSyntaxAndTurnItIntoAStringUsingTheGivenPathObjectForDirectoryReferences(MyPath path)
+	/// <summary>
+	/// Internal static method to convert a custom MyPath formatted path and turn it into a normal path.
+	/// </summary>
+	/// <remarks>
+	/// <para>
+	/// 	Uses regex to find each [$VarName] and uses reflection to convert that into the value of that variable.
+	/// 	Takes all references from path parameter.
+	/// </para>
+	/// </remarks>
+	/// <param name="path"> The MyPath object to be used for replacement variables. </param>
+	/// <returns>A string representing the full path expanded using MyPath formatting.</returns>
+	internal static string TakeFullPathWithMyPathSyntaxAndTurnItIntoAStringUsingTheGivenPathObjectForDirectoryReferences(MyPath path)
 	{
 		// I don't even know how the path syntax works yet so um
 		// Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
@@ -51,15 +89,44 @@ public class MyPath
 		
 		
 		Return:
-			return path.FormattedPath.Replace("~", UserDir);
+			return path.FormattedPath.Replace("~", path.UserDir);
 
 		// Perfect
-		// TODO: this
-
 
 	}
 
+	/// <summary>
+	///	Formats a normal path into a MyPath formatted path, using the MyPath's properties.
+	/// </summary>
+	/// <remarks>
+	/// <para>
+	/// 	Uses Reflection to get the values and names of this MyPath's properties, then replaces any instance of a value in <paramref name="rawPath"/> with the properties name.
+	/// </para>
+	/// <param name="rawPath"/>
+	///	The normal path, as a string, to format.
+	/// </param>
+	/// <returns>String representing the FormattedPath</returns>
+	public string Format(string rawPath)
+	{
+		string res = rawPath;
+		// Iterate through properties in MyPath
+		// Replace any instances of that property with the [$] or ~ syntax
+		// Need to ignore the "reserved" properties path, p and FormattedPath
+		foreach (PropertyInfo prop in typeof(MyPath).GetProperties()) {
+			if (prop.Name == "path" || prop.Name == "p" || prop.Name == "FormattedPath")
+				continue;
+			res = rawPath.Replace((string)prop.GetValue(this), prop.Name != "UserDir" ? $"[${prop.Name}]" : "~");
+		}
+		return res;
+	}
+
 	[SetsRequiredMembers]
+	/// <summary>
+	/// Instantiates new MyPath object.
+	/// </summary>
+	/// <param name="formattedPath">
+	/// The formatted path to use for this new MyPath. Can be a normal path.
+	/// </param>
 	public MyPath(string formattedPath)
 	{
 		FormattedPath = formattedPath;
