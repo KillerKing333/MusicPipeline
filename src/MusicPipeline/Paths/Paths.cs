@@ -127,9 +127,9 @@ public class MyPath
 	/// <param name="formattedPath">
 	/// The formatted path to use for this new MyPath. Can be a normal path.
 	/// </param>
-	public MyPath(string formattedPath)
+	public MyPath(string formattedPath, string? rawPath = null)
 	{
-		FormattedPath = formattedPath;
+		FormattedPath = rawPath != null ? rawPath : formattedPath;
 		// Returns C:\Users\(Username) on my machine
 		UserDir = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile).Replace(@"\", "/");
 		ScriptDir = Directory.GetCurrentDirectory().Replace(@"\", "/");
