@@ -127,13 +127,18 @@ public class MyPath
 	/// <param name="formattedPath">
 	/// The formatted path to use for this new MyPath. Can be a normal path.
 	/// </param>
+	/// <param name="rawPath">
+	/// Optional other argument, if new MyPath("", "C:/Users/Test/") is used it will format automatically. Useful for mass conversion.
+	/// </param>
 	public MyPath(string formattedPath, string? rawPath = null)
 	{
-		FormattedPath = rawPath != null ? rawPath : formattedPath;
 		// Returns C:\Users\(Username) on my machine
 		UserDir = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile).Replace(@"\", "/");
 		ScriptDir = Directory.GetCurrentDirectory().Replace(@"\", "/");
 		RootDir = Directory.GetParent(ScriptDir)?.Parent?.FullName.Replace(@"\", "/");
 		ConfigDir = $"{RootDir}/Sandbox/Config";
+
+		// Must be last V
+		FormattedPath = rawPath != null ? this.Format(rawPath) : formattedPath;
 	}
 }
