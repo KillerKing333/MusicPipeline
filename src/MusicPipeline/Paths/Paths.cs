@@ -1,3 +1,4 @@
+using System.Text.RegularExpressions;
 namespace MusicPipeline;
 
 public class MyPath
@@ -9,7 +10,7 @@ public class MyPath
 	// Root script and config can be done from the running directory
 	// And ConfigDir is being kept as a variable so that I can make it use sandbox right now and move it to main repo later.
 	public string path {get => GetStringPath();}
-	public required string FullPath {get; set;}
+	public required string FormattedPath {get; set;}
 	public string? ConfigDir {get; set;}
 	public string? RootDir {get; set;}
 	public string? UserDir {get; set;}
@@ -28,8 +29,18 @@ public class MyPath
 		// Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
 		// From https://stackoverflow.com/users/24472/larry
 
+		// Perfect
 		// TODO: this
 
 		return "Shan't";
+	}
+
+	public MyPath(string formattedPath)
+	{
+		// Returns C:\Users\(Username) on my machine
+		UserDir = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+		ScriptDir = Directory.GetCurrentDirectory();
+		RootDir = Directory.GetParent(ScriptDir)?.Parent?.FullName;
+		ConfigDir = $"{RootDir}/";
 	}
 }

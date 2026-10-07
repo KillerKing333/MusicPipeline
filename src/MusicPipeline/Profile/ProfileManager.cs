@@ -152,27 +152,27 @@ public class ProfileManager
 		// Oh if the file doesn't exist
 		// Oops
 		try {
-			//Console.WriteLine("Trying to read all bytes");
+			Console.WriteLine("Trying to read all bytes");
 			File.ReadAllBytes(profileFile);
-			//Console.WriteLine("Read all bytes");
+			Console.WriteLine("Read all bytes");
 			//await logger.Out($"Read profile file {profileFile} successfully!", DefaultColours.Success, true);
 		}
 		catch (FileNotFoundException) {
-			//Console.WriteLine("Caught a FileNotFoundException");
+			Console.WriteLine("Caught a FileNotFoundException");
 			//await logger.Out("The profile file doesn't exist, creating a new DefaultProfile", DefaultColours.Error, true);
 			await SaveProfileAsync(DefaultProfiles.DefaultProfile);
 		}
 		catch {
-			//Console.WriteLine("Caught something else");
+			Console.WriteLine("Caught something else");
 			//await logger.Out("Json read failed", DefaultColours.Error, true);
 			//await logger.Out(e.Message, DefaultColours.Debug);
 			return DefaultProfiles.ErrorProfile;
 		}
-		//Console.WriteLine("Getting jsonString");
+		Console.WriteLine("Getting jsonString");
 		string jsonString = File.ReadAllText(profileFile);
-		//Console.WriteLine($"jsonString = {jsonString}");
+		Console.WriteLine($"jsonString = {jsonString}");
 		//await logger.Out(jsonString, DefaultColours.Debug);
-		//Console.WriteLine("Deserializing jsonString");
+		Console.WriteLine("Deserializing jsonString");
 		ProfileFile? file = JsonSerializer.Deserialize<ProfileFile>(jsonString);
 		Console.WriteLine($"file = {file?.toString()}");
 #pragma warning disable CS8602 // If the file were empty that would've already been caught
