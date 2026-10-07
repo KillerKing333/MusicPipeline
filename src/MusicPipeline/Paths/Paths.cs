@@ -64,9 +64,9 @@ public class MyPath
 	{
 		FormattedPath = formattedPath;
 		// Returns C:\Users\(Username) on my machine
-		UserDir = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+		UserDir = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile).Replace(@"\", "/");
 		ScriptDir = Directory.GetCurrentDirectory();
 		RootDir = Directory.GetParent(ScriptDir)?.Parent?.FullName;
-		ConfigDir = $"{RootDir}/";
+		ConfigDir = $"{RootDir}/Sandbox/Config";
 	}
 }
