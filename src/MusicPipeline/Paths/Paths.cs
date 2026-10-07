@@ -108,7 +108,7 @@ public class MyPath
 	/// <returns>String representing the FormattedPath</returns>
 	public string Format(string rawPath)
 	{
-		string res = rawPath;
+		string res = rawPath.Replace(@"\", "/");
 		// Iterate through properties in MyPath
 		// Replace any instances of that property with the [$] or ~ syntax
 		// Need to ignore the "reserved" properties path, p and FormattedPath
