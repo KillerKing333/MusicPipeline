@@ -34,9 +34,9 @@ Console.WriteLine("Starting Orchestrator");*/
 
 string test = "RootDir";
 
-MyPath musicTestPath = new("[$UserDir]/Music/YT_Music_Backup");
-MyPath dynamicTestPath = new($"[${test}]/Config");
-MyPath tildaTestPath = new("~/Music/YT_Music_Backup");
+MyPath musicTestPath = new("[$UserDir]/Music/YT_Music_Backup/");
+MyPath dynamicTestPath = new($"[${test}]/Config/");
+MyPath tildaTestPath = new("~/Music/YT_Music_Backup/");
 MyPath configTestPath = new("[$ConfigDir]/test.txt");
 MyPath scriptTestPath = new("[$ScriptDir]/Paths/Paths.cs");
 
