@@ -29,6 +29,8 @@ public class MyPath
 		// Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
 		// From https://stackoverflow.com/users/24472/larry
 
+		// Find every ~ and replace with UserDir
+		// Find every thing between [$ and ] and replace the whole thing with that property in this class. same logic as the parser
 		// Perfect
 		// TODO: this
 
