@@ -25,18 +25,18 @@ public class Orchestrator
 	public async Task Start()
 	{	
 		//Profile oldActiveProfile = DefaultProfiles.DefaultProfile;
-		Console.WriteLine($"Loading profile");
+		//Console.WriteLine($"Loading profile");
 		// Aha. ProfileManager is where the stack overflow starts
 		/* First use of Profiles*/ Profile oldActiveProfile = await ProfileManager.LoadActiveProfileAsync();
-		Console.WriteLine(JsonSerializer.Serialize(oldActiveProfile, new JsonSerializerOptions { WriteIndented = true }));
+		//Console.WriteLine(JsonSerializer.Serialize(oldActiveProfile, new JsonSerializerOptions { WriteIndented = true }));
 		string logFile = oldActiveProfile.DiagLogFile;
-		Console.WriteLine($"logFile = {logFile}");
+		//Console.WriteLine($"logFile = {logFile}");
 		LogEngine logger = new LogEngine(oldActiveProfile.DiagLogFile);
-		Console.WriteLine($"logger = {logger}, logger.logFile = {logger.logFile}, logger.user = {logger.user??"No user set"}");
-		Console.WriteLine("Trying to log");
+		//Console.WriteLine($"logger = {logger}, logger.logFile = {logger.logFile}, logger.user = {logger.user??"No user set"}");
+		//Console.WriteLine("Trying to log");
 		await logger.WipeAsync("Orchestrator");
 		await logger.Out("Why won't you just work!!!", "Orchestrator", DefaultColours.Error, true);
-		Console.WriteLine("Did that work??");
+		//Console.WriteLine("Did that work??");
 		oldActiveProfile.LogEngine = logger;
 		oldActiveProfile.Name = "Current Working Profile";
 		await ProfileManager.SaveProfileAsync(oldActiveProfile);

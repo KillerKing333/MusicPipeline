@@ -29,9 +29,9 @@ using (var fs = File.Open(@"C:/Users/23fpybus_cheneyschoo/SublimeContained/Music
     Console.WriteLine(fs.CanWrite);
 }
 Console.WriteLine("Starting Orchestrator");*/
-//await orc.Start();
+await orc.Start();
 
-
+/*
 string test = "RootDir";
 
 MyPath musicTestPath = new("[$UserDir]/Music/YT_Music_Backup/");
@@ -43,7 +43,7 @@ MyPath scriptTestPath = new("[$ScriptDir]/Paths/Paths.cs");
 Console.WriteLine($"musicTestPath = {musicTestPath}, dynamicTestPath = {dynamicTestPath}, tildaTestPath = {tildaTestPath}, configTestPath = {configTestPath}, scriptTestPath = {scriptTestPath}");
 Console.WriteLine($"musicTestPath = {Directory.Exists(musicTestPath.ToString())}, dynamicTestPath = {Directory.Exists(dynamicTestPath.ToString())}, tildaTestPath = {Directory.Exists(tildaTestPath.ToString())}, configTestPath = {File.Exists(configTestPath.ToString())}, scriptTestPath = {File.Exists(scriptTestPath.ToString())}");
 Console.WriteLine(scriptTestPath.Format(scriptTestPath.p));
-
+*/
 
 /*var fields = typeof(DefaultProfiles).GetFields();
 foreach (System.Reflection.FieldInfo field in fields) {

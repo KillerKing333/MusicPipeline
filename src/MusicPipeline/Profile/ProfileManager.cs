@@ -1,4 +1,5 @@
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Collections.Generic;
 using MusicPipeline.Tools.SafetyCheck;
 using MusicPipeline.Tools.LogEngine;
@@ -80,10 +81,12 @@ public class ProfileFile
 		}
 		return NullProfile;
 	}
+	[JsonIgnore]
 	public Profile ActiveProfile {get => field = GetActiveProfile(); set;}
-	public ProfileFile(List<Profile>? profiles = null, string activeProfile = "Default")
+
+	public ProfileFile(List<Profile>? profiles = null, string? activeProfileName = null)
 	{
-		ActiveProfileName = activeProfile;
+		ActiveProfileName = activeProfileName ?? ((profiles) ?? [DefaultProfiles.DefaultProfile])[0].Name;
 		if (profiles == null) {
 			//you can use this directly. DefaultProfils.DefaultProfile. Skip having a readonly static field for it
 			// a couple lines up i used NullProfile directly, i'll try that here
@@ -152,29 +155,36 @@ public class ProfileManager
 		// Oh if the file doesn't exist
 		// Oops
 		try {
-			Console.WriteLine("Trying to read all bytes");
+			//Console.WriteLine("Trying to read all bytes");
 			File.ReadAllBytes(profileFile);
-			Console.WriteLine("Read all bytes");
+			//Console.WriteLine("Read all bytes");
 			//await logger.Out($"Read profile file {profileFile} successfully!", DefaultColours.Success, true);
 		}
 		catch (FileNotFoundException) {
-			Console.WriteLine("Caught a FileNotFoundException");
+			//Console.WriteLine("Caught a FileNotFoundException");
 			//await logger.Out("The profile file doesn't exist, creating a new DefaultProfile", DefaultColours.Error, true);
 			await SaveProfileAsync(DefaultProfiles.DefaultProfile);
 		}
 		catch {
-			Console.WriteLine("Caught something else");
+			//Console.WriteLine("Caught something else");
 			//await logger.Out("Json read failed", DefaultColours.Error, true);
 			//await logger.Out(e.Message, DefaultColours.Debug);
 			return DefaultProfiles.ErrorProfile;
 		}
-		Console.WriteLine("Getting jsonString");
+		//Console.WriteLine("Getting jsonString");
 		string jsonString = File.ReadAllText(profileFile);
-		Console.WriteLine($"jsonString = {jsonString}");
+		//Console.WriteLine($"jsonString = {jsonString}");
 		//await logger.Out(jsonString, DefaultColours.Debug);
-		Console.WriteLine("Deserializing jsonString");
-		ProfileFile? file = JsonSerializer.Deserialize<ProfileFile>(jsonString);
-		Console.WriteLine($"file = {file?.toString()}");
+		//Console.WriteLine("Deserializing jsonString");
+		ProfileFile? file = new();
+		try {
+			file = JsonSerializer.Deserialize<ProfileFile>(jsonString);
+		} catch (System.Text.Json.JsonException) {
+			var Options = new JsonSerializerOptions { WriteIndented = true };
+			string JsonToWrite = JsonSerializer.Serialize(new ProfileFile([DefaultProfiles.DefaultProfile]), Options);
+			File.WriteAllText(profileFile, JsonToWrite);
+		}
+		//Console.WriteLine($"file = {file?.toString()}");
 #pragma warning disable CS8602 // If the file were empty that would've already been caught
 		if (!file.NoProfiles()) {
 			Profile activeProfile = file.GetActiveProfile();
@@ -202,7 +212,7 @@ public class ProfileManager
 	public static async Task SaveProfileAsync(Profile? profile = null, bool overrideParam = false/*, bool fullDebugOverride = false*/)
 	{
 		string profileFile = await GetProfileFilePathAsync();
-		Console.WriteLine("Saving a profile");
+		//Console.WriteLine("Saving a profile");
 		// TODO: fix
 		//next step of todo, name what is broken :)
 		// i think i fixed it already actually lol
@@ -214,15 +224,15 @@ public class ProfileManager
 		}*/
 
 		if (profile == null) {
-			Console.WriteLine("Profile is null");
+			//Console.WriteLine("Profile is null");
 			profile = DefaultProfiles.DefaultProfile;
 			logger = DefaultProfiles.DefaultProfile.LogEngine;
 		} else if (await SafetyCheck.CheckProfileToBeSaved(profile) & !overrideParam) {await (logger ?? new("Null")).Out("A new profile that matchs a default profile exactly is being added. Please check that this is intentional, and if so pass override", "ProfileManager", DefaultColours.Error, true); return;}
-		Console.WriteLine("Getting existing profile file");
+		//Console.WriteLine("Getting existing profile file");
 		ProfileFile Existing = await GetProfileFileAsync();
 		if (Existing.ActiveProfileName == "ERROR")
 		{
-			Console.WriteLine("Error Profile");
+			//Console.WriteLine("Error Profile");
 			await (DefaultProfiles.DefaultProfile.LogEngine ?? new ("Null")).Out($"Failed to get ProfileFile from {profileFile}, creating new file", DefaultColours.Error, true);
 		}
 		if (Existing.ProfileAlreadyExists(profile) || Existing.ActiveProfileName=="ERROR") {
@@ -232,7 +242,7 @@ public class ProfileManager
 		}
 		ProfileFile ProfileFile = new ProfileFile(Existing.Profiles, profile.Name);
 
-		Console.WriteLine("Writing Profile file");
+		//Console.WriteLine("Writing Profile file");
 		var Options = new JsonSerializerOptions { WriteIndented = true };
 		string JsonToWrite = JsonSerializer.Serialize(ProfileFile, Options);
 		File.WriteAllText(profileFile, JsonToWrite);
@@ -256,12 +266,19 @@ public class ProfileManager
 
 	private static async Task<ProfileFile> GetProfileFileAsync()
 	{
-		Console.WriteLine("Getting Profile File");
+		//Console.WriteLine("Getting Profile File");
 		string profileFile = await GetProfileFilePathAsync();
 		if(Directory.Exists(Directory.GetParent(profileFile)?.ToString())) {
 			if (File.Exists(profileFile)) {
+				//Console.WriteLine("File exists");
+				//Console.WriteLine("Getting Json string");
 				string jsonString = File.ReadAllText(profileFile);
-				ProfileFile Result =  JsonSerializer.Deserialize<ProfileFile>(jsonString) ?? new([DefaultProfiles.ErrorProfile], "ERROR");
+				ProfileFile Result = new([DefaultProfiles.ErrorProfile], "ERROR");
+				try {
+					Result = JsonSerializer.Deserialize<ProfileFile>(jsonString) ?? Result;
+				} catch {
+					return Result;
+				}
 				return Result;
 			} else {
 				await (DefaultProfiles.DefaultProfile.LogEngine ?? new ("Null")).Out($"ProfileFile {profileFile} doesn't exist.", "ProfileManager", DefaultColours.Error, true);
