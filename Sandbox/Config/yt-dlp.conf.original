@@ -114,6 +114,7 @@
 --socket-timeout 30 
 # If the socket is quiet for more than 30 seconds, give up
 
+--ffmpeg-location "{FFmpegExe}"
 
 --no-check-certificate
 # Could make you vulnerable to man in the middle attacks, but youtube is a secure website
