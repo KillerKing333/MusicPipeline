@@ -47,12 +47,12 @@ class Cookies
 		if (!File.Exists(cookieFile)){
 			await l.Out("Cookie File could not be found. Please export one.", (int)DefaultColours.Error, true);
 			res.Append(CookieDefaults.FileError(false, start));
-			goto Return;
+			return res;
 		}
 		if (!File.Exists(YTDLPPath)){
 			await l.Out("YTDLP Executable could not be found.", (int)DefaultColours.Error, true);
 			res.Append(CookieDefaults.FileError(true, start));
-			goto Return;
+			return res;
 		}
 
 		await l.Out("Updating YTDLP");
@@ -73,7 +73,7 @@ class Cookies
 					DateTime endError = DateTime.UtcNow;
 					TimeSpan elapsedError = endError - start;
 					res.Append(new Result("Cookie Verification", false, elapsedError, "YTDLPProcess is Null"));
-					goto Return;
+					return res;
 				}
 				// The cookie check uses --quiet so doesn't have any output
 				// But this is a useful example for other programs
@@ -90,7 +90,6 @@ class Cookies
 				DateTime end = DateTime.UtcNow;
 				TimeSpan elapsed = end - start;
 				res.Append(new Result("Cookie Verification", true, elapsed));
-				goto Return;
 			}
 		}
 		catch (System.ComponentModel.Win32Exception ex)
@@ -99,11 +98,6 @@ class Cookies
 			TimeSpan elapsed = end - start;
 			res.Append(new Result("Cookie Verification", false, elapsed, ex.Message));
 		}
-
-
-		Return:
-			// Return the list of results
-			return res;
-
+		return res;
 	}
 }
