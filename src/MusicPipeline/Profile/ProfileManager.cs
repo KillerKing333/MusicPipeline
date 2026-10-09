@@ -141,22 +141,20 @@ public class ProfileManager
 	// Hmmmmmmmm
 	// TODO: Make an UpdateProfileValue function that takes a property of the profile and thread-safely updates the file
 	private static LogEngine? logger = null;
-	private static async Task<string> GetProfileFilePathAsync()
+	private static async Task<MyPath> GetProfileFilePathAsync()
 	{
-		string rootDir = Directory.GetCurrentDirectory(); // repo/src/MusicPipeline, aka where the .csproj is
-		string? upperRoot = Directory.GetParent(rootDir)?.Parent?.FullName;
-		return $"{upperRoot}/Config/csProfiles.json";
+		return new("[$UpperRoot]/Config/csProfiles.json");
 	}
 	
 	public async static Task<Profile> LoadActiveProfileAsync()
 	{
-		string profileFile = await GetProfileFilePathAsync();
+		MyPath profileFilePath = await GetProfileFilePathAsync();
 		// Skipping this. Not sure why it's here to begin with
 		// Oh if the file doesn't exist
 		// Oops
 		try {
 			//Console.WriteLine("Trying to read all bytes");
-			File.ReadAllBytes(profileFile);
+			File.ReadAllBytes(profileFilePath.p);
 			//Console.WriteLine("Read all bytes");
 			//await logger.Out($"Read profile file {profileFile} successfully!", DefaultColours.Success, true);
 		}
@@ -172,7 +170,7 @@ public class ProfileManager
 			return DefaultProfiles.ErrorProfile;
 		}
 		//Console.WriteLine("Getting jsonString");
-		string jsonString = File.ReadAllText(profileFile);
+		string jsonString = File.ReadAllText(profileFilePath.p);
 		//Console.WriteLine($"jsonString = {jsonString}");
 		//await logger.Out(jsonString, DefaultColours.Debug);
 		//Console.WriteLine("Deserializing jsonString");
@@ -182,7 +180,7 @@ public class ProfileManager
 		} catch (System.Text.Json.JsonException) {
 			var Options = new JsonSerializerOptions { WriteIndented = true };
 			string JsonToWrite = JsonSerializer.Serialize(new ProfileFile([DefaultProfiles.DefaultProfile]), Options);
-			File.WriteAllText(profileFile, JsonToWrite);
+			File.WriteAllText(profileFilePath.p, JsonToWrite);
 		}
 		//Console.WriteLine($"file = {file?.toString()}");
 #pragma warning disable CS8602 // If the file were empty that would've already been caught
@@ -190,7 +188,7 @@ public class ProfileManager
 			Profile activeProfile = file.GetActiveProfile();
 			return activeProfile;
 		} else {
-			await DefaultProfiles.DefaultProfile.LogEngine.Out($"No profiles were found in the file {profileFile}. A default profile has been initialised.", "ProfileManager", (int)DefaultColours.Error, true);
+			await DefaultProfiles.DefaultProfile.LogEngine.Out($"No profiles were found in the file {profileFilePath}. A default profile has been initialised.", "ProfileManager", (int)DefaultColours.Error, true);
 			await SaveProfileAsync(DefaultProfiles.DefaultProfile);
 			return DefaultProfiles.DefaultProfile;
 		}
@@ -211,7 +209,7 @@ public class ProfileManager
 
 	public static async Task SaveProfileAsync(Profile? profile = null, bool overrideParam = false/*, bool fullDebugOverride = false*/)
 	{
-		string profileFile = await GetProfileFilePathAsync();
+		MyPath profileFilePath = await GetProfileFilePathAsync();
 		//Console.WriteLine("Saving a profile");
 		// TODO: fix
 		//next step of todo, name what is broken :)
@@ -233,7 +231,7 @@ public class ProfileManager
 		if (Existing.ActiveProfileName == "ERROR")
 		{
 			//Console.WriteLine("Error Profile");
-			await (DefaultProfiles.DefaultProfile.LogEngine ?? new ("Null")).Out($"Failed to get ProfileFile from {profileFile}, creating new file", (int)DefaultColours.Error, true);
+			await (DefaultProfiles.DefaultProfile.LogEngine ?? new ("Null")).Out($"Failed to get ProfileFile from {profileFilePath}, creating new file", (int)DefaultColours.Error, true);
 		}
 		if (Existing.ProfileAlreadyExists(profile) || Existing.ActiveProfileName=="ERROR") {
 			Existing.Profiles = new List<Profile>() {profile};
@@ -245,20 +243,20 @@ public class ProfileManager
 		//Console.WriteLine("Writing Profile file");
 		var Options = new JsonSerializerOptions { WriteIndented = true };
 		string JsonToWrite = JsonSerializer.Serialize(ProfileFile, Options);
-		File.WriteAllText(profileFile, JsonToWrite);
+		File.WriteAllText(profileFilePath.p, JsonToWrite);
 		if (!(profile.LogEngine is null)) {
 			// Should probably give it a new logengine?
 			LogEngine l = new(profile.DiagLogFile, "ProfileManager");
 			profile.LogEngine = l;
-			await l.Out($"Wrote new profile {profile.Name} to {profileFile} successfully.", (int)DefaultColours.Success, true);
+			await l.Out($"Wrote new profile {profile.Name} to {profileFilePath} successfully.", (int)DefaultColours.Success, true);
 		} else {
-			await (DefaultProfiles.DefaultProfile.LogEngine ?? new ("Null")).Out($"Wrote new profile {profile.Name} to {profileFile} successfully.", (int)DefaultColours.Success, true);
+			await (DefaultProfiles.DefaultProfile.LogEngine ?? new ("Null")).Out($"Wrote new profile {profile.Name} to {profileFilePath} successfully.", (int)DefaultColours.Success, true);
 		}
 	}
 
 	public static async Task SwitchProfileAsync()
 	{
-		string profileFile = await GetProfileFilePathAsync();
+		//MyPath profileFilePath = await GetProfileFilePathAsync();
 		// TODO
 		await (await GetProfileFileAsync()).ActiveProfile.LogEngine.Out("Oopsies, this function doesn't exist yet!", "ProfileManager", (int)DefaultColours.Warning, true);
 		throw new NotImplementedException();
@@ -267,12 +265,12 @@ public class ProfileManager
 	private static async Task<ProfileFile> GetProfileFileAsync()
 	{
 		//Console.WriteLine("Getting Profile File");
-		string profileFile = await GetProfileFilePathAsync();
-		if(Directory.Exists(Directory.GetParent(profileFile)?.ToString())) {
-			if (File.Exists(profileFile)) {
+		MyPath profileFilePath = await GetProfileFilePathAsync();
+		if(Directory.Exists(Directory.GetParent(profileFilePath.p)?.ToString())) {
+			if (File.Exists(profileFilePath.p)) {
 				//Console.WriteLine("File exists");
 				//Console.WriteLine("Getting Json string");
-				string jsonString = File.ReadAllText(profileFile);
+				string jsonString = File.ReadAllText(profileFilePath.p);
 				ProfileFile Result = new([DefaultProfiles.ErrorProfile], "ERROR");
 				try {
 					Result = JsonSerializer.Deserialize<ProfileFile>(jsonString) ?? Result;
@@ -281,14 +279,14 @@ public class ProfileManager
 				}
 				return Result;
 			} else {
-				await (DefaultProfiles.DefaultProfile.LogEngine ?? new ("Null")).Out($"ProfileFile {profileFile} doesn't exist.", "ProfileManager", (int)DefaultColours.Error, true);
+				await (DefaultProfiles.DefaultProfile.LogEngine ?? new ("Null")).Out($"ProfileFile {profileFilePath} doesn't exist.", "ProfileManager", (int)DefaultColours.Error, true);
 				return new ProfileFile(new List<Profile>(){DefaultProfiles.ErrorProfile}, "ERROR");
 				//can't do anything after it has already returned, line below is unreachable.
 				// Yes I thought i swapped them a while ago
 			}
 		} else {
-			await (logger ?? new("Null")).Out($"Parent directory to profile file path {profileFile} doesn't exist. Creating", "ProfileManager");
-			Directory.CreateDirectory(Directory.GetParent(profileFile).Name);
+			await (logger ?? new("Null")).Out($"Parent directory to profile file path {profileFilePath} doesn't exist. Creating", "ProfileManager");
+			Directory.CreateDirectory(Directory.GetParent(profileFilePath.p).Name);
 			return await GetProfileFileAsync();
 		}
 	}
