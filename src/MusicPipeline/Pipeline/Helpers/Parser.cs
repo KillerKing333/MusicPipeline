@@ -60,10 +60,10 @@ public class Parser
 		}
 
 		string parentDir = Path.GetDirectoryName(YTDLPOriginalConfigFilePath.p);
-		string tempFilePath = $@"{parentDir}/yt-dlp{Guid.NewGuid()}.conf";
-		await File.WriteAllTextAsync(tempFilePath, String.Join("\n", parsedLines));
+		MyPath tempFilePath = new($"[$ConfigDir]/yt-dlp{Guid.NewGuid()}.conf");
+		await File.WriteAllTextAsync(tempFilePath.p, String.Join("\n", parsedLines));
 		Profile activeProfile = await ProfileManager.LoadActiveProfileAsync();
-		activeProfile.YTDLPConfigFile = new(tempFilePath);
+		activeProfile.YTDLPConfigFile = tempFilePath;
 		await ProfileManager.SaveProfileAsync(activeProfile);
 		// Make a temp file
 		// Change the profileFile to include an override
