@@ -1,13 +1,16 @@
-﻿// See https://aka.ms/new-console-template for more information
+// See https://aka.ms/new-console-template for more information
 using System;
 using MusicPipeline;
 using MusicPipeline.Orchestrator;
+using MusicPipeline.Paths;
 // using MusicPipeline.Profiles;
 // using System.Text.Json;
 // using MusicPipeline.Tools.LogEngine;
 // using System.Diagnostics;
 
 var orc = new Orchestrator();
+
+
 //Console.WriteLine(orc);
 /*string machineName = Environment.MachineName;
 //Console.WriteLine(machineName);
@@ -29,6 +32,12 @@ using (var fs = File.Open(@"C:/Users/23fpybus_cheneyschoo/SublimeContained/Music
     Console.WriteLine(fs.CanWrite);
 }
 Console.WriteLine("Starting Orchestrator");*/
+
+PathsClass pc = new PathsClass();
+Console.WriteLine(pc.ToString());
+PathsClass pc2 = new PathsClass("C:/Users/Test/");
+Console.WriteLine(pc2);
+
 await orc.Start();
 
 /*
