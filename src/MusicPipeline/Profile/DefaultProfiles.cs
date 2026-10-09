@@ -9,19 +9,19 @@ public static class DefaultProfiles
 	public static readonly Profile DefaultProfile = new Profile
 	{
 		Name = "Default",
-		BackupDir = new(@"C:/MusicTools/MusicPipeline/Sandbox/Sandbox_Backup"),
-		CompressedDirs = [new(@"C:/MusicTools/MusicPipeline/Sandbox/Sandbox_Mobile")],
-		BrokenSongsFile = new(@"C:/MusicTools/MusicPipeline/Sandbox/Config/broken_songs.json"),
-		DiagLogFile = new(@"C:/MusicTools/MusicPipeline/Sandbox/Config/csLogFile.log"),
-		CacheFile = new(@"C:/MusicTools/MusicPipeline/Sandbox/Config/dashboard_cache.json"),
-		TimingFile = new(@"C:/MusicTools/MusicPipeline/Sandbox/Config/timing_history.json"),
-		CookieFile = new(@"C:/MusicTools/MusicPipeline/Sandbox/Config/cookies.txt"),
-		HistoryFile = new(@"C:/MusicTools/MusicPipeline/Sandbox/Config/downloaded_history.txt"),
-		ProfileFile = new(@"C:/MusicTools/MusicPipeline/Sandbox/Config/csProfiles.json"),
-		YTDLPExe = new(@"C:/MusicTools/yt-dlp.exe"),
-		FFmpegExe = new(@"C:/MusicTools/ffmpeg.exe"),
+		BackupDir = new(@"[$RootDir]/Sandbox/Sandbox_Backup"),
+		CompressedDirs = [new(@"[$RootDir]/Sandbox/Sandbox_Mobile")],
+		BrokenSongsFile = new(@"[$ConfigDir]/broken_songs.json"),
+		DiagLogFile = new(@"[$ConfigDir]/csLogFile.log"),
+		CacheFile = new(@"[$ConfigDir]/dashboard_cache.json"),
+		TimingFile = new(@"[$ConfigDir]/timing_history.json"),
+		CookieFile = new(@"[$ConfigDir]/cookies.txt"),
+		HistoryFile = new(@"[$ConfigDir]/downloaded_history.txt"),
+		ProfileFile = new(@"[$ConfigDir]/csProfiles.json"),
+		YTDLPExe = new(@"[$UpperRootDir]/yt-dlp.exe"),
+		FFmpegExe = new(@"[$UpperRootDir]/ffmpeg.exe"),
 		FirefoxExe = new(@"C:/Program Files/Mozilla Firefox/firefox.exe"),
-		YTDLPConfigFileOriginal = new(@"C:/MusicTools/MusicPipeline/Sandbox/Config/yt-dlp.conf.original"),
+		YTDLPConfigFileOriginal = new(@"[$ConfigDir]/yt-dlp.conf.original"),
 		YTDLPConfigFile = new("Null"),
 		CheckURL = "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
 		CustomYTDLPArguments = "--ppa\" \"EmbedThumbnail+ffmpeg_o:-vf crop=ih:ih",
@@ -55,26 +55,26 @@ public static class DefaultProfiles
 		],
 		LastCleanRunEpoch = 1785532108,
 		LastNormalRunEpoch = 1785673837,
-		LogEngine = new(@"C:/MusicTools/MusicPipeline/Sandbox/Config/csLogFile.log")
+		LogEngine = new(@"[$ConfigDir]/csLogFile.log")
 	};
 
 	//This is the actual one, not to be used until pushing to production
 	public static readonly Profile WorkingDefaultProfile = new Profile
 	{
 		Name = "Working Default",
-		BackupDir = new(@"C:/Users/filip/Music/YT_Music_Backup"),
-		CompressedDirs = [new(@"C:/Users/filip/Music/YT_Music_Mobile")],
-		BrokenSongsFile = new(@"C:/MusicTools/MusicPipeline/Config/broken_songs.json"),
-		DiagLogFile = new(@"C:/MusicTools/MusicPipeline/Config/web_console_stream.log"),
-		CacheFile = new(@"C:/MusicTools/MusicPipeline/Config/dashboard_cache.json"),
-		TimingFile = new(@"C:/MusicTools/MusicPipeline/Config/timing_history.json"),
-		CookieFile = new(@"C:/MusicTools/MusicPipeline/Config/cookies.txt"),
-		HistoryFile = new(@"C:/MusicTools/MusicPipeline/Config/downloaded_history.txt"),
+		BackupDir = new(@"~/Music/YT_Music_Backup"),
+		CompressedDirs = [new(@"~/Music/YT_Music_Mobile")],
+		BrokenSongsFile = new(@"[$ConfigDir]/broken_songs.json"),
+		DiagLogFile = new(@"[$ConfigDir]/web_console_stream.log"),
+		CacheFile = new(@"[$ConfigDir]/dashboard_cache.json"),
+		TimingFile = new(@"[$ConfigDir]/timing_history.json"),
+		CookieFile = new(@"[$ConfigDir]/cookies.txt"),
+		HistoryFile = new(@"[$ConfigDir]/downloaded_history.txt"),
 		ProfileFile = new(@"TODO"),
-		YTDLPExe = new(@"C:/MusicTools/yt-dlp.exe"),
-		FFmpegExe = new(@"C:/MusicTools/ffmpeg.exe"),
+		YTDLPExe = new(@"[$UpperRootDir]/yt-dlp.exe"),
+		FFmpegExe = new(@"[$UpperRootDir]/ffmpeg.exe"),
 		FirefoxExe = new(@"C:/Program Files/Mozilla Firefox/firefox.exe"),
-		YTDLPConfigFileOriginal = new(@"C:/MusicTools/MusicPipeline/Config/yt-dlp.conf"),
+		YTDLPConfigFileOriginal = new(@"[$ConfigDir]/yt-dlp.conf"),
 		YTDLPConfigFile = new("Null"),
 		CheckURL = @"https://www.youtube.com/watch?v=dQw4w9WgXcQ",
 		CustomYTDLPArguments = "--ppa\" \"EmbedThumbnail+ffmpeg_o:-vf crop=ih:ih",
@@ -109,7 +109,7 @@ public static class DefaultProfiles
 		],
 		LastCleanRunEpoch = 1785532108,
 		LastNormalRunEpoch = 1785673837,
-		LogEngine = new(@"C:/MusicTools/MusicPipeline/Config/web_console_stream.log")
+		LogEngine = new(@"[$ConfigDir]/web_console_stream.log")
 	};
 
 	// Swap default with null
