@@ -1,5 +1,6 @@
 using System.Text.RegularExpressions;
 using System.Diagnostics.CodeAnalysis;
+using System.Text.Json.Serialization;
 using System.Reflection;
 namespace MusicPipeline;
 
@@ -27,6 +28,7 @@ public class MyPath
 
 	// TODO: Warn user when a string doesn't end a 
 	// [$Var]
+	// E.g. just [$
 
 	// Hehe idk what I'm doing
 	// ~ is UserDir
@@ -34,7 +36,9 @@ public class MyPath
 	// I guess I make regexes for those at some point
 	// Root script and config can be done from the running directory
 	// And ConfigDir is being kept as a variable so that I can make it use sandbox right now and move it to main repo later.
+	[JsonIgnore]
 	public string path {get => ToString(); set => FormattedPath = Format(value);}
+	[JsonIgnore]
 	public string p {get => ToString(); set => FormattedPath = Format(value);}
 	public required string FormattedPath {get; set;}
 
@@ -45,9 +49,13 @@ public class MyPath
 	// Or [$RootDir]/src/Musicpipeline/Paths/Paths.cs
 	// Or, most succinctly, [$ScriptDir]/Paths/Paths.cs
 
+	[JsonIgnore]
 	public string? UserDir {get; set;} // C:/Users/Test/
+	[JsonIgnore]
 	public string? RootDir {get; set;} // UserDir/MusicPipeline/
+	[JsonIgnore]
 	public string? ConfigDir {get; set;} // RootDir/Config
+	[JsonIgnore]
 	public string? ScriptDir {get; set;} // RootDir/src/MusicPipeline/
 
 
@@ -121,10 +129,10 @@ public class MyPath
 	/// <param name="formattedPath">
 	/// The formatted path to use for this new MyPath. Can be a normal path.
 	/// </param>
-	/// <param name="rawPath">
-	/// Optional other argument, if new MyPath("", "C:/Users/Test/") is used it will format automatically. Useful for mass conversion.
+	/// <param name="isRaw">
+	/// Optional other argument, if new MyPath(C:/Users/Test/") is used it will format automatically. False must be manually specified for pre-formatted paths.
 	/// </param>
-	public MyPath(string formattedPath, string? rawPath = null)
+	public MyPath(string formattedPath, bool isRaw = true)
 	{
 		// Returns C:\Users\(Username) on my machine
 		UserDir = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile).Replace(@"\", "/");
@@ -133,6 +141,6 @@ public class MyPath
 		ConfigDir = $"{RootDir}/Sandbox/Config";
 
 		// Must be last V
-		FormattedPath = rawPath != null ? this.Format(rawPath) : formattedPath;
+		FormattedPath = isRaw ? this.Format(formattedPath) : formattedPath;
 	}
 }
