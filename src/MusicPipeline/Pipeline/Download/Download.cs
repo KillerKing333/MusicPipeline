@@ -89,8 +89,8 @@ class Downloader
 		await Parser.ParseYTDLPConfigFile(); // Parse the config file, adding variables into the {} text
 		activeProfile = await ProfileManager.LoadActiveProfileAsync(); // Get the new config file (If we move to the contained approach this will be reworked ofc)
 		YTDLPConfigFile = activeProfile.YTDLPConfigFile.p; // Set the new value
-		//Parallel.For(0, maxDownloadThreads, i => j = DownloadThread(i)); // Run the parallel for
-		//await j; // Await the task
+		Parallel.For(0, maxDownloadThreads, i => j = DownloadThread(i)); // Run the parallel for
+		await j; // Await the task
 		List<Result>? results = new List<Result>(); // An intermediary list
 		foreach (KeyValuePair<int, Result?> r in res)
 		{ // Go through each result from each thread
@@ -99,7 +99,6 @@ class Downloader
 			// TODO: MAKE THIS await CheckWarningsInThread(r.Key);
 		}
 		Profile currentActiveProfile = await ProfileManager.LoadActiveProfileAsync(); // A copy of the profile for changing 
-		await l.Out(currentActiveProfile.YTDLPConfigFile.p);
 		File.Delete(currentActiveProfile.YTDLPConfigFile.p); // Delete the temporary config file made with the new variables
 		currentActiveProfile.YTDLPConfigFile.FormattedPath = "Null"; // Set it back to the default "Null" (Maybe change this to set it to what default profile uses?)
 		await ProfileManager.SaveProfileAsync(currentActiveProfile); // Save changes
