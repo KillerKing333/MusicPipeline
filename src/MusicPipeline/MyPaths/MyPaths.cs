@@ -125,6 +125,12 @@ public class MyPath
 	}
 
 	[SetsRequiredMembers]
+	[JsonConstructor]
+	public MyPath(string formattedPath) : this(formattedPath, isRaw: false)
+	{
+	}
+
+	[SetsRequiredMembers]
 	/// <summary>
 	/// Instantiates new MyPath object.
 	/// </summary>
