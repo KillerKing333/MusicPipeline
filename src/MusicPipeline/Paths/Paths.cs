@@ -80,19 +80,13 @@ public class MyPath
 		// Find every ~ and replace with UserDir
 		// Find every thing between [$ and ] and replace the whole thing with that property in this class. same logic as the parser
 		Match match = Regex.Match(path.FormattedPath, @"\[\$(\w+)\]");
-		if (!match.Success) 
-			goto Return;
+		if (!match.Success)
+			return path.FormattedPath.Replace("~", path.UserDir);
 		string? replace = typeof(MyPath)?.GetProperty(match.Groups[1].Value)?.GetValue(path)?.ToString();
 		if (replace is null) 
 			Console.WriteLine("Oh dear");
 		return Regex.Replace(path.FormattedPath, @"\[\$(\w+)\]", replace ?? "Null");
-		
-		
-		Return:
-			return path.FormattedPath.Replace("~", path.UserDir);
-
 		// Perfect
-
 	}
 
 	/// <summary>

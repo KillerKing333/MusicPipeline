@@ -151,34 +151,20 @@ class Downloader
 		await l.Out("==============================================");
 	}
 
-	//good method name!
 	private async Task ClearOutErrorFiles(LogEngine l)
 	{
-		//writing comments is not a sin, but preferring expressive code over comments is encouraged.
-		if (!Directory.Exists(configDir)) { // Stuff if the config dir exists
+		if (!Directory.Exists(configDir)) {
 			return;	
 		}
 		IEnumerable<string> errorFiles = Directory.EnumerateFiles(configDir, "run_errors_playlist*.txt", SearchOption.AllDirectories); // Find error files. Not sure why I called it sub?
-		foreach (string file in errorFiles) { // For every one
+		foreach (string file in errorFiles) {
 			await l.Out($"File found {file}", DefaultColours.Debug); // Debugging
 																	 // Temporary debug to check that it's finding the right files
 																	 // It is
-			File.Delete(file); // BEGONE :)
+			File.Delete(file);
 		}
-
-		//oh! one more thing you can do with this method is invert the first if.
-		//if the config directory doesn't exist, we don't want to do anything.
-		//if (!Directory.Exists(configDir)) {return;}
-		//if that's your first line of the method, then everything else can come after it, one layer less deep in indentation.
-
-		//this is a nice small method with no issues around indentation, but it's an easy trap to fall into, code becoming super nested and thus indented.
-		//they call it "arrow code" because the triangular shape the code body starts to take on with lots of indentation.
-		//like the tip of an arrow.
-		//anyways I wanted to mention this technique so you'd be aware of one way to save an indent :)
 	}
 
-	//I wrote an enum for ya
-	//it's used in the below method
 	public enum ColoUUUrCode
 	{
 		Peach = 217,
@@ -197,28 +183,24 @@ class Downloader
 		DateTime threadStart = DateTime.UtcNow;
 		await log.Out($"Index = {index} Playlist = {playlists[index]}, customArgs = {customArguments}", DefaultColours.Debug);
 		int? colourCode = null;
-		// I know this isn't technically the same order as the original but the testing only has one playlist and I prefer the peach colour. Sue me.
 
-		//this +1 on the index confused me there for a minute! haha
-		//i'll do something extra silly with it for revenge!
-		//alternatively the cases could have started at 0 and counted up.
-		switch (index.ConvertZeroBasedIndexToOneBasedIndex()) {
-			case 1:
+		switch (index) {
+			case 0:
 				colourCode = (int)ColoUUUrCode.Peach;
 				break; 
-			case 2:
+			case 1:
 				colourCode = (int)ColoUUUrCode.Magenta;
 				break; 
-			case 3:
+			case 2:
 				colourCode = (int)ColoUUUrCode.Yellow;
 				break; 
-			case 4:
+			case 3:
 				colourCode = (int)ColoUUUrCode.Purple;
 				break; 
-			case 5:
+			case 4:
 				colourCode = (int)ColoUUUrCode.Forest;
 				break; 
-			case 6:
+			case 5:
 				colourCode = (int)ColoUUUrCode.Cyan;
 				break;
 		}
@@ -413,11 +395,4 @@ class Downloader
 		await l.Out("TODO: URGENT: MAKE GetErrorsInThread", DefaultColours.Error, true);
 		return new(true, "TODO");
 	} 
-}
-
-static class DownloaderExtension
-{
-	//I attack with an extension method!!
-	public static int ConvertZeroBasedIndexToOneBasedIndex(this int zeroBasedIndex) => zeroBasedIndex + 1;
-	// Touché
 }
