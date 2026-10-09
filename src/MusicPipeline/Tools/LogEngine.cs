@@ -30,13 +30,13 @@ public class LogEngine
 
 	public async Task Out(string message, int? style, bool colourFullString = false)
 	{
-		if (user is null) {await Engine("To use Out() without a user please set a user in the class", "System", DefaultColours.Error, true);}
+		if (user is null) {await Engine("To use Out() without a user please set a user in the class", "System", (int)DefaultColours.Error, true);}
 		else {await Engine(message, user, style, colourFullString);}
 	}
 
 	public async Task Out(string message, bool colourFullString = false)
 	{
-		if (user is null) {await Engine("To use Out() without a user please set a user in the class", "System", DefaultColours.Error, true);}
+		if (user is null) {await Engine("To use Out() without a user please set a user in the class", "System", (int)DefaultColours.Error, true);}
 		else {await Engine(message, user, null, colourFullString);}
 	}
 
@@ -54,7 +54,7 @@ public class LogEngine
 		switch (style) {
 			case 0:
 				style = 36;
-				await Engine("0 is black, do not use it", "System", DefaultColours.Error, true);
+				await Engine("0 is black, do not use it", "System", (int)DefaultColours.Error, true);
 				break;
 			case null:
 				// Should've been omitted
@@ -65,7 +65,7 @@ public class LogEngine
 				else {
 					// Wrong Username given
 					style = 36;
-					await Engine("Given username was invalid or not in the default colours", "System", DefaultColours.Warning, true);
+					await Engine("Given username was invalid or not in the default colours", "System", (int)DefaultColours.Warning, true);
 				}
 				break;
 		}
@@ -83,7 +83,7 @@ public class LogEngine
 		// I have considered adding an option to make the whole message that colour
 		string processedMessage = $"{colPrefix} {message} {reset}";
 		string dateYear = current.Date.ToString("dd/MM/yyyy");
-		string processedMessageDate = $"\u000A{esc}[38;5;{DefaultColours.Date.ToString()}m{dateYear} {reset} {processedMessage}";
+		string processedMessageDate = $"\u000A{esc}[38;5;{(int)DefaultColours.Date}m{dateYear} {reset} {processedMessage}";
 
 		
 		// TODO: Make sure all directories above the logfile exist before trying to append to the file.
@@ -100,7 +100,7 @@ public class LogEngine
 					Console.WriteLine($"data.Key = {data.Key}, data.Value = {data.Value}");
 				}*/
 				//Console.WriteLine($"{esc}[38;5;203m{timeStamp} [System] TODO: Fix this a better way {reset}");
-				await Engine("File lock", "System", DefaultColours.Error, true);
+				await Engine("File lock", "System", (int)DefaultColours.Error, true);
 				Thread.Sleep(50);
 				continue;
 			}

@@ -28,31 +28,31 @@ class Cookies
 		Profiles.Profile activeProfile = await ProfileManager.LoadActiveProfileAsync();
 		LogEngine? l = activeProfile.LogEngine;
 		l.user = "Cookies";
-		await l.Out("Profile Done", DefaultColours.Debug);
+		await l.Out("Profile Done", (int)DefaultColours.Debug);
 		string cookieFile = activeProfile.CookieFile;
 		string YTDLPPath = activeProfile.YTDLPExe;
 		string testURL = activeProfile.CheckURL;
 		List<Result> res = new();
 
-		await l.Out("Variables Done", DefaultColours.Debug);
+		await l.Out("Variables Done", (int)DefaultColours.Debug);
 
 		DateTime start = DateTime.UtcNow;
 
-		await l.Out("Started timer", DefaultColours.Debug);
+		await l.Out("Started timer", (int)DefaultColours.Debug);
 
 		await l.Out("==============================================");
 		await l.Out("                Cookie Checker                ");
 		await l.Out("==============================================");
 
 		if (!File.Exists(cookieFile)){
-			await l.Out("Cookie File could not be found. Please export one.", DefaultColours.Error, true);
+			await l.Out("Cookie File could not be found. Please export one.", (int)DefaultColours.Error, true);
 			res.Append(CookieDefaults.FileError(false, start));
-			goto Return;
+			return res;
 		}
 		if (!File.Exists(YTDLPPath)){
-			await l.Out("YTDLP Executable could not be found.", DefaultColours.Error, true);
+			await l.Out("YTDLP Executable could not be found.", (int)DefaultColours.Error, true);
 			res.Append(CookieDefaults.FileError(true, start));
-			goto Return;
+			return res;
 		}
 
 		await l.Out("Updating YTDLP");
@@ -63,7 +63,7 @@ class Cookies
 		await l.Out("Updating Certificates");
 		res.Append(await Helper.RunSilentAsync("python.exe", "-m pip install --upgrade certifi", "Certificate Update", "PythonProcess"));
 
-		await l.Out("Cookie and YTDLP files located successfully!", DefaultColours.Success, true);
+		await l.Out("Cookie and YTDLP files located successfully!", (int)DefaultColours.Success, true);
 		await l.Out("Testing cookies on YouTube.");
 		try
 		{
@@ -73,7 +73,7 @@ class Cookies
 					DateTime endError = DateTime.UtcNow;
 					TimeSpan elapsedError = endError - start;
 					res.Append(new Result("Cookie Verification", false, elapsedError, "YTDLPProcess is Null"));
-					goto Return;
+					return res;
 				}
 				// The cookie check uses --quiet so doesn't have any output
 				// But this is a useful example for other programs
@@ -90,7 +90,6 @@ class Cookies
 				DateTime end = DateTime.UtcNow;
 				TimeSpan elapsed = end - start;
 				res.Append(new Result("Cookie Verification", true, elapsed));
-				goto Return;
 			}
 		}
 		catch (System.ComponentModel.Win32Exception ex)
@@ -99,11 +98,6 @@ class Cookies
 			TimeSpan elapsed = end - start;
 			res.Append(new Result("Cookie Verification", false, elapsed, ex.Message));
 		}
-
-
-		Return:
-			// Return the list of results
-			return res;
-
+		return res;
 	}
 }
