@@ -143,7 +143,7 @@ public class ProfileManager
 	private static LogEngine? logger = null;
 	private static async Task<MyPath> GetProfileFilePathAsync()
 	{
-		return new("[$UpperRootDir]/Config/csProfiles.json");
+		return new("[$RootDir]/Config/csProfiles.json");
 	}
 	
 	public async static Task<Profile> LoadActiveProfileAsync()
