@@ -130,9 +130,9 @@ public class MyPath
 	/// The formatted path to use for this new MyPath. Can be a normal path.
 	/// </param>
 	/// <param name="isRaw">
-	/// Optional other argument, if new MyPath(C:/Users/Test/") is used it will format automatically. False must be manually specified for pre-formatted paths.
+	/// Optional other argument, if new MyPath(C:/Users/Test/") is used it will format automatically. True must be manually specified for raw paths.
 	/// </param>
-	public MyPath(string formattedPath, bool isRaw = true)
+	public MyPath(string formattedPath, bool isRaw = false)
 	{
 		// Returns C:\Users\(Username) on my machine
 		UserDir = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile).Replace(@"\", "/");
