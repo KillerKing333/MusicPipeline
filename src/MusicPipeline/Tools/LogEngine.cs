@@ -1,4 +1,5 @@
 using System.Diagnostics.CodeAnalysis;
+using System.Text.Json.Serialization;
 using System.Collections;
 using MusicPipeline.Profiles;
 using MusicPipeline.Colours;
@@ -146,6 +147,7 @@ public class LogEngine
 	}
 
 	[SetsRequiredMembers]
+	[JsonConstructor]
 	public LogEngine(MyPath LogFile, string? User = null)
 	{
 		logFile = LogFile;
