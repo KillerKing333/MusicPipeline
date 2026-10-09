@@ -190,7 +190,7 @@ public class ProfileManager
 			Profile activeProfile = file.GetActiveProfile();
 			return activeProfile;
 		} else {
-			await DefaultProfiles.DefaultProfile.LogEngine.Out($"No profiles were found in the file {profileFile}. A default profile has been initialised.", "ProfileManager", DefaultColours.Error, true);
+			await DefaultProfiles.DefaultProfile.LogEngine.Out($"No profiles were found in the file {profileFile}. A default profile has been initialised.", "ProfileManager", (int)DefaultColours.Error, true);
 			await SaveProfileAsync(DefaultProfiles.DefaultProfile);
 			return DefaultProfiles.DefaultProfile;
 		}
@@ -227,13 +227,13 @@ public class ProfileManager
 			//Console.WriteLine("Profile is null");
 			profile = DefaultProfiles.DefaultProfile;
 			logger = DefaultProfiles.DefaultProfile.LogEngine;
-		} else if (await SafetyCheck.CheckProfileToBeSaved(profile) & !overrideParam) {await (logger ?? new("Null")).Out("A new profile that matchs a default profile exactly is being added. Please check that this is intentional, and if so pass override", "ProfileManager", DefaultColours.Error, true); return;}
+		} else if (await SafetyCheck.CheckProfileToBeSaved(profile) & !overrideParam) {await (logger ?? new("Null")).Out("A new profile that matchs a default profile exactly is being added. Please check that this is intentional, and if so pass override", "ProfileManager", (int)DefaultColours.Error, true); return;}
 		//Console.WriteLine("Getting existing profile file");
 		ProfileFile Existing = await GetProfileFileAsync();
 		if (Existing.ActiveProfileName == "ERROR")
 		{
 			//Console.WriteLine("Error Profile");
-			await (DefaultProfiles.DefaultProfile.LogEngine ?? new ("Null")).Out($"Failed to get ProfileFile from {profileFile}, creating new file", DefaultColours.Error, true);
+			await (DefaultProfiles.DefaultProfile.LogEngine ?? new ("Null")).Out($"Failed to get ProfileFile from {profileFile}, creating new file", (int)DefaultColours.Error, true);
 		}
 		if (Existing.ProfileAlreadyExists(profile) || Existing.ActiveProfileName=="ERROR") {
 			Existing.Profiles = new List<Profile>() {profile};
@@ -250,9 +250,9 @@ public class ProfileManager
 			// Should probably give it a new logengine?
 			LogEngine l = new(profile.DiagLogFile, "ProfileManager");
 			profile.LogEngine = l;
-			await l.Out($"Wrote new profile {profile.Name} to {profileFile} successfully.", DefaultColours.Success, true);
+			await l.Out($"Wrote new profile {profile.Name} to {profileFile} successfully.", (int)DefaultColours.Success, true);
 		} else {
-			await (DefaultProfiles.DefaultProfile.LogEngine ?? new ("Null")).Out($"Wrote new profile {profile.Name} to {profileFile} successfully.", DefaultColours.Success, true);
+			await (DefaultProfiles.DefaultProfile.LogEngine ?? new ("Null")).Out($"Wrote new profile {profile.Name} to {profileFile} successfully.", (int)DefaultColours.Success, true);
 		}
 	}
 
@@ -260,7 +260,7 @@ public class ProfileManager
 	{
 		string profileFile = await GetProfileFilePathAsync();
 		// TODO
-		await (await GetProfileFileAsync()).ActiveProfile.LogEngine.Out("Oopsies, this function doesn't exist yet!", "ProfileManager", DefaultColours.Warning, true);
+		await (await GetProfileFileAsync()).ActiveProfile.LogEngine.Out("Oopsies, this function doesn't exist yet!", "ProfileManager", (int)DefaultColours.Warning, true);
 		throw new NotImplementedException();
 	}
 
@@ -281,7 +281,7 @@ public class ProfileManager
 				}
 				return Result;
 			} else {
-				await (DefaultProfiles.DefaultProfile.LogEngine ?? new ("Null")).Out($"ProfileFile {profileFile} doesn't exist.", "ProfileManager", DefaultColours.Error, true);
+				await (DefaultProfiles.DefaultProfile.LogEngine ?? new ("Null")).Out($"ProfileFile {profileFile} doesn't exist.", "ProfileManager", (int)DefaultColours.Error, true);
 				return new ProfileFile(new List<Profile>(){DefaultProfiles.ErrorProfile}, "ERROR");
 				//can't do anything after it has already returned, line below is unreachable.
 				// Yes I thought i swapped them a while ago
