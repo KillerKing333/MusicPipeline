@@ -19,9 +19,9 @@ public class Parser
 		//LogEngine? l = new LogEngine(context.DiagLogFile);
 		LogEngine? l = context.LogEngine;
 		l.user = "Parser";
-		string YTDLPOriginalConfigFilePath = context.YTDLPConfigFileOriginal;
+		MyPath YTDLPOriginalConfigFilePath = context.YTDLPConfigFileOriginal;
 		// Parse in the conf
-		string? confFileContents = await File.ReadAllTextAsync(YTDLPOriginalConfigFilePath);
+		string? confFileContents = await File.ReadAllTextAsync(YTDLPOriginalConfigFilePath.p);
 		if (confFileContents is null) {
 			await l.Out($"YTDLP Config File {YTDLPOriginalConfigFilePath} is blank/invalid", (int)DefaultColours.Error, true);
 			return;
@@ -55,11 +55,11 @@ public class Parser
 			parsedLines.Add(updatedLine);
 		}
 
-		string parentDir = Path.GetDirectoryName(YTDLPOriginalConfigFilePath);
+		string parentDir = Path.GetDirectoryName(YTDLPOriginalConfigFilePath.p);
 		string tempFilePath = $@"{parentDir}/yt-dlp{Guid.NewGuid()}.conf";
 		await File.WriteAllTextAsync(tempFilePath, String.Join("\n", parsedLines));
 		Profile activeProfile = await ProfileManager.LoadActiveProfileAsync();
-		activeProfile.YTDLPConfigFile = tempFilePath;
+		activeProfile.YTDLPConfigFile = new(tempFilePath);
 		await ProfileManager.SaveProfileAsync(activeProfile);
 		// Make a temp file
 		// Change the profileFile to include an override

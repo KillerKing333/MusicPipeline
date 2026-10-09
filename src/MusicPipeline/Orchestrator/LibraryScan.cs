@@ -16,8 +16,8 @@ public class Scanner
         Profile activeProfile = await ProfileManager.LoadActiveProfileAsync();
         l = activeProfile.LogEngine;
         l.user = "LibraryScanner";
-        string backupDir = activeProfile.BackupDir;
-        List<string> compressedDirs = activeProfile.CompressedDirs;
+        MyPath backupDir = activeProfile.BackupDir;
+        List<MyPath> compressedDirs = activeProfile.CompressedDirs;
         //List<DirectoryInfo>? compressedDirs = null; // Support for multiple compressed directories will be added at somepoint™
         //string rootDir = "IDFK why it needs this in the source";
         //^ The soure powershell code had this, so in case its neccessary i'm keeping it
@@ -99,24 +99,24 @@ public class Scanner
     private async Task<IEnumerable<string>> GetMasterFiles()
     {
         Profile ap = await ProfileManager.LoadActiveProfileAsync();
-        string backupDir = ap.BackupDir;
+        MyPath backupDir = ap.BackupDir;
         string songFileSearchPattern = ap.SongFileSearchPattern;
         string lyricFileSearchPattern = ap.LyricFileSearchPattern;
         // FYI, doesn't need to know colour code as the LogEngine works out the correct colour from the Username
         // As long as you use "LibraryScanner" then it'll get the right colour
         List<string> masterFiles = new();
-        if (Directory.Exists(backupDir))
+        if (Directory.Exists(backupDir.p))
         {
-            masterFiles = new(Directory.EnumerateFiles(backupDir, songFileSearchPattern, SearchOption.AllDirectories));
+            masterFiles = new(Directory.EnumerateFiles(backupDir.p, songFileSearchPattern, SearchOption.AllDirectories));
             await l.Out($"Found {masterFiles.Count()} song files in backup directory ({backupDir})");
-            var lrcFiles = Directory.EnumerateFiles(backupDir, lyricFileSearchPattern, SearchOption.AllDirectories);
+            var lrcFiles = Directory.EnumerateFiles(backupDir.p, lyricFileSearchPattern, SearchOption.AllDirectories);
             await l.Out($"Found {lrcFiles.Count()} lyric files in backup directory ({backupDir})");
             double masterSize = 0.00;
             foreach (var f in masterFiles) { masterSize += f.Length; }
         }
         else
         {
-            Directory.CreateDirectory(backupDir);
+            Directory.CreateDirectory(backupDir.p);
         }
 
         return masterFiles;
@@ -126,22 +126,22 @@ public class Scanner
     private async Task<Dictionary<string,List<string>>> GetCompressedFiles()
     {
         Profile ap = await ProfileManager.LoadActiveProfileAsync();
-        List<string> compressedDirs = ap.CompressedDirs;
+        List<MyPath> compressedDirs = ap.CompressedDirs;
         string songFileSearchPattern = ap.SongFileSearchPattern;
         Dictionary<string,List<string>> compressedFiles = new();
         List<string> directoryFiles = new();
-        foreach (string mobileDir in compressedDirs) {
-            if (Directory.Exists(mobileDir))
+        foreach (MyPath mobileDir in compressedDirs) {
+            if (Directory.Exists(mobileDir.p))
             {
-                directoryFiles = new(Directory.EnumerateFiles(mobileDir, songFileSearchPattern, SearchOption.AllDirectories));
+                directoryFiles = new(Directory.EnumerateFiles(mobileDir.p, songFileSearchPattern, SearchOption.AllDirectories));
                 await l.Out($"Found {directoryFiles.Count()} song files in compressed directory ({mobileDir})");
                 double mobileSize = 0.00;
                 foreach (var f in directoryFiles) { mobileSize += f.Length; }
-                compressedFiles.Add(mobileDir,  directoryFiles);
+                compressedFiles.Add(mobileDir.p,  directoryFiles);
             }
             else
             {
-                Directory.CreateDirectory(mobileDir);
+                Directory.CreateDirectory(mobileDir.p);
             }
         }
         return compressedFiles;

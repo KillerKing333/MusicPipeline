@@ -29,8 +29,8 @@ class Cookies
 		LogEngine? l = activeProfile.LogEngine;
 		l.user = "Cookies";
 		await l.Out("Profile Done", (int)DefaultColours.Debug);
-		string cookieFile = activeProfile.CookieFile;
-		string YTDLPPath = activeProfile.YTDLPExe;
+		string cookieFile = activeProfile.CookieFile.p;
+		string YTDLPPath = activeProfile.YTDLPExe.p;
 		string testURL = activeProfile.CheckURL;
 		List<Result> res = new();
 

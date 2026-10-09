@@ -33,10 +33,8 @@ using (var fs = File.Open(@"C:/Users/23fpybus_cheneyschoo/SublimeContained/Music
 }
 Console.WriteLine("Starting Orchestrator");*/
 
-PathsClass pc = new PathsClass();
-Console.WriteLine(pc.ToString());
-PathsClass pc2 = new PathsClass("C:/Users/Test/");
-Console.WriteLine(pc2);
+MyPath path = new("[$ConfigDir]");
+Console.WriteLine(path);
 
 await orc.Start();
 

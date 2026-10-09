@@ -14,7 +14,7 @@ public class LogEngine
 	// Ok maybe we take the profile file after all lol
 	private const char esc = '\u001B';
 	private const string reset = $"\u001B[0m";
-	public required string logFile {get; set;} = "Null";
+	public required MyPath logFile {get; set;} = new("Null");
 	public string? user {get; set;}
 
 	/*public async Task Out(string logFile, string message, string user = "System", int? style = null)
@@ -22,17 +22,20 @@ public class LogEngine
 		await Engine(message, user, style, logFile);
 	}*/
 
+
+	// Moved this first because more common to be doing l.Out("Test", 204); than l.Out("Test", "Tester")
+	public async Task Out(string message, int? style, bool colourFullString = false)
+	{
+		if (user is null) {await Engine("To use Out() without a user please set a user in the class", "System", (int)DefaultColours.Error, true);}
+		else {await Engine(message, user, style, colourFullString);}
+	}
+
 	public async Task Out(string message, string userParam, int? style = null, bool colourFullString = false) 
 	{
 		// New system
 		await Engine(message, userParam, style, colourFullString);
 	}
 
-	public async Task Out(string message, int? style, bool colourFullString = false)
-	{
-		if (user is null) {await Engine("To use Out() without a user please set a user in the class", "System", (int)DefaultColours.Error, true);}
-		else {await Engine(message, user, style, colourFullString);}
-	}
 
 	public async Task Out(string message, bool colourFullString = false)
 	{
@@ -49,7 +52,7 @@ public class LogEngine
 		if (!File.Exists(LogFile)) {
 			throw new ArgumentException("Log file must exist", nameof(Profiler.LogFile));
 		}*/
-		if (logFile == "Null" & logFileParam != null) {logFile = logFileParam;}
+		if (logFile.p == "Null" & logFileParam != null) {logFile = new(logFileParam);}
 
 		switch (style) {
 			case 0:
@@ -89,7 +92,7 @@ public class LogEngine
 		// TODO: Make sure all directories above the logfile exist before trying to append to the file.
 		for (int i = 0; i < 5; i++) {
 			try {
-				await File.AppendAllTextAsync(logFile, processedMessageDate);
+				await File.AppendAllTextAsync(logFile.p, processedMessageDate);
 				break;
 			}
 			catch (System.IO.IOException e) {
@@ -121,7 +124,7 @@ public class LogEngine
 		string dateYear = current.Date.ToString("dd/MM/yyyy");
 		string tempMessage = $"{colPrefix} File Cleared by {user}{reset}";
 		string processedMessage = $"{esc}[38;5;{DefaultColours.Date.ToString()}m{dateYear} {reset} {tempMessage}";
-		await File.WriteAllTextAsync(logFile, processedMessage);
+		await File.WriteAllTextAsync(logFile.p, processedMessage);
 	}
 
 	public async Task WipeAsync(string user)
@@ -132,11 +135,18 @@ public class LogEngine
 		string dateYear = current.Date.ToString("dd/MM/yyyy");
 		string tempMessage = $"{colPrefix} File Cleared by {user}{reset}";
 		string processedMessage = $"{esc}[38;5;{DefaultColours.Date.ToString()}m{dateYear} {reset} {tempMessage}";
-		await File.WriteAllTextAsync(logFile, processedMessage);
+		await File.WriteAllTextAsync(logFile.p, processedMessage);
 	}
 
     [SetsRequiredMembers]
 	public LogEngine(string LogFile, string? User = null)
+	{
+		logFile = new(LogFile, true);
+		user = User;
+	}
+
+	[SetsRequiredMembers]
+	public LogEngine(MyPath LogFile, string? User = null)
 	{
 		logFile = LogFile;
 		user = User;

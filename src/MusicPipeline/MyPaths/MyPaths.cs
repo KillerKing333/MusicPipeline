@@ -52,11 +52,13 @@ public class MyPath
 	[JsonIgnore]
 	public string? UserDir {get; set;} // C:/Users/Test/
 	[JsonIgnore]
-	public string? RootDir {get; set;} // UserDir/MusicPipeline/
+	public string? UpperRootDir {get; set;} // UserDir/MusicTools
+	[JsonIgnore]
+	public string? RootDir {get; set;} // UpperRootDir/MusicPipeline
 	[JsonIgnore]
 	public string? ConfigDir {get; set;} // RootDir/Config
 	[JsonIgnore]
-	public string? ScriptDir {get; set;} // RootDir/src/MusicPipeline/
+	public string? ScriptDir {get; set;} // RootDir/src/MusicPipeline
 
 
 	/// <summary>
@@ -138,6 +140,7 @@ public class MyPath
 		UserDir = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile).Replace(@"\", "/");
 		ScriptDir = Directory.GetCurrentDirectory().Replace(@"\", "/");
 		RootDir = Directory.GetParent(ScriptDir)?.Parent?.FullName.Replace(@"\", "/");
+		UpperRootDir = Directory.GetParent(RootDir)?.FullName.Replace(@"\", "/");
 		ConfigDir = $"{RootDir}/Sandbox/Config";
 
 		// Must be last V

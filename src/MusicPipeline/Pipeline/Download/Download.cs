@@ -44,18 +44,17 @@ class Downloader
 		//	^ downloader can access it just like how it's happening in the lines below.
 		//	it doesn't need to be assigned to these new private fields.
 		//	question though: who SHOULD own what? right now profile owns everything.
-		backupDir = activeProfile.BackupDir;
+		backupDir = activeProfile.BackupDir.p;
 		//directory information: do you want profile managing that?
 		l = activeProfile.LogEngine;
 		//for logging, I think while we're in the Downloader, it should get its own logger.
 		l.user = "Downloader";
-		YTDLPPath = activeProfile.YTDLPExe;
-		cookiePath = activeProfile.CookieFile;
-		historyPath = activeProfile.HistoryFile;		
+		YTDLPPath = activeProfile.YTDLPExe.p;
+		cookiePath = activeProfile.CookieFile.p;
+		historyPath = activeProfile.HistoryFile.p;		
 		playlists = activeProfile.Playlists;
 		//location of these above files all also relating to directory, probably should belong to profile? (like they already do)
-		configDir = $@"{activeProfile.RootDir}\Config";
-		cacheDir = $@"{configDir}/.cache";
+		cacheDir = new MyPath("[$ConfigDir]/.cache").p;
 		//these two above take root dir from profile, but then change it to be their own thing.
 		//i'm thinking if root directory really belongs to profile, these two should too.
 		sleepInterval = activeProfile.SleepInterval;
@@ -89,7 +88,7 @@ class Downloader
 		//it parses files, but the main output is that it writes files.
 		await Parser.ParseYTDLPConfigFile(); // Parse the config file, adding variables into the {} text
 		activeProfile = await ProfileManager.LoadActiveProfileAsync(); // Get the new config file (If we move to the contained approach this will be reworked ofc)
-		YTDLPConfigFile = activeProfile.YTDLPConfigFile; // Set the new value
+		YTDLPConfigFile = activeProfile.YTDLPConfigFile.p; // Set the new value
 		Parallel.For(0, maxDownloadThreads, i => j = DownloadThread(i)); // Run the parallel for
 		await j; // Await the task
 		List<Result>? results = new List<Result>(); // An intermediary list
@@ -100,8 +99,8 @@ class Downloader
 			// TODO: MAKE THIS await CheckWarningsInThread(r.Key);
 		}
 		Profile currentActiveProfile = await ProfileManager.LoadActiveProfileAsync(); // A copy of the profile for changing 
-		File.Delete(currentActiveProfile.YTDLPConfigFile); // Delete the temporary config file made with the new variables
-		currentActiveProfile.YTDLPConfigFile = "Null"; // Set it back to the default "Null" (Maybe change this to set it to what default profile uses?)
+		File.Delete(currentActiveProfile.YTDLPConfigFile.p); // Delete the temporary config file made with the new variables
+		currentActiveProfile.YTDLPConfigFile.FormattedPath = "Null"; // Set it back to the default "Null" (Maybe change this to set it to what default profile uses?)
 		await ProfileManager.SaveProfileAsync(currentActiveProfile); // Save changes
 		DateTime end = DateTime.UtcNow; // The official end time
 		TimeSpan elapsed = end - officialStartTime; // The elapsed TimeSpan
@@ -158,7 +157,7 @@ class Downloader
 		}
 		IEnumerable<string> errorFiles = Directory.EnumerateFiles(configDir, "run_errors_playlist*.txt", SearchOption.AllDirectories); // Find error files. Not sure why I called it sub?
 		foreach (string file in errorFiles) {
-			await l.Out($"File found {file}", DefaultColours.Debug); // Debugging
+			await l.Out($"File found {file}", (int)DefaultColours.Debug); // Debugging
 																	 // Temporary debug to check that it's finding the right files
 																	 // It is
 			File.Delete(file);

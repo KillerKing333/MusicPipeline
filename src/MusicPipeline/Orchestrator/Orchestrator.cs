@@ -29,7 +29,7 @@ public class Orchestrator
 		// Aha. ProfileManager is where the stack overflow starts
 		/* First use of Profiles*/ Profile oldActiveProfile = await ProfileManager.LoadActiveProfileAsync();
 		//Console.WriteLine(JsonSerializer.Serialize(oldActiveProfile, new JsonSerializerOptions { WriteIndented = true }));
-		string logFile = oldActiveProfile.DiagLogFile;
+		MyPath logFile = oldActiveProfile.DiagLogFile;
 		//Console.WriteLine($"logFile = {logFile}");
 		LogEngine logger = new LogEngine(oldActiveProfile.DiagLogFile);
 		//Console.WriteLine($"logger = {logger}, logger.logFile = {logger.logFile}, logger.user = {logger.user??"No user set"}");
