@@ -46,10 +46,14 @@ public class Parser
 				continue;
 			} 
 			string variable = match.Groups[1].Value;
+			string? replace = "";
 			await l.Out($"variable = {variable}", (int)DefaultColours.Debug);
+			if (variable == "RootDir") {
+				replace = new MyPath("").RootDir;
+			}
 			// Uses Reflection somehow idfk
 			// TODO: Write a better explanation
-			string? replace = typeof(Profile).GetProperty(variable).GetValue(context).ToString();
+			replace = replace == "" ? typeof(Profile).GetProperty(variable).GetValue(context).ToString() : replace;
 			await l.Out($"typeof(Profile) = {typeof(Profile)}, Property = {typeof(Profile)?.GetProperty(variable)}, Value = {typeof(Profile)?.GetProperty(variable)?.GetValue(context)}, To String = {typeof(Profile)?.GetProperty(variable)?.GetValue(context).ToString()}. replace = {replace}", (int)DefaultColours.Debug);
 			string updatedLine = Regex.Replace(line, @"\{(\w+)\}", replace);
 			parsedLines.Add(updatedLine);
