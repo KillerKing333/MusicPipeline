@@ -21,7 +21,6 @@ class Downloader
 	private string cookiePath = "Null";
 	private string historyPath = "Null";
 	private string[] playlists = ["Null"];
-	private string configDir = "Null";
 	private string cacheDir = "Null";
 	private string downloadArguments = "Null";
 	private string YTDLPConfigFile = "Null";
@@ -74,7 +73,7 @@ class Downloader
 		await ClearOutErrorFiles(l);
 		await WriteBanner(l);
 		await CreateBackupDirectory(l);
-		await SetCleanSweep(l, configDir, cleanSweep);
+		await SetCleanSweep(l, new MyPath("null").ConfigDir, cleanSweep);
 		//v From JleruOHeP on https://stackoverflow.com/questions/23419396/can-you-assign-a-value-only-if-its-greater-less-than-the-current-value#comment35888947_23419396
 		SetMaxDownloadThreads();
 		// Won't be bothering with the vpn stuff, I want to carefully consider how to do it, and whether it's even needed first
