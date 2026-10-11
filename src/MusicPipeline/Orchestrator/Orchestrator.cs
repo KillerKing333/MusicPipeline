@@ -16,12 +16,6 @@ namespace MusicPipeline.Orchestrator;
 public class Orchestrator
 {
 	// Class Colour code is 213
-
-	// So I don't need to invoke this class itself
-	//yes, you can call the methods directy from the class without an instance of the class.
-	//Orchestrator.Start(); in program.cs
-	// Need tools
-	// 
 	public async Task Start()
 	{	
 		//Profile oldActiveProfile = DefaultProfiles.DefaultProfile;
@@ -53,22 +47,23 @@ public class Orchestrator
 		await ProfileManager.SaveProfileAsync(activeProfile);
 		Profiles.Profile newActiveProfile = await ProfileManager.LoadActiveProfileAsync();
 		await l.Out(newActiveProfile.ScannerSleepIntervalSec.ToString(), 36);
-		
 
+		//this may be a little incorrect, but I'm having troule finding the right thing.
+		//	I want to create a log engine for Cookies without first creating a ProfileManager.
+		//	Thoughts?
+		//I'm trying to create an active profile and a logger here for Cookies to use
+		//	instead of cookies creating its own.
+		var cookies = new Cookies(
+			await ProfileManager.LoadActiveProfileAsync(),
+			new LogEngine(@"[$ConfigDir]/csLogFile.log"));
 
-
- 		
- 		// First use of Results
-		List<Result> Step1Results = await Cookies.CookieCheck();
+		// First use of Results
+		List<Result> Step1Results = await cookies.CookieCheck();
 		await Handler.HandleResults(Step1Results);
 		var d = new Downloader();
 		List<Result> Step2Results = await d.Download();
 		await Handler.HandleResults(Step2Results);
-		
-		
 	}
-
-
 
 	// Needs to do everything that WebsiteEngine.ps1 does
 
@@ -90,4 +85,5 @@ public class Orchestrator
 		// Make sure to close it
 	// Idea, music streaming server
 	// You can stream music from the server to your device
+	// ^ put a strong password on it or something so that nobody anauthorized uses it.
 }
