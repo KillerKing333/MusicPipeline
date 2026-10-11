@@ -7,8 +7,12 @@ using MusicPipeline.Tools.LogEngine;
 using MusicPipeline.Pipeline.Helpers.Execute;
 namespace MusicPipeline.Pipeline;
 
-class Cookies
+//primary constructor syntax. I haven't done this a lot personally, but it's cool.
+class Cookies(Profile activeProfile, LogEngine logEngine)
 {
+	public Profiles.Profile ActiveProfile { get; set; } = activeProfile;
+	public LogEngine LogEngine { get; set; } = logEngine;
+
 	// Class Colour Code is 112
 	/// <summary>
 	/// Checks cookies with YTDLP asynchronously
@@ -22,48 +26,46 @@ class Cookies
 	/// </para>
 	/// </remarks>
 	/// <returns>Returns a List of Results</returns>
-	public static async Task<List<Result>> CookieCheck()
+	public async Task<List<Result>> CookieCheck()
 	{
-		Profiles.Profile activeProfile = await ProfileManager.LoadActiveProfileAsync();
-		LogEngine? l = activeProfile.LogEngine;
-		l.user = "Cookies";
-		await l.Out("Profile Done", DefaultColours.Debug);
+		LogEngine.user = "Cookies";
+		//await LogEngine.Out("Profile Done", DefaultColours.Debug);
 		string cookieFile = activeProfile.CookieFile.p;
 		string YTDLPPath = activeProfile.YTDLPExe.p;
 		string testURL = activeProfile.CheckURL;
 		List<Result> res = new();
 
-		await l.Out("Variables Done", DefaultColours.Debug);
+		await LogEngine.Out("Variables Done", DefaultColours.Debug);
 
 		DateTime start = DateTime.UtcNow;
 
-		await l.Out("Started timer", DefaultColours.Debug);
+		await LogEngine.Out("Started timer", DefaultColours.Debug);
 
-		await l.Out("==============================================");
-		await l.Out("                Cookie Checker                ");
-		await l.Out("==============================================");
+		await LogEngine.Out("==============================================");
+		await LogEngine.Out("                Cookie Checker                ");
+		await LogEngine.Out("==============================================");
 
 		if (!File.Exists(cookieFile)){
-			await l.Out("Cookie File could not be found. Please export one.", DefaultColours.Error, true);
+			await LogEngine.Out("Cookie File could not be found. Please export one.", DefaultColours.Error, true);
 			res.Append(CookieDefaults.FileError(false, start));
 			return res;
 		}
 		if (!File.Exists(YTDLPPath)){
-			await l.Out("YTDLP Executable could not be found.", DefaultColours.Error, true);
+			await LogEngine.Out("YTDLP Executable could not be found.", DefaultColours.Error, true);
 			res.Append(CookieDefaults.FileError(true, start));
 			return res;
 		}
 
-		await l.Out("Updating YTDLP");
+		await LogEngine.Out("Updating YTDLP");
 		res.Append(await Helper.RunSilentAsync(YTDLPPath, "-U", "YTDLP Update", "YTDLPProcess"));
 
 		// pip install --upgrade certifi
 		// Getting new root certificates for the python enviroment, just in case.
-		await l.Out("Updating Certificates");
+		await LogEngine.Out("Updating Certificates");
 		res.Append(await Helper.RunSilentAsync("python.exe", "-m pip install --upgrade certifi", "Certificate Update", "PythonProcess"));
 
-		await l.Out("Cookie and YTDLP files located successfully!", DefaultColours.Success, true);
-		await l.Out("Testing cookies on YouTube.");
+		await LogEngine.Out("Cookie and YTDLP files located successfully!", DefaultColours.Success, true);
+		await LogEngine.Out("Testing cookies on YouTube.");
 		try
 		{
 			using (Process YTDLPProcess = await Helper.Execute(YTDLPPath, $"--cookies \"{cookieFile}\" --simulate --quiet {testURL}"))
@@ -80,7 +82,7 @@ class Cookies
 				string? currentLine;
 				while (!((currentLine = (await YTDLPProcess.StandardOutput.ReadLineAsync())) == null)) {
 					if (currentLine != null) {
-						await l.Out(currentLine);
+						await LogEngine.Out(currentLine);
 					}
 				}
 				*/

@@ -47,9 +47,18 @@ public class Orchestrator
 		await ProfileManager.SaveProfileAsync(activeProfile);
 		Profiles.Profile newActiveProfile = await ProfileManager.LoadActiveProfileAsync();
 		await l.Out(newActiveProfile.ScannerSleepIntervalSec.ToString(), 36);
- 		
- 		// First use of Results
-		List<Result> Step1Results = await Cookies.CookieCheck();
+
+		//this may be a little incorrect, but I'm having troule finding the right thing.
+		//	I want to create a log engine for Cookies without first creating a ProfileManager.
+		//	Thoughts?
+		//I'm trying to create an active profile and a logger here for Cookies to use
+		//	instead of cookies creating its own.
+		var cookies = new Cookies(
+			await ProfileManager.LoadActiveProfileAsync(),
+			new LogEngine(@"[$ConfigDir]/csLogFile.log"));
+
+		// First use of Results
+		List<Result> Step1Results = await cookies.CookieCheck();
 		await Handler.HandleResults(Step1Results);
 		var d = new Downloader();
 		List<Result> Step2Results = await d.Download();
