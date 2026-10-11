@@ -1,5 +1,10 @@
 namespace MusicPipeline.Paths
 {
+	//my intention behind this class was to compare it to your MyPaths.
+	//I don't currently understand why MyPaths does the encoding thing,
+	//	but as you complete it, I believe that will be revealed.
+	//Then I'd like to see if I can modify this class to satisfy the same needs,
+	//	possibly in a different way.
 	public class PathsClass
 	{
 		public PathsClass(string userDirectory)

@@ -16,12 +16,6 @@ namespace MusicPipeline.Orchestrator;
 public class Orchestrator
 {
 	// Class Colour code is 213
-
-	// So I don't need to invoke this class itself
-	//yes, you can call the methods directy from the class without an instance of the class.
-	//Orchestrator.Start(); in program.cs
-	// Need tools
-	// 
 	public async Task Start()
 	{	
 		//Profile oldActiveProfile = DefaultProfiles.DefaultProfile;
@@ -53,10 +47,6 @@ public class Orchestrator
 		await ProfileManager.SaveProfileAsync(activeProfile);
 		Profiles.Profile newActiveProfile = await ProfileManager.LoadActiveProfileAsync();
 		await l.Out(newActiveProfile.ScannerSleepIntervalSec.ToString(), 36);
-		
-
-
-
  		
  		// First use of Results
 		List<Result> Step1Results = await Cookies.CookieCheck();
@@ -64,11 +54,7 @@ public class Orchestrator
 		var d = new Downloader();
 		List<Result> Step2Results = await d.Download();
 		await Handler.HandleResults(Step2Results);
-		
-		
 	}
-
-
 
 	// Needs to do everything that WebsiteEngine.ps1 does
 
@@ -90,4 +76,5 @@ public class Orchestrator
 		// Make sure to close it
 	// Idea, music streaming server
 	// You can stream music from the server to your device
+	// ^ put a strong password on it or something so that nobody anauthorized uses it.
 }

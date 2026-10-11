@@ -24,7 +24,6 @@ class Cookies
 	/// <returns>Returns a List of Results</returns>
 	public static async Task<List<Result>> CookieCheck()
 	{
-		//in C# local variables should start with lower case, camel case.
 		Profiles.Profile activeProfile = await ProfileManager.LoadActiveProfileAsync();
 		LogEngine? l = activeProfile.LogEngine;
 		l.user = "Cookies";
