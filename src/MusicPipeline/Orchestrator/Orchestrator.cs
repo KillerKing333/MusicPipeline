@@ -53,12 +53,12 @@ public class Orchestrator
 		//	Thoughts?
 		//I'm trying to create an active profile and a logger here for Cookies to use
 		//	instead of cookies creating its own.
-		var cookies = new Cookies(
-			await ProfileManager.LoadActiveProfileAsync(),
-			new LogEngine(@"[$ConfigDir]/csLogFile.log"));
-
+		//var cookies = new Cookies(
+		//	await ProfileManager.LoadActiveProfileAsync(),
+		//	new LogEngine(@"[$ConfigDir]/csLogFile.log"));
+		var c = new Cookies();
 		// First use of Results
-		List<Result> Step1Results = await cookies.CookieCheck();
+		List<Result> Step1Results = await c.CookieCheck();
 		await Handler.HandleResults(Step1Results);
 		var d = new Downloader();
 		List<Result> Step2Results = await d.Download();
