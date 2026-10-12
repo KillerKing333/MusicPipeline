@@ -43,7 +43,7 @@ class Cookies(/*Profile activeProfile, LogEngine logEngine*/)
 
 		await l.Out("Started timer", DefaultColours.Debug);
 
-		await l.WriteBanner("Cookie Checker");
+		await l.Banner("Cookie Checker");
 
 		if (!File.Exists(cookieFile)){
 			await l.Out("Cookie File could not be found. Please export one.", DefaultColours.Error, true);
