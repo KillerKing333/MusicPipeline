@@ -140,7 +140,10 @@ public class LogEngine
 		await File.WriteAllTextAsync(logFile.p, processedMessage);
 	}
 
-	public async Task WriteBanner(string text) => await Out(BuildBanner(text));
+	public async Task Banner(string name, bool colourFullString = false) => await Out(BuildBanner(name), colourFullString);
+	public async Task Banner(string name, int? style = null, bool colourFullString = false) => await Out(BuildBanner(name), style, colourFullString);
+	public async Task Banner(string name, string userParam, int? style = null, bool colourFullString = false) => await Out(BuildBanner(name), userParam, style, colourFullString);
+	
 
 	public static string BuildBanner(string text)
 	{
