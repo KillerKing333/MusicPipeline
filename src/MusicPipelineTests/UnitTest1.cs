@@ -1,18 +1,21 @@
 using System.Reflection;
-using System.Text.RegularExpressions;
-using MusicPipeline.Colours;
 using MusicPipeline.Profiles;
 using MusicPipeline.Pipeline.Helpers.Download;
-//using static System.Runtime.InteropServices.JavaScript.JSType;
+using MusicPipeline.Tools.LogEngine;
+
 
 namespace MusicPipelineTests
 {
     public class Tests
     {
+        private string _bar;
+
         [SetUp]
         public void Setup()
         {
-        }
+            //_bar is 46 characters long.
+			_bar = "==============================================";
+		}
 
         [Test]
         public void TestCheckProfileToBeSaved()
@@ -89,5 +92,24 @@ namespace MusicPipelineTests
 				Assert.That(firstTwoNumbers.Item2, Is.EqualTo(expectedSecondValue));
 			});
 		}
-    }
+
+        [Test]
+        public async Task BuildBannerDOGS()
+        {
+            var input = "DOGS";
+            var spaces21 = new string(' ', 21);
+            var expected = _bar + Environment.NewLine + spaces21 + input + spaces21 + Environment.NewLine + _bar;
+            Assert.That(expected, Is.EqualTo(LogEngine.BuildBanner(input)));
+		}
+
+		[Test]
+		public async Task BuildBannerCuteDogs()
+		{
+			var input = "Cute Dogs";
+			var leftString = new string(' ', 18);
+            var rightString = new string(' ', 19);
+			var expected = _bar + Environment.NewLine + leftString + input + rightString + Environment.NewLine + _bar;
+			Assert.That(expected, Is.EqualTo(LogEngine.BuildBanner(input)));
+		}
+	}
 }
