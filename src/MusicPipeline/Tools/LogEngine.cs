@@ -1,8 +1,9 @@
+using System.Collections;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Serialization;
-using System.Collections;
-using MusicPipeline.Profiles;
 using MusicPipeline.Colours;
+using MusicPipeline.Profiles;
+using static System.Net.Mime.MediaTypeNames;
 namespace MusicPipeline.Tools.LogEngine;
 
 public class LogEngine
@@ -139,7 +140,47 @@ public class LogEngine
 		await File.WriteAllTextAsync(logFile.p, processedMessage);
 	}
 
-    [SetsRequiredMembers]
+	public async Task WriteBanner(string text) => await Out(BuildBanner(text));
+
+	public static string BuildBanner(string text)
+	{
+		var bar = "==============================================";
+		double spacesLength = bar.Length - text.Length;
+		spacesLength = spacesLength / 2;
+		//wow ok, this tripped me up for a while and is a great example of why unit tests save so much time.
+		//on the above two lines of code, if I do the divide by two on the same line as the spaces length this method fails.
+		//the reason is that bar.Length is an int, text.Length is an int, and 2 is an int.
+		//the math gets performed with an int result!!!
+		//only then does it get converted to a double with the assignment (all on a single line)
+		//so 37/2 is 18.5, but if you're doing int division, 37/2 is 18.
+		//luckily unit tests helped me figure this one out much faster than if I didn't have them.
+		string middleLine = BuildMiddleLine(text, spacesLength);
+		return bar + Environment.NewLine + middleLine + Environment.NewLine + bar;
+	}
+
+	private static string BuildMiddleLine(string text, double spacesLength)
+	{
+		var spacesLenghIsWholeNumber = spacesLength % 1 != 0.5;
+		if (spacesLenghIsWholeNumber)
+			return BuildSimpleLine(text, spacesLength);
+		return BuildComplexLine(text, spacesLength);
+	}
+
+	private static string BuildSimpleLine(string text, double spacesLength)
+	{
+		var spaces = new string(' ', (int)spacesLength);
+		return spaces + text + spaces;
+	}
+
+	private static string BuildComplexLine(string text, double spacesLength)
+	{
+		var roundedDownSpaces = (int)spacesLength;
+		var spacesLeft = new string(' ', roundedDownSpaces);
+		var spacesRight = new string(' ', roundedDownSpaces + 1);
+		return spacesLeft + text + spacesRight;
+	}
+
+	[SetsRequiredMembers]
 	public LogEngine(string LogFile, string? User = null)
 	{
 		logFile = new(LogFile, true);
