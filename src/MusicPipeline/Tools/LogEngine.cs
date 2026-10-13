@@ -20,7 +20,7 @@ public class LogEngine
 	public required MyPath logFile {get; set;} = new("Null");
 	public string? user {get; set;}
 
-	public async Task Out(string message, string userParam = "", bool colourFullString = false, int? style = null)
+	private async Task MyOut(string message, string userParam = "", int? style = null, bool colourFullString = false)
 	{
 		string userToUse = "";
 		if (user != null)
@@ -32,6 +32,12 @@ public class LogEngine
 		else
 			await Engine(message, userToUse, style, colourFullString);
 	}
+	public async Task Out(string message) => await MyOut(message);
+	public async Task Out(string message, bool colourFullString) => await MyOut(message, "", colourFullString: colourFullString);
+	public async Task Out(string message, string userParam) => await MyOut(message, userParam);
+	public async Task Out(string message, int? style) => await MyOut(message, "", style, false);
+	public async Task Out(string message, int? style, bool colourFullString) => await MyOut(message, "", style, colourFullString);
+	public async Task Out(string message, string userParam, int? style, bool colourFullString) => await MyOut(message, userParam, style, colourFullString);
 
 	private async Task Engine(string message, string user, int? style, bool colourFullString = false, string? logFileParam = null)
 	{

@@ -29,7 +29,7 @@ public class Orchestrator
 		//Console.WriteLine($"logger = {logger}, logger.logFile = {logger.logFile}, logger.user = {logger.user??"No user set"}");
 		//Console.WriteLine("Trying to log");
 		await logger.WipeAsync("Orchestrator");
-		await logger.Out("Why won't you just work!!!", "Orchestrator", true, DefaultColours.Error);
+		await logger.Out("Why won't you just work!!!", "Orchestrator", DefaultColours.Error, true);
 		//Console.WriteLine("Did that work??");
 		oldActiveProfile.LogEngine = logger;
 		oldActiveProfile.Name = "Current Working Profile";
@@ -38,15 +38,15 @@ public class Orchestrator
 		LogEngine? l = activeProfile.LogEngine;
 		l?.user = "Orchestrator";
 		await l.WipeAsync();
-		await l.Out("Test", colourFullString: true, style: DefaultColours.Error);
-		await l.Out("Other Test", style: DefaultColours.Warning);
-		await l.Out("Test Number 2", colourFullString: true);
-		await l.Out(JsonSerializer.Serialize(oldActiveProfile), style: 54);
+		await l.Out("Test", DefaultColours.Error, true);
+		await l.Out("Other Test", DefaultColours.Warning);
+		await l.Out("Test Number 2", true);
+		await l.Out(JsonSerializer.Serialize(oldActiveProfile), 54);
 		activeProfile.ScannerSleepIntervalSec = 30;
 		activeProfile.CleanSweepDownload = true;
 		await ProfileManager.SaveProfileAsync(activeProfile);
 		Profiles.Profile newActiveProfile = await ProfileManager.LoadActiveProfileAsync();
-		await l.Out(newActiveProfile.ScannerSleepIntervalSec.ToString(), style: 36);
+		await l.Out(newActiveProfile.ScannerSleepIntervalSec.ToString(), 36);
 
 		//this may be a little incorrect, but I'm having troule finding the right thing.
 		//	I want to create a log engine for Cookies without first creating a ProfileManager.
