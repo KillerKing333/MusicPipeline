@@ -8,13 +8,9 @@ namespace MusicPipelineTests
 {
     public class Tests
     {
-        private string _bar;
-
         [SetUp]
         public void Setup()
         {
-            //_bar is 46 characters long.
-			_bar = "==============================================";
 		}
 
         [Test]
@@ -98,18 +94,18 @@ namespace MusicPipelineTests
         {
             var input = "DOGS";
             var spaces21 = new string(' ', 21);
-            var expected = Environment.NewLine + _bar + Environment.NewLine + spaces21 + input + spaces21 + Environment.NewLine + _bar;
-            Assert.That(expected, Is.EqualTo(LogEngine.BuildBanner(input)));
-		}
+            var expected = spaces21 + input + spaces21;
+            Assert.That(expected, Is.EqualTo(LogEngine.BuildMiddleLine(input, LogEngine._bannerBar.Length)));
+        }
 
-		[Test]
-		public async Task BuildBannerCuteDogs()
-		{
-			var input = "Cute Dogs";
-			var leftString = new string(' ', 18);
+        [Test]
+        public async Task BuildBannerCuteDogs()
+        {
+            var input = "Cute Dogs";
+            var leftString = new string(' ', 18);
             var rightString = new string(' ', 19);
-			var expected = Environment.NewLine + _bar + Environment.NewLine + leftString + input + rightString + Environment.NewLine + _bar;
-			Assert.That(expected, Is.EqualTo(LogEngine.BuildBanner(input)));
-		}
-	}
+            var expected = leftString + input + rightString;
+            Assert.That(expected, Is.EqualTo(LogEngine.BuildMiddleLine(input, LogEngine._bannerBar.Length)));
+        }
+    }
 }

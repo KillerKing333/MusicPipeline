@@ -103,7 +103,7 @@ class Downloader
 		await ProfileManager.SaveProfileAsync(currentActiveProfile); // Save changes
 		DateTime end = DateTime.UtcNow; // The official end time
 		TimeSpan elapsed = end - officialStartTime; // The elapsed TimeSpan
-		await l.Out($"elapsed = {elapsed}, end = {end}, start = {officialStartTime}", DefaultColours.Debug); // Debugging
+		await l.Out($"elapsed = {elapsed}, end = {end}, start = {officialStartTime}", style: DefaultColours.Debug); // Debugging
 		results.Insert(0, new Result("Downloader", true, elapsed, "", songs)); // Final Result
 		return results;
 	}
@@ -139,7 +139,7 @@ class Downloader
 	private async Task LogStartTime(LogEngine l, bool IAmDebugging, DateTime officialStartTime)
 	{
 		if (IAmDebugging)
-			await l.Out($"start = {officialStartTime}", DefaultColours.Debug);
+			await l.Out($"start = {officialStartTime}", style: DefaultColours.Debug);
 	}
 
 	private async Task WriteBanner(LogEngine l)
@@ -156,7 +156,7 @@ class Downloader
 		}
 		IEnumerable<string> errorFiles = Directory.EnumerateFiles(configDir.ConfigDir, "run_errors_playlist*.txt", SearchOption.AllDirectories); // Find error files. Not sure why I called it sub?
 		foreach (string file in errorFiles) {
-			await l.Out($"File found {file}", DefaultColours.Debug); // Debugging
+			await l.Out($"File found {file}", style: DefaultColours.Debug); // Debugging
 																	 // Temporary debug to check that it's finding the right files
 																	 // It is
 			File.Delete(file);
@@ -179,7 +179,7 @@ class Downloader
 		LogEngine? log = new(l.logFile);
 		log.user = $"DownloaderThread-{index+1}";
 		DateTime threadStart = DateTime.UtcNow;
-		await log.Out($"Index = {index} Playlist = {playlists[index]}, customArgs = {customArguments}", DefaultColours.Debug);
+		await log.Out($"Index = {index} Playlist = {playlists[index]}, customArgs = {customArguments}", style: DefaultColours.Debug);
 		int? colourCode = null;
 
 		switch (index) {
@@ -208,7 +208,7 @@ class Downloader
 		if (File.Exists(errorLogPath)) 
 			File.Delete(errorLogPath);
 
-		await log.Out($"Processing Playlist URL: {playlists[index]}", colourCode);
+		await log.Out($"Processing Playlist URL: {playlists[index]}", style: colourCode);
 
 		// Just found out that it supports putting all this in a file so :eyes:
 		//downloadArguments = $"--config-locations {YTDLPConfigFile}  \"{customArguments}\"  --download-archive \"{historyPath}\"  {playlists[index]}";
@@ -274,7 +274,7 @@ class Downloader
 				if (YTDLPProcess is null) {
 					DateTime endError = DateTime.UtcNow;
 					TimeSpan elapsedError = endError - threadStart;
-					await log.Out($"elapsed = {elapsedError}, end = {endError}, start = {start}, threadStart = {threadStart}", DefaultColours.Debug);
+					await log.Out($"elapsed = {elapsedError}, end = {endError}, start = {start}, threadStart = {threadStart}", style: DefaultColours.Debug);
 					res.Add(index, new Result("DownloaderThread", false, elapsedError, "YTDLPProcess is Null"));
 					return;
 				}
@@ -321,7 +321,7 @@ class Downloader
 						int? errorCode = colourCode;
 						if (currentLine.Contains("WARNING: ")) {errorCode = DefaultColours.Warning;}
 						else if (currentLine.Contains("ERROR: ")) {errorCode = DefaultColours.Error;}
-						await log.Out(currentLine, errorCode);
+						await log.Out(currentLine, style: errorCode);
 						lines.Add(currentLine);
 						// May be worth manually appending the current line
 						// Will do that if I ever run into issues with the program crashing and only having the log output
@@ -334,7 +334,7 @@ class Downloader
 				await YTDLPProcess.WaitForExitAsync();
 				DateTime end = DateTime.UtcNow;
 				TimeSpan elapsed = end - threadStart;
-				await log.Out($"elapsed = {elapsed}, end = {end}, start = {start}, threadStart = {threadStart}", DefaultColours.Debug);
+				await log.Out($"elapsed = {elapsed}, end = {end}, start = {start}, threadStart = {threadStart}", style: DefaultColours.Debug);
 				KeyValuePair<bool, string> errors = await GetErrorsInThread(index);
 				res.Add(index, new Result("DownloaderThread", errors.Key, elapsed, errors.Value));
 				return;
@@ -344,7 +344,7 @@ class Downloader
 		{
 			DateTime end = DateTime.UtcNow;
 			TimeSpan elapsed = end - threadStart;
-			await log.Out($"elapsed = {elapsed}, end = {end}, start = {start}, threadStart = {threadStart}", DefaultColours.Debug);
+			await log.Out($"elapsed = {elapsed}, end = {end}, start = {start}, threadStart = {threadStart}", style: DefaultColours.Debug);
 			res.Add(index, new Result("DownloaderThread", elapsed, ex.Message));
 		}
 		finally
@@ -356,7 +356,7 @@ class Downloader
 	private async Task<List<SongIdentifier>> GetAffectedSongInfoInThread(int index)
 	{
 		l.user = "Downloader";
-		await l.Out("TODO: URGENT: MAKE GetAffectedSongInfo", DefaultColours.Error, true);
+		await l.Out("TODO: URGENT: MAKE GetAffectedSongInfo", true, DefaultColours.Error);
 		//return new List<SongIdentifier>(new SongIdentifier("Never Gonna Give You Up", "Rick Astley", "Whenever You Need Somebody", new List<FileInfo>([new FileInfo($@"{backupDir}\Rick Astley\Whenever You Need Somebody\Never Gonna Give You Up.m4a")]), null, "m4a", 8.63, new List<double>([6.32, 5.19]), false, true, true, new FileInfo($@"{backupDir}\Rick Astley\Whenever You Need Somebody\Never Gonna Give You Up.lrc"), false));
 
 		//moved the code for creating this default case of SongIdentifier into a constructor
@@ -373,7 +373,7 @@ class Downloader
 			// URL is for double checking the playlist didn't get fucked up
 			// I was running into issues with my config file not working properly and trying to read random other values so I'll add at some point some failsafe stuff to the geturl method
 			// So that if someone runs it with a broken config file they can help fix it
-			await l.Out(playlistURL, DefaultColours.Debug);
+			await l.Out(playlistURL, style: DefaultColours.Debug);
 		}
 
 		// Get all the songs
@@ -390,7 +390,7 @@ class Downloader
 	private async Task<KeyValuePair<bool, string>> GetErrorsInThread(int threadIndex)
 	{
 		l.user = "Downloader";
-		await l.Out("TODO: URGENT: MAKE GetErrorsInThread", DefaultColours.Error, true);
+		await l.Out("TODO: URGENT: MAKE GetErrorsInThread", true, DefaultColours.Error);
 		return new(true, "TODO");
 	} 
 }

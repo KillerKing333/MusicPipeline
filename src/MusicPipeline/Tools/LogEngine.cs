@@ -14,35 +14,23 @@ public class LogEngine
 	// Takes the message
 	// Takes the profile file? or just the log file
 	// Ok maybe we take the profile file after all lol
+	public const string _bannerBar = "==============================================";
 	private const char esc = '\u001B';
 	private const string reset = $"\u001B[0m";
 	public required MyPath logFile {get; set;} = new("Null");
 	public string? user {get; set;}
 
-	/*public async Task Out(string logFile, string message, string user = "System", int? style = null)
+	public async Task Out(string message, bool colourFullString = false, int? style = null, string userParam = "")
 	{
-		await Engine(message, user, style, logFile);
-	}*/
-
-
-	// Moved this first because more common to be doing l.Out("Test", 204); than l.Out("Test", "Tester")
-	public async Task Out(string message, int? style, bool colourFullString = false)
-	{
-		if (user is null) {await Engine("To use Out() without a user please set a user in the class", "System", DefaultColours.Error, true);}
-		else {await Engine(message, user, style, colourFullString);}
-	}
-
-	public async Task Out(string message, string userParam, int? style = null, bool colourFullString = false) 
-	{
-		// New system
-		await Engine(message, userParam, style, colourFullString);
-	}
-
-
-	public async Task Out(string message, bool colourFullString = false)
-	{
-		if (user is null) {await Engine("To use Out() without a user please set a user in the class", "System", DefaultColours.Error, true);}
-		else {await Engine(message, user, null, colourFullString);}
+		string userToUse = "";
+		if (user != null)
+			userToUse = user;
+		if (userParam != "")
+			userToUse = userParam;
+		if (userToUse == "")
+			await Engine("To use Out() without a user please set a user in the class", "System", DefaultColours.Error, true);
+		else
+			await Engine(message, userToUse, style, colourFullString);
 	}
 
 	private async Task Engine(string message, string user, int? style, bool colourFullString = false, string? logFileParam = null)
@@ -140,22 +128,17 @@ public class LogEngine
 		await File.WriteAllTextAsync(logFile.p, processedMessage);
 	}
 
-	public async Task Banner(string name, bool colourFullString = false) => await Out(BuildBanner(name), colourFullString);
-	public async Task Banner(string name, int? style, bool colourFullString = false) => await Out(BuildBanner(name), style, colourFullString);
-	public async Task Banner(string name, string userParam, int? style, bool colourFullString = false) => await Out(BuildBanner(name), userParam, style, colourFullString);
-	
-
-	public static string BuildBanner(string text)
+	public async Task BuildBanner(string text, bool colourFullString = false, int? style = null, string userParam = "")
 	{
-		var bar = "==============================================";
-		double spacesLength = bar.Length - text.Length;
-		spacesLength = spacesLength / 2;
-		string middleLine = BuildMiddleLine(text, spacesLength);
-		return Environment.NewLine + bar + Environment.NewLine + middleLine + Environment.NewLine + bar;
+		await Out(_bannerBar);
+		await Out(BuildMiddleLine(text, _bannerBar.Length));
+		await Out(_bannerBar);
 	}
 
-	private static string BuildMiddleLine(string text, double spacesLength)
+	public static string BuildMiddleLine(string text, int barLength)
 	{
+		double spacesLength = barLength - text.Length;
+		spacesLength = spacesLength / 2;
 		var spacesLenghIsWholeNumber = spacesLength % 1 != 0.5;
 		if (spacesLenghIsWholeNumber)
 			return BuildSimpleLine(text, spacesLength);
