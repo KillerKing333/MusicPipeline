@@ -98,7 +98,7 @@ namespace MusicPipelineTests
         {
             var input = "DOGS";
             var spaces21 = new string(' ', 21);
-            var expected = _bar + Environment.NewLine + spaces21 + input + spaces21 + Environment.NewLine + _bar;
+            var expected = Environment.NewLine + _bar + Environment.NewLine + spaces21 + input + spaces21 + Environment.NewLine + _bar;
             Assert.That(expected, Is.EqualTo(LogEngine.BuildBanner(input)));
 		}
 
@@ -108,7 +108,7 @@ namespace MusicPipelineTests
 			var input = "Cute Dogs";
 			var leftString = new string(' ', 18);
             var rightString = new string(' ', 19);
-			var expected = _bar + Environment.NewLine + leftString + input + rightString + Environment.NewLine + _bar;
+			var expected = Environment.NewLine + _bar + Environment.NewLine + leftString + input + rightString + Environment.NewLine + _bar;
 			Assert.That(expected, Is.EqualTo(LogEngine.BuildBanner(input)));
 		}
 	}
