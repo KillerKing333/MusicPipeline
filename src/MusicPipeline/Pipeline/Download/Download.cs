@@ -356,7 +356,7 @@ class Downloader
 	private async Task<List<SongIdentifier>> GetAffectedSongInfoInThread(int index)
 	{
 		l.user = "Downloader";
-		await l.Out("TODO: URGENT: MAKE GetAffectedSongInfo", true, DefaultColours.Error);
+		await l.Out("TODO: URGENT: MAKE GetAffectedSongInfo", colourFullString: true, style: DefaultColours.Error);
 		//return new List<SongIdentifier>(new SongIdentifier("Never Gonna Give You Up", "Rick Astley", "Whenever You Need Somebody", new List<FileInfo>([new FileInfo($@"{backupDir}\Rick Astley\Whenever You Need Somebody\Never Gonna Give You Up.m4a")]), null, "m4a", 8.63, new List<double>([6.32, 5.19]), false, true, true, new FileInfo($@"{backupDir}\Rick Astley\Whenever You Need Somebody\Never Gonna Give You Up.lrc"), false));
 
 		//moved the code for creating this default case of SongIdentifier into a constructor
@@ -390,7 +390,7 @@ class Downloader
 	private async Task<KeyValuePair<bool, string>> GetErrorsInThread(int threadIndex)
 	{
 		l.user = "Downloader";
-		await l.Out("TODO: URGENT: MAKE GetErrorsInThread", true, DefaultColours.Error);
+		await l.Out("TODO: URGENT: MAKE GetErrorsInThread", colourFullString: true, style: DefaultColours.Error);
 		return new(true, "TODO");
 	} 
 }

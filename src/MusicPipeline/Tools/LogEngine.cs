@@ -20,7 +20,7 @@ public class LogEngine
 	public required MyPath logFile {get; set;} = new("Null");
 	public string? user {get; set;}
 
-	public async Task Out(string message, bool colourFullString = false, int? style = null, string userParam = "")
+	public async Task Out(string message, string userParam = "", bool colourFullString = false, int? style = null)
 	{
 		string userToUse = "";
 		if (user != null)

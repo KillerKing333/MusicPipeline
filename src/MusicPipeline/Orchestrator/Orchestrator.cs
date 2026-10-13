@@ -29,7 +29,7 @@ public class Orchestrator
 		//Console.WriteLine($"logger = {logger}, logger.logFile = {logger.logFile}, logger.user = {logger.user??"No user set"}");
 		//Console.WriteLine("Trying to log");
 		await logger.WipeAsync("Orchestrator");
-		await logger.Out("Why won't you just work!!!", true, DefaultColours.Error, "Orchestrator");
+		await logger.Out("Why won't you just work!!!", "Orchestrator", true, DefaultColours.Error);
 		//Console.WriteLine("Did that work??");
 		oldActiveProfile.LogEngine = logger;
 		oldActiveProfile.Name = "Current Working Profile";
@@ -38,9 +38,9 @@ public class Orchestrator
 		LogEngine? l = activeProfile.LogEngine;
 		l?.user = "Orchestrator";
 		await l.WipeAsync();
-		await l.Out("Test", true, DefaultColours.Error);
+		await l.Out("Test", colourFullString: true, style: DefaultColours.Error);
 		await l.Out("Other Test", style: DefaultColours.Warning);
-		await l.Out("Test Number 2", true);
+		await l.Out("Test Number 2", colourFullString: true);
 		await l.Out(JsonSerializer.Serialize(oldActiveProfile), style: 54);
 		activeProfile.ScannerSleepIntervalSec = 30;
 		activeProfile.CleanSweepDownload = true;

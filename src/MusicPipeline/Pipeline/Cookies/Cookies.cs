@@ -46,12 +46,12 @@ class Cookies(/*Profile activeProfile, LogEngine logEngine*/)
 		await l.BuildBanner("Cookie Checker");
 
 		if (!File.Exists(cookieFile)){
-			await l.Out("Cookie File could not be found. Please export one.", true, DefaultColours.Error);
+			await l.Out("Cookie File could not be found. Please export one.", colourFullString: true, style: DefaultColours.Error);
 			res.Append(CookieDefaults.FileError(false, start));
 			return res;
 		}
 		if (!File.Exists(YTDLPPath)){
-			await l.Out("YTDLP Executable could not be found.", true, DefaultColours.Error);
+			await l.Out("YTDLP Executable could not be found.", colourFullString: true, style: DefaultColours.Error);
 			res.Append(CookieDefaults.FileError(true, start));
 			return res;
 		}
@@ -64,7 +64,7 @@ class Cookies(/*Profile activeProfile, LogEngine logEngine*/)
 		await l.Out("Updating Certificates");
 		res.Append(await Helper.RunSilentAsync("python.exe", "-m pip install --upgrade certifi", "Certificate Update", "PythonProcess"));
 
-		await l.Out("Cookie and YTDLP files located successfully!", true, DefaultColours.Success);
+		await l.Out("Cookie and YTDLP files located successfully!", colourFullString: true, style: DefaultColours.Success);
 		await l.Out("Testing cookies on YouTube.");
 		try
 		{
