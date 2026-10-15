@@ -25,6 +25,7 @@ public class Profile
 	public MyPath ProfileFile {get; set;} = new("Null");
 	public MyPath YTDLPExe {get; set;} = new("Null");
 	public MyPath FFmpegExe {get; set;} = new("Null");
+	public MyPath FFmpegBinDir {get; set;} = new("Null");
 	public MyPath FirefoxExe {get; set;} = new("Null");
 	public MyPath YTDLPConfigFileOriginal {get; set;} = new("Null");
 	public MyPath YTDLPConfigFile {get; set;} = new("Null");

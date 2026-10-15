@@ -57,7 +57,7 @@ class Cookies(/*Profile activeProfile, LogEngine logEngine*/)
 		}
 
 		await l.Out("Updating YTDLP");
-		res.Append(await Helper.RunSilentAsync(YTDLPPath, "-U", "YTDLP Update", "YTDLPProcess"));
+		res.Append(await Helper.RunSilentAsync(YTDLPPath, "--update-to nightly", "YTDLP Update", "YTDLPProcess"));
 
 		// pip install --upgrade certifi
 		// Getting new root certificates for the python enviroment, just in case.
