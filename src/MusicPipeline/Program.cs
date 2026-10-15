@@ -34,8 +34,8 @@ using (var fs = File.Open(@"C:/Users/23fpybus_cheneyschoo/SublimeContained/Music
 Console.WriteLine("Starting Orchestrator");*/
 
 
-//await orc.Start();
-Console.WriteLine(new MusicPipeline.MyPath("[$UpperRootDir]/ffmpeg/bin"));
+await orc.Start();
+//Console.WriteLine(new MusicPipeline.MyPath("[$UpperRootDir]/ffmpeg/bin/"));
 
 /*
 string test = "RootDir";
