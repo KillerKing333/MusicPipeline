@@ -12,7 +12,7 @@ public class YTDLPHelpers
 	private const string _songDeclarePattern = @"\[download\] Downloading item (\d+) of (\d+)";
 	public static async Task<string> GetUrlFromRunLogFile(MyPath path, LogEngine l)
 	{
-		l.user = "YTDLPHelper";
+		l.UserName = "YTDLPHelper";
 		//returns "" right now
 		// Get all text in file
 		string match = "";
@@ -43,7 +43,7 @@ public class YTDLPHelpers
 
 	public static async Task<(int total, Dictionary<int, SongIdentifier> songs)> GetAllSongsFromRunLogFile(MyPath path, LogEngine l)
 	{
-		l.user = "YTDLPHelper";
+		l.UserName = "YTDLPHelper";
 		int total = 0;
 		// Get all text in file
 		MatchCollection? matchCollection = null;

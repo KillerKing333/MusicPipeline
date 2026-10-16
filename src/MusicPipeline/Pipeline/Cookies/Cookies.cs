@@ -34,7 +34,7 @@ class Cookies(/*Profile activeProfile, LogEngine logEngine*/)
 		string YTDLPPath = activeProfile.YTDLPExe.p;
 		string testURL = activeProfile.CheckURL;
 		LogEngine l = activeProfile.LogEngine;
-		l.user = "Cookies";
+		l.UserName = "Cookies";
 		List<Result> res = new();
 
 		await l.Out("Variables Done", DefaultColours.Debug);

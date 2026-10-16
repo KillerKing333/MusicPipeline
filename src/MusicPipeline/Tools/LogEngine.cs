@@ -15,31 +15,34 @@ public class LogEngine
 	// Takes the profile file? or just the log file
 	// Ok maybe we take the profile file after all lol
 	public const string _bannerBar = "==============================================";
-	private const char esc = '\u001B';
-	private const string reset = $"\u001B[0m";
-	public required MyPath logFile {get; set;} = new("Null");
-	public string? user {get; set;}
+	private const char _escapeCharacter = '\u001B';
+	private const string _asni256ColourCodeStart = "[38;5;";
+	private readonly string _clearFontColour = $"{_escapeCharacter}[0m";
 
-	private async Task MyOut(string message, string userParam = "", int? style = null, bool colourFullString = false)
+	public required MyPath LogFile {get; set;} = new("Null");
+	public string? UserName {get; set;}
+
+	private async Task MyOut(string message, string userName = "", int? fontColourCode = null, bool applyColourToEntireMessage = false)
 	{
 		string userToUse = "";
-		if (user != null)
-			userToUse = user;
-		if (userParam != "")
-			userToUse = userParam;
+		if (UserName != null)
+			userToUse = UserName;
+		if (userName != "")
+			userToUse = userName;
 		if (userToUse == "")
 			await Engine("To use Out() without a user please set a user in the class", "System", DefaultColours.Error, true);
 		else
-			await Engine(message, userToUse, style, colourFullString);
+			await Engine(message, userToUse, fontColourCode, applyColourToEntireMessage);
 	}
-	public async Task Out(string message) => await MyOut(message);
-	public async Task Out(string message, bool colourFullString) => await MyOut(message, "", colourFullString: colourFullString);
-	public async Task Out(string message, string userParam) => await MyOut(message, userParam);
-	public async Task Out(string message, int? style) => await MyOut(message, "", style, false);
-	public async Task Out(string message, int? style, bool colourFullString) => await MyOut(message, "", style, colourFullString);
-	public async Task Out(string message, string userParam, int? style, bool colourFullString) => await MyOut(message, userParam, style, colourFullString);
 
-	private async Task Engine(string message, string user, int? style, bool colourFullString = false, string? logFileParam = null)
+	public async Task Out(string message) => await MyOut(message);
+	public async Task Out(string message, bool applyColourToEntireMessage) => await MyOut(message, "", applyColourToEntireMessage: applyColourToEntireMessage);
+	public async Task Out(string message, string userName) => await MyOut(message, userName);
+	public async Task Out(string message, int? fontColourCode) => await MyOut(message, "", fontColourCode, false);
+	public async Task Out(string message, int? fontColourCode, bool applyColourToEntireMessage) => await MyOut(message, "", fontColourCode, applyColourToEntireMessage);
+	public async Task Out(string message, string userName, int? fontColourCode, bool applyColourToEntireMessage) => await MyOut(message, userName, fontColourCode, applyColourToEntireMessage);
+
+	private async Task Engine(string message, string userName, int? fontColourCode, bool applyColourToEntireMessage = false, string? logFileParam = null)
 	{
 		// Maybe make it try to find the log file if it's set as "Null"
 		/*ArgumentException.ThrowIfNullOrEmpty(LogFile);
@@ -48,47 +51,32 @@ public class LogEngine
 		if (!File.Exists(LogFile)) {
 			throw new ArgumentException("Log file must exist", nameof(Profiler.LogFile));
 		}*/
-		if (logFile.p == "Null" & logFileParam != null) {logFile = new(logFileParam);}
+		if (LogFile.p == "Null" & logFileParam != null) {LogFile = new(logFileParam);}
 
-		switch (style) {
-			case 0:
-				style = 36;
-				await Engine("0 is black, do not use it", "System", DefaultColours.Error, true);
-				break;
-			case null:
-				// Should've been omitted
-				var field = typeof(DefaultColours).GetField(user);
-				if (field != null) {
-					style = (int)field.GetValue(null)!;
-				}
-				else {
-					// Wrong Username given
-					style = 36;
-					await Engine("Given username was invalid or not in the default colours", "System", DefaultColours.Warning, true);
-				}
-				break;
+		bool fontColourCodeIsBlack = fontColourCode == 0;
+		if (fontColourCodeIsBlack)
+			await Engine("0 is black, do not use it", "System", DefaultColours.Error, true);
+		if (fontColourCode == null)
+		{
+			var field = typeof(DefaultColours).GetField(userName);
+			if (field != null)
+				fontColourCode = (int)field.GetValue(null)!;
+			else
+				await Engine("Given username was invalid or not in the default colours", "System", DefaultColours.Warning, true);
 		}
+
 		//var l = new LogEngine(); //looks like this variable is not used.
 		DateTime current = DateTime.Now;
 		string timeStamp = "[" + current.ToString("HH:mm:ss") + "]";
-		//what is colPrefix, the 38 and the 5?
-		//these would be called "magic numbers" if it's not clear from the code what they are.
-		// I've been meaning to put more explanatory comments for a bit
-		string colPrefix = $"{esc}[38;5;{style.ToString()}m{timeStamp} [{user}] {(colourFullString ? "" : reset)}";
-		// colPrefix
-		// The escape marks that this is ANSI escaped colouring, not raw text
-		// The [38;5; marks that the following value is an ANSI256 colour code.
-		// The reset resets the text colour back to white for the actual message
-		// I have considered adding an option to make the whole message that colour
-		string processedMessage = $"{colPrefix} {message} {reset}";
+		string colPrefix = $"{_escapeCharacter}[38;5;{fontColourCode.ToString()}m{timeStamp} [{userName}] {(applyColourToEntireMessage ? "" : _clearFontColour)}";
+		string processedMessage = $"{colPrefix} {message} {_clearFontColour}";
 		string dateYear = current.Date.ToString("dd/MM/yyyy");
-		string processedMessageDate = $"\u000A{esc}[38;5;{DefaultColours.Date}m{dateYear} {reset} {processedMessage}";
-
+		string processedMessageDate = $"\u000A{_escapeCharacter}{_asni256ColourCodeStart}{DefaultColours.Date}m{dateYear} {_clearFontColour} {processedMessage}";
 		
 		// TODO: Make sure all directories above the logfile exist before trying to append to the file.
 		for (int i = 0; i < 5; i++) {
 			try {
-				await File.AppendAllTextAsync(logFile.p, processedMessageDate);
+				await File.AppendAllTextAsync(LogFile.p, processedMessageDate);
 				break;
 			}
 			catch (System.IO.IOException e) {
@@ -112,29 +100,20 @@ public class LogEngine
 	/// <summary>
 	/// Asynchronously overwrites the current logfile with one line saying the time of the date and the user who requested it.
 	/// </summary>
-	public async Task WipeAsync()
-	{
-		DateTime current = DateTime.Now;
-		string timeStamp = $"[{current.ToString("HH:mm:ss")}]";
-		string colPrefix = $"{esc}[38;5;{typeof(DefaultColours)?.GetField(user)?.GetValue(null)?.ToString()}m{timeStamp}";
-		string dateYear = current.Date.ToString("dd/MM/yyyy");
-		string tempMessage = $"{colPrefix} File Cleared by {user}{reset}";
-		string processedMessage = $"{esc}[38;5;{DefaultColours.Date.ToString()}m{dateYear} {reset} {tempMessage}";
-		await File.WriteAllTextAsync(logFile.p, processedMessage);
-	}
+	public async Task WipeAsync() => await WipeAsync(UserName);
 
 	public async Task WipeAsync(string user)
 	{
 		DateTime current = DateTime.Now;
 		string timeStamp = $"[{current.ToString("HH:mm:ss")}]";
-		string colPrefix = $"{esc}[38;5;{typeof(DefaultColours)?.GetField(user)?.GetValue(null)?.ToString()}m{timeStamp}";
+		string colPrefix = $"{_escapeCharacter}[38;5;{typeof(DefaultColours)?.GetField(user)?.GetValue(null)?.ToString()}m{timeStamp}";
 		string dateYear = current.Date.ToString("dd/MM/yyyy");
-		string tempMessage = $"{colPrefix} File Cleared by {user}{reset}";
-		string processedMessage = $"{esc}[38;5;{DefaultColours.Date.ToString()}m{dateYear} {reset} {tempMessage}";
-		await File.WriteAllTextAsync(logFile.p, processedMessage);
+		string tempMessage = $"{colPrefix} File Cleared by {user}{_clearFontColour}";
+		string processedMessage = $"{_escapeCharacter}[38;5;{DefaultColours.Date.ToString()}m{dateYear} {_clearFontColour} {tempMessage}";
+		await File.WriteAllTextAsync(LogFile.p, processedMessage);
 	}
 
-	public async Task BuildBanner(string text, bool colourFullString = false, int? style = null, string userParam = "")
+	public async Task BuildBanner(string text, bool applyColourToEntireMessage = false, int? fontColourCode = null, string userName = "")
 	{
 		await Out(_bannerBar);
 		await Out(BuildMiddleLine(text, _bannerBar.Length));
@@ -168,23 +147,23 @@ public class LogEngine
 	[SetsRequiredMembers]
 	public LogEngine(string LogFile, string? User = null)
 	{
-		logFile = new(LogFile, true);
-		user = User;
+		this.LogFile = new(LogFile, true);
+		UserName = User;
 	}
 
 	[SetsRequiredMembers]
 	[JsonConstructor]
 	public LogEngine(MyPath LogFile, string? User = null)
 	{
-		logFile = LogFile;
-		user = User;
+		this.LogFile = LogFile;
+		UserName = User;
 	}
 
 	[SetsRequiredMembers]
 	public LogEngine(LogEngine original)
 	{
-		logFile = original.logFile;
-		user = original.user;
+		LogFile = original.LogFile;
+		UserName = original.UserName;
 	}
 
 }

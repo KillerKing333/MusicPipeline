@@ -15,7 +15,7 @@ public class Scanner
     {
         Profile activeProfile = await ProfileManager.LoadActiveProfileAsync();
         l = activeProfile.LogEngine;
-        l.user = "LibraryScanner";
+        l.UserName = "LibraryScanner";
         MyPath backupDir = activeProfile.BackupDir;
         List<MyPath> compressedDirs = activeProfile.CompressedDirs;
         //List<DirectoryInfo>? compressedDirs = null; // Support for multiple compressed directories will be added at somepoint™
