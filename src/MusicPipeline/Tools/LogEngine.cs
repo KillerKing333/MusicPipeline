@@ -180,10 +180,11 @@ public class LogEngine
 		user = User;
 	}
 
-	/*[SetsRequiredMembers]
+	[SetsRequiredMembers]
 	public LogEngine(LogEngine original)
 	{
 		logFile = original.logFile;
 		user = original.user;
-	}*/
+	}
+
 }

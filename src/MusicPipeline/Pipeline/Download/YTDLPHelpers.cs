@@ -1,6 +1,8 @@
 using System.Text.RegularExpressions;
 using MusicPipeline.Songs;
 using MusicPipeline.Strings;
+using MusicPipeline.Colours;
+using MusicPipeline.Tools.LogEngine;
 namespace MusicPipeline.Pipeline.Helpers.Download;
 
 public class YTDLPHelpers
@@ -8,17 +10,21 @@ public class YTDLPHelpers
 	private const string _uRLPattern = @"\[youtube:tab\] Extracting URL: (https://(?:music.y|www.y|y)outube.co(?:m|.uk)/playlist?list=.*)";
 	//good job escaping these square brackets. I didn't understand why until I tested it.
 	private const string _songDeclarePattern = @"\[download\] Downloading item (\d+) of (\d+)";
-	public static async Task<string> GetUrlFromRunLogFile(string path)
+	public static async Task<string> GetUrlFromRunLogFile(MyPath path, LogEngine l)
 	{
+		l.user = "YTDLPHelper";
+		//returns "" right now
 		// Get all text in file
 		string match = "";
-		string allFileText = await File.ReadAllTextAsync(path);
+		string allFileText = await File.ReadAllTextAsync(path.p);
 		List<string> allFileLines = new(allFileText.Split("\n"));
 		// Find the url
 		foreach (string line in allFileLines) 
 		{
+			await l.Out(line, DefaultColours.Debug);
 			if (Regex.IsMatch(line, _uRLPattern)) 
 			{
+				await l.Out("Matched!", DefaultColours.Debug);
 				match = Regex.Match(line, _uRLPattern).Value;
 				Console.WriteLine($"Regex.Match = {Regex.Match(line, _uRLPattern)}, Value = {Regex.Match(line, _uRLPattern).Value}, Captures = {Regex.Match(line, _uRLPattern).Captures}, Captures[0] = {Regex.Match(line, _uRLPattern).Captures[0]}, Captures[0].Value = {Regex.Match(line, _uRLPattern).Captures[0].Value}, Captures[0].ToString = {Regex.Match(line, _uRLPattern).Captures[0].ToString()}, Captures[0].Length = {Regex.Match(line, _uRLPattern).Captures[0].Length}");
 				break;
@@ -32,15 +38,16 @@ public class YTDLPHelpers
 	}
 
 	//we can use expression body for this method because it's a single line (if you want)
-	public static async Task<Dictionary<int, SongIdentifier>> GetSongsFromRunLogFile(string path) 
-		=> (await GetAllSongsFromRunLogFile(path)).songs;
+	public static async Task<Dictionary<int, SongIdentifier>> GetSongsFromRunLogFile(MyPath path, LogEngine l) 
+		=> (await GetAllSongsFromRunLogFile(path, l)).songs;
 
-	public static async Task<(int total, Dictionary<int, SongIdentifier> songs)> GetAllSongsFromRunLogFile(string path)
+	public static async Task<(int total, Dictionary<int, SongIdentifier> songs)> GetAllSongsFromRunLogFile(MyPath path, LogEngine l)
 	{
+		l.user = "YTDLPHelper";
 		int total = 0;
 		// Get all text in file
 		MatchCollection? matchCollection = null;
-		string allFileText = await File.ReadAllTextAsync(path);
+		string allFileText = await File.ReadAllTextAsync(path.p);
 		Dictionary<int, string> allFileLinesNumbered = await StringHelpers.SplitLinesDict(allFileText);
 
 		//Console.WriteLine(allFileText);

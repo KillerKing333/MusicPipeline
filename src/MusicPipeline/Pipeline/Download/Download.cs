@@ -364,9 +364,9 @@ class Downloader
 		//currently you're not doing anything with this variable besides returning it as the only member of a list.
 		//I'm sure you'll want to modify it in some way before returning it.
 
-		string path = $@"{configDir}/run_errors_playlist{index+1}.txt";
+		MyPath errorFilePath = new($"[$configDir]/run_errors_playlist{index+1}.txt");
 		// Parse URL
-		string playlistURL = await YTDLPHelpers.GetUrlFromRunLogFile(path);		
+		string playlistURL = await YTDLPHelpers.GetUrlFromRunLogFile(errorFilePath, new LogEngine(l));		
 		if (playlistURL != "")
 		{
 			//I don't know what you're going to use the url for, but wrote this if to help protected it.
@@ -377,7 +377,7 @@ class Downloader
 		}
 
 		// Get all the songs
-		var data = await YTDLPHelpers.GetAllSongsFromRunLogFile(path);
+		var data = await YTDLPHelpers.GetAllSongsFromRunLogFile(errorFilePath, new LogEngine(l));
 		Dictionary<int, SongIdentifier> allSongs = data.songs;
 		int totalSongs = data.total; // Some things may want to check that the total is the same as the number of 
 		// Ignore errors
