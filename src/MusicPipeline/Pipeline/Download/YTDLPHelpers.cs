@@ -10,7 +10,7 @@ public class YTDLPHelpers
 	private const string _uRLPattern = @"\s*\[youtube:tab\]\s*Extracting\s*URL:\s*(https:\/\/(?:music\.y|www\.y|y)outube.co(?:m|\.uk)\/playlist\?list=.*)";
 	//[youtube:tab] Extracting URL: https://music.youtube.com/playlist?list=PLqcuYaDDgyad1-o1HTVnTiZKoluY5enwk
 	//good job escaping these square brackets. I didn't understand why until I tested it.
-	private const string _songDeclarePattern = @"\[download\] Downloading item (\d+) of (\d+)";
+	private const string _songDeclarePattern = @"\s*\[download\]\s*Downloading\s*item\s*(\d+)\s*of\s*(\d+)";
 	public static async Task<string> GetUrlFromRunLogFile(MyPath path, LogEngine l)
 	{
 		l.UserName = "YTDLPHelper";
