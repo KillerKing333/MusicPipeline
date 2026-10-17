@@ -4,7 +4,7 @@ using MusicPipeline;
 using MusicPipeline.Orchestrator;
 using MusicPipeline.Pipeline;
 using MusicPipeline.Paths;
-// using MusicPipeline.Profiles;
+ using MusicPipeline.Profiles;
 // using System.Text.Json;
 // using MusicPipeline.Tools.LogEngine;
 // using System.Diagnostics;
@@ -35,7 +35,7 @@ using (var fs = File.Open(@"C:/Users/23fpybus_cheneyschoo/SublimeContained/Music
 Console.WriteLine("Starting Orchestrator");*/
 
 var d = new Downloader();
-d.l = new("C:/MusicTools/MusicPipeline/Sandbox/Config/csLogFile.log");
+d.l = (await ProfileManager.LoadActiveProfileAsync()).LogEngine;
 Console.WriteLine(await d.GetAffectedSongInfoInThread(0));
 //await orc.Start();
 //Console.WriteLine(new MusicPipeline.MyPath("[$UpperRootDir]/ffmpeg/bin/"));

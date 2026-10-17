@@ -165,6 +165,7 @@ public class YTDLPHelpers
 			string val = allFileLinesNumbered[i];
 			// Doing it like this rather than foreach, garuntees it to be in line order
 			if (Regex.IsMatch(val, _songDeclarePattern)) {
+				await l.Out("Matched", DefaultColours.Debug);
 				// If the current line is a song decleration
 				inSong = true;
 				await l.Out($"Line = {val}", DefaultColours.Debug);
