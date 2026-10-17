@@ -176,18 +176,18 @@ public class YTDLPHelpers
 				await l.Out($"First value in match = {songNum}, Second value in match = {total}", DefaultColours.Debug);
 
 				songs.Add(songNum, [val]);
-				await l.Out(songs.ToString(), DefaultColours.Debug);
-				await l.Out(songNum.ToString(), DefaultColours.Debug);
-				await l.Out(songs[songNum].ToString(), DefaultColours.Debug);
+				await l.Out($"songs = {songs.ToString()}", DefaultColours.Debug);
+				await l.Out($"songNum = {songNum.ToString()}", DefaultColours.Debug);
+				await l.Out($"songs[songNum] = {songs[songNum].ToString()}", DefaultColours.Debug);
 				foreach (string x in songs[songNum])
-					await l.Out(x, DefaultColours.Debug);
+					await l.Out($"x = {x}", DefaultColours.Debug);
 			}
 			// IF I have any issues with things that are after the end of a song but before the start of the next, add a pattern for the end of the song
 			if (inSong == true) {
 				songs[songNum].Append(val);
-				await l.Out(songs[songNum].ToString(), DefaultColours.Debug);
+				await l.Out($"songs[songNum] = {songs[songNum].ToString()}", DefaultColours.Debug);
 				foreach (string x in songs[songNum])
-					await l.Out(x, DefaultColours.Debug);
+					await l.Out($"x = {x}", DefaultColours.Debug);
 			}
 		}
 
