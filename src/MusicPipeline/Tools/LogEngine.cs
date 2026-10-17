@@ -145,18 +145,18 @@ public class LogEngine
 	}
 
 	[SetsRequiredMembers]
-	public LogEngine(string LogFile, string? User = null)
+	public LogEngine(string LogFile, string? userName = null)
 	{
 		this.LogFile = new(LogFile, true);
-		UserName = User;
+		UserName = userName;
 	}
 
 	[SetsRequiredMembers]
 	[JsonConstructor]
-	public LogEngine(MyPath LogFile, string? User = null)
+	public LogEngine(MyPath LogFile, string? userName = null)
 	{
 		this.LogFile = LogFile;
-		UserName = User;
+		UserName = UserName;
 	}
 
 	[SetsRequiredMembers]
