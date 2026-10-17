@@ -182,6 +182,7 @@ public class YTDLPHelpers
 				await l.Out($"songs[songNum] = {songs[songNum].ToString()}", DefaultColours.Debug);
 				foreach (string x in songs[songNum])
 					await l.Out($"x = {x}", DefaultColours.Debug);
+				continue; // Continue to not double count
 			}
 			// IF I have any issues with things that are after the end of a song but before the start of the next, add a pattern for the end of the song
 			if (inSong == true) {
