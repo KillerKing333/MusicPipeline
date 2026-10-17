@@ -364,7 +364,7 @@ class Downloader
 		//currently you're not doing anything with this variable besides returning it as the only member of a list.
 		//I'm sure you'll want to modify it in some way before returning it.
 
-		MyPath errorFilePath = new($"[$configDir]/run_errors_playlist{index+1}.txt");
+		MyPath errorFilePath = new($"[$ConfigDir]/run_errors_playlist{index+1}.txt");
 		// Parse URL
 		string playlistURL = await YTDLPHelpers.GetUrlFromRunLogFile(errorFilePath, new LogEngine(l));		
 		if (playlistURL != "")
