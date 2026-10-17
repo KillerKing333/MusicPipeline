@@ -56,9 +56,9 @@ class Downloader
 		cacheDir = new MyPath("[$ConfigDir]/.cache").p;
 		//these two above take root dir from profile, but then change it to be their own thing.
 		//i'm thinking if root directory really belongs to profile, these two should too.
-		sleepInterval = activeProfile.SleepInterval;
-		maxSleepInterval = activeProfile.MaxSleepInterval;
-		sleepRequests = activeProfile.SleepRequests;
+		sleepInterval = 0; //activeProfile.SleepInterval;
+		maxSleepInterval = 0; //activeProfile.MaxSleepInterval;
+		sleepRequests = 0; //activeProfile.SleepRequests;
 		//the above 3 should probably belong to Downloader, would you agree? sleeping feels like the job of a downloader.
 		maxDownloadThreads = activeProfile.MaxDownloadThreads;
 		//I think this one (above) definitely should belong to downloader!
