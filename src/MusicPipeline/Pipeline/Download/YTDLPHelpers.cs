@@ -27,7 +27,7 @@ public class YTDLPHelpers
 			{
 				await l.Out("Matched!", DefaultColours.Debug);
 				match = Regex.Match(line, _uRLPattern).Value;
-				await l.Out($"Regex.Match = {Regex.Match(line, _uRLPattern)}, Value = {Regex.Match(line, _uRLPattern).Value}, Groups = {Regex.Match(line, _uRLPattern).Groups}, Groups[0] = {Regex.Match(line, _uRLPattern).Groups[0]}, Groups.Count = {Regex.Match(line, _uRLPattern).Groups.Count}", DefaultColours.Debug);
+				await l.Out($"Regex.Match = {Regex.Match(line, _uRLPattern)}, Value = {Regex.Match(line, _uRLPattern).Value}, Groups = {Regex.Match(line, _uRLPattern).Groups}, Groups[0] = {Regex.Match(line, _uRLPattern).Groups[0]}, Groups[1] = {Regex.Match(line, _uRLPattern).Groups[1]}, Groups.Count = {Regex.Match(line, _uRLPattern).Groups.Count}", DefaultColours.Debug);
 				break;
 			}
 		}
