@@ -8,13 +8,13 @@
 --newline 
 # Outputs progress bar as new lines, otherwise it would just edit the previous line which doesn't play nice with logging
 
---sleep-interval 0
+--sleep-interval {SleepInterval} 
 # Minimum bound for how long to sleep between videos
 
---max-sleep-interval 0
+--max-sleep-interval {MaxSleepInterval} 
 # Sleep length randomly chosen between --sleep-interval and this, to emulate a human and hopefully not get flagged
 
---sleep-requests 0
+--sleep-requests {SleepRequests} 
 # How long to sleep between every api request, so as to not get throttled or rate limited
 
 --embed-thumbnail 
