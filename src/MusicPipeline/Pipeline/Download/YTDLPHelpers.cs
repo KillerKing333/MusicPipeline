@@ -167,27 +167,27 @@ public class YTDLPHelpers
 			if (Regex.IsMatch(val, _songDeclarePattern)) {
 				// If the current line is a song decleration
 				inSong = true;
-				Console.WriteLine($"Line = {val}");
+				await l.Out($"Line = {val}", DefaultColours.Debug);
 				//I think here we probably only care about the first match.
 				//Console.WriteLine($"First capture value = {matches[0].Value}, Regex Capture count = {matches.Count}, first Matches() match = {matches[0].Value}, Matches() = {matches}");				
 				(int, int) numbersPair = GetFirstTwoNumbersInPattern(val, _songDeclarePattern);
 				songNum = numbersPair.Item1;
 				total = numbersPair.Item2;
-				Console.WriteLine($"First value in match = {songNum}, Second value in match = {total}");
+				await l.Out($"First value in match = {songNum}, Second value in match = {total}", DefaultColours.Debug);
 
 				songs.Add(songNum, [val]);
-				Console.WriteLine(songs);
-				Console.WriteLine(songNum);
-				Console.WriteLine(songs[songNum]);
+				await l.Out(songs.ToString(), DefaultColours.Debug);
+				await l.Out(songNum.ToString(), DefaultColours.Debug);
+				await l.Out(songs[songNum].ToString(), DefaultColours.Debug);
 				foreach (string x in songs[songNum])
-					Console.WriteLine(x);
+					await l.Out(x, DefaultColours.Debug);
 			}
 			// IF I have any issues with things that are after the end of a song but before the start of the next, add a pattern for the end of the song
 			if (inSong == true) {
 				songs[songNum].Append(val);
-				Console.WriteLine(songs[songNum]);
+				await l.Out(songs[songNum].ToString(), DefaultColours.Debug);
 				foreach (string x in songs[songNum])
-					Console.WriteLine(x);
+					await l.Out(x, DefaultColours.Debug);
 			}
 		}
 
@@ -199,8 +199,6 @@ public class YTDLPHelpers
 		// So we now have a dictionary of all the text for each song
 		// Now we need to make a songIdentifier from that
 		// I shall make another helper method!
-
-		// Go through each match and check it for being a song
 
 		return new();
 	}
