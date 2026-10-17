@@ -366,7 +366,7 @@ class Downloader
 
 		MyPath errorFilePath = new($"[$ConfigDir]/run_errors_playlist{index+1}.txt");
 		// Parse URL
-		string playlistURL = await YTDLPHelpers.GetUrlFromRunLogFile(errorFilePath, new LogEngine(l));		
+		string playlistURL = await YTDLPHelpers.GetUrlFromRunLogFile(errorFilePath);		
 		if (playlistURL != "")
 		{
 			//I don't know what you're going to use the url for, but wrote this if to help protected it.
@@ -375,6 +375,7 @@ class Downloader
 			// So that if someone runs it with a broken config file they can help fix it
 			await l.Out(playlistURL, DefaultColours.Debug);
 		}
+		// Playlist url now working!
 
 		throw new ArgumentException();
 		// Get all the songs

@@ -11,10 +11,9 @@ public class YTDLPHelpers
 	//[youtube:tab] Extracting URL: https://music.youtube.com/playlist?list=PLqcuYaDDgyad1-o1HTVnTiZKoluY5enwk
 	//good job escaping these square brackets. I didn't understand why until I tested it.
 	private const string _songDeclarePattern = @"\s*\[download\]\s*Downloading\s*item\s*(\d+)\s*of\s*(\d+)";
-	public static async Task<string> GetUrlFromRunLogFile(MyPath path, LogEngine l)
+	public static async Task<string> GetUrlFromRunLogFile(MyPath path)
 	{
-		l.UserName = "YTDLPHelper";
-		//returns "" right now
+		//l.UserName = "YTDLPHelper";
 		// Get all text in file
 		string match = "";
 		string allFileText = await File.ReadAllTextAsync(path.p);
@@ -22,12 +21,12 @@ public class YTDLPHelpers
 		// Find the url
 		foreach (string line in allFileLines) 
 		{
-			await l.Out(line, DefaultColours.Debug);
+			//await l.Out(line, DefaultColours.Debug);
 			if (Regex.IsMatch(line, _uRLPattern)) 
 			{
-				await l.Out("Matched!", DefaultColours.Debug);
-				match = Regex.Match(line, _uRLPattern).Value;
-				await l.Out($"Regex.Match = {Regex.Match(line, _uRLPattern)}, Value = {Regex.Match(line, _uRLPattern).Value}, Groups = {Regex.Match(line, _uRLPattern).Groups}, Groups[0] = {Regex.Match(line, _uRLPattern).Groups[0]}, Groups[1] = {Regex.Match(line, _uRLPattern).Groups[1]}, Groups.Count = {Regex.Match(line, _uRLPattern).Groups.Count}", DefaultColours.Debug);
+				//await l.Out("Matched!", DefaultColours.Debug);
+				match = Regex.Match(line, _uRLPattern).Groups[1].Value; // Apparently Groups[0] is the whole match
+				//await l.Out($"Regex.Match = {Regex.Match(line, _uRLPattern)}, Value = {Regex.Match(line, _uRLPattern).Value}, Groups = {Regex.Match(line, _uRLPattern).Groups}, Groups[0] = {Regex.Match(line, _uRLPattern).Groups[0]}, Groups[1] = {Regex.Match(line, _uRLPattern).Groups[1]}, Groups.Count = {Regex.Match(line, _uRLPattern).Groups.Count}", DefaultColours.Debug);
 				break;
 			}
 		}
