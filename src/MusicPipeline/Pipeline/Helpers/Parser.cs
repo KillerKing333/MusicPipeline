@@ -18,7 +18,7 @@ public class Parser
 		// No idea why it wont work
 		//LogEngine? l = new LogEngine(context.DiagLogFile);
 		LogEngine? l = context.LogEngine;
-		l.user = "Parser";
+		l.UserName = "Parser";
 		MyPath YTDLPOriginalConfigFilePath = context.YTDLPConfigFileOriginal;
 		// Parse in the conf
 		string? confFileContents = await File.ReadAllTextAsync(YTDLPOriginalConfigFilePath.p);

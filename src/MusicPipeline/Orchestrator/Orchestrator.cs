@@ -36,7 +36,7 @@ public class Orchestrator
 		await ProfileManager.SaveProfileAsync(oldActiveProfile);
 		Profile activeProfile = await ProfileManager.LoadActiveProfileAsync();
 		LogEngine? l = activeProfile.LogEngine;
-		l?.user = "Orchestrator";
+		l?.UserName = "Orchestrator";
 		await l.WipeAsync();
 		await l.Out("Test", DefaultColours.Error, true);
 		await l.Out("Other Test", DefaultColours.Warning);

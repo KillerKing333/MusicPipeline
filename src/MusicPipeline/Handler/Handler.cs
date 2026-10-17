@@ -9,7 +9,7 @@ public static class Handler
 	{
 		Profile activeProfile = await ProfileManager.LoadActiveProfileAsync();
 		LogEngine l = activeProfile.LogEngine ?? new(activeProfile.DiagLogFile);
-		l.user = "StepHandler";
+		l.UserName = "StepHandler";
 		string success = result.Outcome ? "successfully" : "with errors";
 		string elapsedTime = result.Elapsed.ToString(@"dd\:hh\:mm\:ss\.ffff");
 		await l.Out($"{result.Step} finished {success} in {elapsedTime}");

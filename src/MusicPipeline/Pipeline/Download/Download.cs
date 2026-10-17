@@ -47,7 +47,7 @@ class Downloader
 		//directory information: do you want profile managing that?
 		l = activeProfile.LogEngine;
 		//for logging, I think while we're in the Downloader, it should get its own logger.
-		l.user = "Downloader";
+		l.UserName = "Downloader";
 		YTDLPPath = activeProfile.YTDLPExe.p;
 		cookiePath = activeProfile.CookieFile.p;
 		historyPath = activeProfile.HistoryFile.p;		
@@ -176,8 +176,8 @@ class Downloader
 
 	private async Task DownloadThread(int index)
 	{
-		LogEngine? log = new(l.logFile);
-		log.user = $"DownloaderThread-{index+1}";
+		LogEngine? log = new(l.LogFile);
+		log.UserName = $"DownloaderThread-{index+1}";
 		DateTime threadStart = DateTime.UtcNow;
 		await log.Out($"Index = {index} Playlist = {playlists[index]}, customArgs = {customArguments}", DefaultColours.Debug);
 		int? colourCode = null;
@@ -355,7 +355,7 @@ class Downloader
 
 	private async Task<List<SongIdentifier>> GetAffectedSongInfoInThread(int index)
 	{
-		l.user = "Downloader";
+		l.UserName = "Downloader";
 		await l.Out("TODO: URGENT: MAKE GetAffectedSongInfo", DefaultColours.Error, true);
 		//return new List<SongIdentifier>(new SongIdentifier("Never Gonna Give You Up", "Rick Astley", "Whenever You Need Somebody", new List<FileInfo>([new FileInfo($@"{backupDir}\Rick Astley\Whenever You Need Somebody\Never Gonna Give You Up.m4a")]), null, "m4a", 8.63, new List<double>([6.32, 5.19]), false, true, true, new FileInfo($@"{backupDir}\Rick Astley\Whenever You Need Somebody\Never Gonna Give You Up.lrc"), false));
 
@@ -389,7 +389,7 @@ class Downloader
 
 	private async Task<KeyValuePair<bool, string>> GetErrorsInThread(int threadIndex)
 	{
-		l.user = "Downloader";
+		l.UserName = "Downloader";
 		await l.Out("TODO: URGENT: MAKE GetErrorsInThread", DefaultColours.Error, true);
 		return new(true, "TODO");
 	} 
