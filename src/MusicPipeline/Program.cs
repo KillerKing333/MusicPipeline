@@ -35,7 +35,7 @@ using (var fs = File.Open(@"C:/Users/23fpybus_cheneyschoo/SublimeContained/Music
 Console.WriteLine("Starting Orchestrator");*/
 
 var d = new Downloader();
-Console.WriteLine(await d.GetAffectedSongInfoInThread(1));
+Console.WriteLine(await d.GetAffectedSongInfoInThread(0));
 //await orc.Start();
 //Console.WriteLine(new MusicPipeline.MyPath("[$UpperRootDir]/ffmpeg/bin/"));
 
