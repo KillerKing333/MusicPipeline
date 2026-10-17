@@ -184,6 +184,7 @@ public class YTDLPHelpers
 			}
 			// IF I have any issues with things that are after the end of a song but before the start of the next, add a pattern for the end of the song
 			if (inSong == true) {
+				await l.Out("In song", DefaultColours.Debug);
 				songs[songNum].Append(val);
 				await l.Out($"songs[songNum] = {songs[songNum].ToString()}", DefaultColours.Debug);
 				foreach (string x in songs[songNum])

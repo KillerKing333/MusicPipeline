@@ -353,7 +353,7 @@ class Downloader
 		}
 	}
 
-	private async Task<List<SongIdentifier>> GetAffectedSongInfoInThread(int index)
+	public async Task<List<SongIdentifier>> GetAffectedSongInfoInThread(int index)
 	{
 		l.UserName = "Downloader";
 		await l.Out("TODO: URGENT: MAKE GetAffectedSongInfo", DefaultColours.Error, true);

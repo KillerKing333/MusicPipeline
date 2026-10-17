@@ -2,6 +2,7 @@
 using System;
 using MusicPipeline;
 using MusicPipeline.Orchestrator;
+using MusicPipeline.Pipeline;
 using MusicPipeline.Paths;
 // using MusicPipeline.Profiles;
 // using System.Text.Json;
@@ -33,8 +34,9 @@ using (var fs = File.Open(@"C:/Users/23fpybus_cheneyschoo/SublimeContained/Music
 }
 Console.WriteLine("Starting Orchestrator");*/
 
-
-await orc.Start();
+var d = new Downloader();
+Console.WriteLine(await d.GetAffectedSongInfoInThread(1));
+//await orc.Start();
 //Console.WriteLine(new MusicPipeline.MyPath("[$UpperRootDir]/ffmpeg/bin/"));
 
 /*
