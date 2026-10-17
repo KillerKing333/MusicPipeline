@@ -95,6 +95,7 @@ public class MyPath
 		string? replace = typeof(MyPath)?.GetProperty(match.Groups[1].Value)?.GetValue(path)?.ToString();
 		if (replace is null) 
 			Console.WriteLine("Oh dear");
+			Console.WriteLine($"replace = {replace}, match = {match}, match.Groups[1].Value = {match.Groups[1].Value}, typeof(MyPath)?.GetProperty(match.Groups[1].Value)?.GetValue(path) = {typeof(MyPath)?.GetProperty(match.Groups[1].Value)?.GetValue(path)}");
 		return Regex.Replace(path.FormattedPath, @"\[\$(\w+)\]", replace ?? "Null").Replace(@"\", "/");
 		// Perfect
 	}
