@@ -14,7 +14,7 @@ class Downloader
 {
 	#region private fields
 	private Profile? activeProfile = null;
-	private LogEngine? l = null;
+	private LogEngine l = new("Null");
 	private string backupDir = "Null";
 	private string YTDLPPath = "Null";
 	private string cookiePath = "Null";
@@ -31,7 +31,7 @@ class Downloader
 	private int maxDownloadThreads = 0;
 	private bool cleanSweep = false;
 	private DateTime start = new DateTime();
-	private Dictionary<int, Result?> res = new();
+	private Dictionary<int, Result> res = new();
 	private Dictionary<int, List<SongIdentifier>> songs = new(); // TODO: Finish up the SongInfo classes
 	#endregion private fields
 
@@ -45,7 +45,7 @@ class Downloader
 		//	question though: who SHOULD own what? right now profile owns everything.
 		backupDir = activeProfile.BackupDir.p;
 		//directory information: do you want profile managing that?
-		l = activeProfile.LogEngine;
+		l = activeProfile.LogEngine ?? new(activeProfile.DiagLogFile);
 		//for logging, I think while we're in the Downloader, it should get its own logger.
 		l.UserName = "Downloader";
 		YTDLPPath = activeProfile.YTDLPExe.p;
@@ -88,10 +88,10 @@ class Downloader
 		await Parser.ParseYTDLPConfigFile(); // Parse the config file, adding variables into the {} text
 		activeProfile = await ProfileManager.LoadActiveProfileAsync(); // Get the new config file (If we move to the contained approach this will be reworked ofc)
 		YTDLPConfigFile = activeProfile.YTDLPConfigFile.p; // Set the new value
-		Parallel.For(0, maxDownloadThreads, i => j = DownloadThread(i)); // Run the parallel for
+		Parallel.For(0, maxDownloadThreads, i => j = DownloadThread(i) ?? null); // Run the parallel for
 		await j; // Await the task
-		List<Result>? results = new List<Result>(); // An intermediary list
-		foreach (KeyValuePair<int, Result?> r in res)
+		List<Result> results = new List<Result>(); // An intermediary list
+		foreach (KeyValuePair<int, Result> r in res)
 		{ // Go through each result from each thread
 			results.Add(r.Value); // Add the result to the main list
 			songs.Add(r.Key, await GetAffectedSongInfoInThread(r.Key)); // Get the songs for that thread
