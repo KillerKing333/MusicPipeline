@@ -376,6 +376,7 @@ class Downloader
 			await l.Out(playlistURL, DefaultColours.Debug);
 		}
 
+		throw new ArgumentException();
 		// Get all the songs
 		var data = await YTDLPHelpers.GetAllSongsFromRunLogFile(errorFilePath, new LogEngine(l));
 		Dictionary<int, SongIdentifier> allSongs = data.songs;
