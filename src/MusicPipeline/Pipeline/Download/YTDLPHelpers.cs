@@ -38,12 +38,12 @@ public class YTDLPHelpers
 	}
 
 	//we can use expression body for this method because it's a single line (if you want)
-	public static async Task<Dictionary<int, SongIdentifier>> GetSongsFromRunLogFile(MyPath path, LogEngine l) 
+	public static async Task<Dictionary<int, SongIdentifier>> GetSongsFromRunLogFile(MyPath path) 
 		=> (await GetAllSongsFromRunLogFile(path, l)).songs;
 
 	public static async Task<(int total, Dictionary<int, SongIdentifier> songs)> GetAllSongsFromRunLogFile(MyPath path, LogEngine l)
 	{
-		l.UserName = "YTDLPHelper";
+		//l.UserName = "YTDLPHelper";
 		int total = 0;
 		// Get all text in file
 		MatchCollection? matchCollection = null;
@@ -172,34 +172,34 @@ public class YTDLPHelpers
 			string val = allFileLinesNumbered[i];
 			// Doing it like this rather than foreach, garuntees it to be in line order
 			if (Regex.IsMatch(val, _songDeclarePattern)) {
-				await l.Out("Matched", DefaultColours.Debug);
+				//await l.Out("Matched", DefaultColours.Debug);
 				// If the current line is a song decleration
 				inSong = true;
-				await l.Out($"Line = {val}", DefaultColours.Debug);
+				//await l.Out($"Line = {val}", DefaultColours.Debug);
 				//I think here we probably only care about the first match.
 				//Console.WriteLine($"First capture value = {matches[0].Value}, Regex Capture count = {matches.Count}, first Matches() match = {matches[0].Value}, Matches() = {matches}");				
 				(int, int) numbersPair = GetFirstTwoNumbersInPattern(val, _songDeclarePattern);
 				songNum = numbersPair.Item1;
 				total = numbersPair.Item2;
-				await l.Out($"First value in match = {songNum}, Second value in match = {total}", DefaultColours.Debug);
+				//await l.Out($"First value in match = {songNum}, Second value in match = {total}", DefaultColours.Debug);
 
 				songs.Add(songNum, [val]);
 				//await l.Out($"songs = {songs.ToString()}", DefaultColours.Debug);
 				//await l.Out($"songNum = {songNum.ToString()}", DefaultColours.Debug);
 				//await l.Out($"songs[songNum] = {songs[songNum].ToString()}", DefaultColours.Debug);
-				await l.Out($"i = {i}", DefaultColours.Debug);
-				foreach (string x in songs[songNum])
-					await l.Out($"x = {x}", DefaultColours.Debug);
+				//await l.Out($"i = {i}", DefaultColours.Debug);
+				//foreach (string x in songs[songNum])
+				//	await l.Out($"x = {x}", DefaultColours.Debug);
 				continue; // Continue to not double count
 			}
 			// IF I have any issues with things that are after the end of a song but before the start of the next, add a pattern for the end of the song
 			else if (inSong == true) {
-				await l.Out("In song", DefaultColours.Debug);
+				//await l.Out("In song", DefaultColours.Debug);
 				songs[songNum].Add(val);
 				//await l.Out($"songs[songNum] = {songs[songNum].ToString()}", DefaultColours.Debug);
-				await l.Out($"i = {i}", DefaultColours.Debug);
-				foreach (string x in songs[songNum])
-					await l.Out($"x = {x}", DefaultColours.Debug);
+				//await l.Out($"i = {i}", DefaultColours.Debug);
+				//foreach (string x in songs[songNum])
+				//	await l.Out($"x = {x}", DefaultColours.Debug);
 			}
 			//else {
 			//	await l.Out("Not in song nor matched", DefaultColours.Debug);
