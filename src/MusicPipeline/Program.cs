@@ -2,9 +2,9 @@
 using System;
 using MusicPipeline;
 using MusicPipeline.Orchestrator;
-using MusicPipeline.Pipeline;
-using MusicPipeline.Paths;
- using MusicPipeline.Profiles;
+//using MusicPipeline.Pipeline;
+//using MusicPipeline.Paths;
+// using MusicPipeline.Profiles;
 // using System.Text.Json;
 // using MusicPipeline.Tools.LogEngine;
 // using System.Diagnostics;
@@ -34,11 +34,7 @@ using (var fs = File.Open(@"C:/Users/23fpybus_cheneyschoo/SublimeContained/Music
 }
 Console.WriteLine("Starting Orchestrator");*/
 
-var d = new Downloader();
-d.l = (await ProfileManager.LoadActiveProfileAsync()).LogEngine;
-await d.l.WipeAsync("Test");
-Console.WriteLine(await d.GetAffectedSongInfoInThread(0));
-//await orc.Start();
+await orc.Start();
 //Console.WriteLine(new MusicPipeline.MyPath("[$UpperRootDir]/ffmpeg/bin/"));
 
 /*
