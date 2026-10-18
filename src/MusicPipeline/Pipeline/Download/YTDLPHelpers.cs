@@ -192,6 +192,9 @@ public class YTDLPHelpers
 				foreach (string x in songs[songNum])
 					await l.Out($"x = {x}", DefaultColours.Debug);
 			}
+
+			await l.Out("Not in song nor matched", DefaultColours.Debug);
+			await l.Out($"val = {val}, i = {i}", DefaultColours.Debug);
 		}
 
 
