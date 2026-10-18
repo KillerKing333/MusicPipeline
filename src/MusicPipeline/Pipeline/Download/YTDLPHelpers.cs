@@ -187,6 +187,7 @@ public class YTDLPHelpers
 				await l.Out($"songs = {songs.ToString()}", DefaultColours.Debug);
 				await l.Out($"songNum = {songNum.ToString()}", DefaultColours.Debug);
 				await l.Out($"songs[songNum] = {songs[songNum].ToString()}", DefaultColours.Debug);
+				await l.Out($"i = {i}", DefaultColours.Debug);
 				foreach (string x in songs[songNum])
 					await l.Out($"x = {x}", DefaultColours.Debug);
 				continue; // Continue to not double count
@@ -196,6 +197,7 @@ public class YTDLPHelpers
 				await l.Out("In song", DefaultColours.Debug);
 				songs[songNum].Append(val);
 				await l.Out($"songs[songNum] = {songs[songNum].ToString()}", DefaultColours.Debug);
+				await l.Out($"i = {i}", DefaultColours.Debug);
 				foreach (string x in songs[songNum])
 					await l.Out($"x = {x}", DefaultColours.Debug);
 			}
