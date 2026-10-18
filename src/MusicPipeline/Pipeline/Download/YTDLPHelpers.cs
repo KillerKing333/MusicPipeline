@@ -195,6 +195,7 @@ public class YTDLPHelpers
 			else {
 				await l.Out("Not in song nor matched", DefaultColours.Debug);
 				await l.Out($"val = {val}, i = {i}", DefaultColours.Debug);
+				await l.Out($"songs.Count = {songs.Count}, inSong = {inSong}", DefaultColours.Debug);
 			}
 		}
 
