@@ -39,9 +39,9 @@ public class YTDLPHelpers
 
 	//we can use expression body for this method because it's a single line (if you want)
 	public static async Task<Dictionary<int, SongIdentifier>> GetSongsFromRunLogFile(MyPath path) 
-		=> (await GetAllSongsFromRunLogFile(path, l)).songs;
+		=> (await GetAllSongsFromRunLogFile(path)).songs;
 
-	public static async Task<(int total, Dictionary<int, SongIdentifier> songs)> GetAllSongsFromRunLogFile(MyPath path, LogEngine l)
+	public static async Task<(int total, Dictionary<int, SongIdentifier> songs)> GetAllSongsFromRunLogFile(MyPath path)
 	{
 		//l.UserName = "YTDLPHelper";
 		int total = 0;
