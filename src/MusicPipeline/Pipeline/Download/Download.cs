@@ -377,7 +377,7 @@ class Downloader
 		// Playlist url now working!
 
 		// Get all the songs
-		var data = await YTDLPHelpers.GetAllSongsFromRunLogFile(errorFilePath, new LogEngine(l));
+		var data = await YTDLPHelpers.GetAllSongsFromRunLogFile(errorFilePath);
 		Dictionary<int, SongIdentifier> allSongs = data.songs;
 		int totalSongs = data.total; // Some things may want to check that the total is the same as the number of 
 		// Ignore errors
