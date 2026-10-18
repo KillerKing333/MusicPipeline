@@ -49,6 +49,8 @@ public class MyPath
 	// Or [$RootDir]/src/Musicpipeline/Paths/Paths.cs
 	// Or, most succinctly, [$ScriptDir]/Paths/Paths.cs
 
+	//I like this change, empty strings are easier to work with than nulls.
+
 	[JsonIgnore]
 	public string UserDir {get; set;} = ""; // C:/Users/Test/
 	[JsonIgnore]
