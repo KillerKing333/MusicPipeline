@@ -160,7 +160,14 @@ public class YTDLPHelpers
 
 		Dictionary<int, string[]> songs = new();
 
-		//foreach (KeyValuePair<int, string> kvp in allFileLinesNumbered) {
+		
+		await l.Out("Debugging:", DefaultColours.Debug);
+		foreach (KeyValuePair<int, string> kvp in allFileLinesNumbered) {
+			await l.Out($"kvp.Key = {kvp.Key}", DefaultColours.Debug);
+			await l.Out($"kvp.Value = {kvp.Value}", DefaultColours.Debug);
+		}
+		
+
 		for (int i = 0; i < allFileLinesNumbered.Count; i++) {
 			string val = allFileLinesNumbered[i];
 			// Doing it like this rather than foreach, garuntees it to be in line order
