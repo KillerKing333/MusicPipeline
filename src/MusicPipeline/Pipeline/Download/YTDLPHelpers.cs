@@ -185,16 +185,17 @@ public class YTDLPHelpers
 				continue; // Continue to not double count
 			}
 			// IF I have any issues with things that are after the end of a song but before the start of the next, add a pattern for the end of the song
-			if (inSong == true) {
+			else if (inSong == true) {
 				await l.Out("In song", DefaultColours.Debug);
 				songs[songNum].Append(val);
 				await l.Out($"songs[songNum] = {songs[songNum].ToString()}", DefaultColours.Debug);
 				foreach (string x in songs[songNum])
 					await l.Out($"x = {x}", DefaultColours.Debug);
 			}
-
-			await l.Out("Not in song nor matched", DefaultColours.Debug);
-			await l.Out($"val = {val}, i = {i}", DefaultColours.Debug);
+			else {
+				await l.Out("Not in song nor matched", DefaultColours.Debug);
+				await l.Out($"val = {val}, i = {i}", DefaultColours.Debug);
+			}
 		}
 
 
