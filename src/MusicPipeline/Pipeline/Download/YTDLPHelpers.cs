@@ -26,6 +26,9 @@ public class YTDLPHelpers
 			{
 				//await l.Out("Matched!", DefaultColours.Debug);
 				match = Regex.Match(line, _uRLPattern).Groups[1].Value; // Apparently Groups[0] is the whole match
+				//ya, GroupCollection is interesting. I learned about it when first looking at this.
+				//https://learn.microsoft.com/en-us/dotnet/api/system.text.regularexpressions.groupcollection?view=net-10.0 
+
 				//await l.Out($"Regex.Match = {Regex.Match(line, _uRLPattern)}, Value = {Regex.Match(line, _uRLPattern).Value}, Groups = {Regex.Match(line, _uRLPattern).Groups}, Groups[0] = {Regex.Match(line, _uRLPattern).Groups[0]}, Groups[1] = {Regex.Match(line, _uRLPattern).Groups[1]}, Groups.Count = {Regex.Match(line, _uRLPattern).Groups.Count}", DefaultColours.Debug);
 				break;
 			}

@@ -14,7 +14,7 @@ class Downloader
 {
 	#region private fields
 	private Profile? activeProfile = null;
-	public LogEngine l = new("Null");
+	public LogEngine l = new("Null"); //I like this change too, good idea!
 	private string backupDir = "Null";
 	private string YTDLPPath = "Null";
 	private string cookiePath = "Null";
