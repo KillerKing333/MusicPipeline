@@ -391,6 +391,11 @@ class Downloader
 	{
 		l.UserName = "Downloader";
 		await l.Out("TODO: URGENT: MAKE GetErrorsInThread", DefaultColours.Error, true);
+		// Some kind of ProgramError class and YTDLPError extending it.
+		// Will need to take the data from var data = await YTDLPHelpers.GetAllSongsFromRunLogFile(errorFilePath);
+		// Get the errored songs
+		// Make a constructor for YTDLPError that takes that and gets the info
+		// Then return those
 		return new(true, "TODO");
 	} 
 }
