@@ -94,6 +94,11 @@ Paths
 
 
 
+Make some kind of interface or extendable class for errors
+then you can have YTDLPError extends ProgramError
+so you can hold a List<ProgramError> in the result
+
+
 For mobile app or future playback app
 beets
 https://beets.io/
