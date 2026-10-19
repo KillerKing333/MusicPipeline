@@ -5,6 +5,7 @@ using MusicPipeline.Profiles;
 using MusicPipeline.Pipeline.Helpers.Execute;
 using MusicPipeline.Pipeline.Helpers.Parser;
 using MusicPipeline.Pipeline.Helpers.Download;
+using MusicPipeline.Errors;
 using MusicPipeline.Songs;
 using MusicPipeline.Colours; 
 using MusicPipeline.Tools.LogEngine;
@@ -396,6 +397,7 @@ class Downloader
 		// Get the errored songs
 		// Make a constructor for YTDLPError that takes that and gets the info
 		// Then return those
+		List<ProgramError> res = new(new List<YTDLPError> ());
 		return new(true, "TODO");
 	} 
 }
