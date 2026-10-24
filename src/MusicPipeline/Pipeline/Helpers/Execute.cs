@@ -8,7 +8,6 @@ public class Helper
 {
 	public static async Task<Process?> Execute(string path, string arguments)
 	{
-		
 		ProcessStartInfo startInfo = new ProcessStartInfo();
 		startInfo.CreateNoWindow = true;
 		startInfo.UseShellExecute = false;

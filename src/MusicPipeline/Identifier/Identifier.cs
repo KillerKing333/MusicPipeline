@@ -103,11 +103,7 @@ public class SongIdentifier
 			// TODO: make this code properly support different extensions and actually providing lyric paths
 			if (SyncedLyrics) {
 				// From LukeH https://stackoverflow.com/a/2201648/22942130
-				int index = id.Paths[0].FullName.IndexOf(id.Paths[0].Extension);
-				string cleanPath = ( index < 0)
-					? id.Paths[0].FullName
-					: id.Paths[0].FullName.Remove(index, id.Paths[0].Extension.Length);
-				LyricsPath = id.LyricsPath ?? new FileInfo($"{cleanPath}.lrc"); 
+				LyricsPath = new($"{id.LyricsPath.GetExtensionLess()}.lrc");
 			}
 		}
 		Lore = id.Lore;
