@@ -7,23 +7,23 @@ public class SongIdentifier
 	public required string Title {get; set;} = "Null";
 	public required string Artist {get; set;} = "Null";
 	public required string Album {get; set;} = "Null";
-	public required List<FileInfo> Paths {get; set;} = new List<FileInfo>([new FileInfo("Null")]);
+	public required List<MyPath> Paths {get; set;} = new ([new ("Null")]);
 	public UInt64 PermenantID {get; set;} = 0;
 	public required string Type {get; set;} = "Null";
 	public double SizeMB {get; set;} = 0.0;
-	public List<double> SizesCompressed {get; set;} = new List<double>([0.0]);
+	public List<double> SizesCompressed {get; set;} = new([0.0]);
 	public bool Instrumental {get; set;} = false;
 	public bool Lyrics {get; set;} = false;
 	public bool SyncedLyrics {get; set;} = false;
-	public FileInfo? LyricsPath {get; set;} = new FileInfo("Null");
+	public MyPath? LyricsPath {get; set;} = new("Null");
 	public bool Lore {get; set;} = false;
 	public DateTime LoreDate {get; set;} = new DateTime();
 
 	[SetsRequiredMembers]
 	public SongIdentifier(string title, string artist,
-	string album, List<FileInfo> paths, UInt64? id, string type, double sizeMB,
+	string album, List<MyPath> paths, UInt64? id, string type, double sizeMB,
 	List<double> sizesCompressed, bool instrumental, bool lyrics,
-	bool syncedLyrics, FileInfo? lyricsPath, bool lore, DateTime loreDate = new DateTime())
+	bool syncedLyrics, MyPath? lyricsPath, bool lore, DateTime loreDate = new DateTime())
 	{
 		Title = title;
 		Artist = artist;
@@ -40,11 +40,12 @@ public class SongIdentifier
 			// TODO: make this code properly support different extensions and actually providing lyric paths
 			if (SyncedLyrics) {
 				// From LukeH https://stackoverflow.com/a/2201648/22942130
-				int index = paths[0].FullName.IndexOf(paths[0].Extension);
-				string cleanPath = ( index < 0)
-					? paths[0].FullName
-					: paths[0].FullName.Remove(index, paths[0].Extension.Length);
-				LyricsPath = lyricsPath ?? new FileInfo($"{cleanPath}.lrc"); 
+				//int index = paths[0].p.IndexOf(paths[0].Extension);
+				//string cleanPath = ( index < 0)
+				//	? paths[0].p
+				//	: paths[0].p.Remove(index, paths[0].Extension.Length);
+				//LyricsPath = lyricsPath ?? new FileInfo($"{cleanPath}.lrc"); 
+				LyricsPath = new($"{lyricsPath.GetExtensionLess()}.lrc");
 			}
 		}
 		Lore = lore;
@@ -54,7 +55,26 @@ public class SongIdentifier
 	}
 
 	[SetsRequiredMembers]
-	public SongIdentifier(){ }
+	public SongIdentifier(bool Error)
+	{
+		Title = "ERROR";
+		Artist = "ERROR";
+		Album = "ERROR";
+		Paths = [new("ERROR")];
+		PermenantID = 0;
+		Type = "ERROR";
+		SizeMB = 0.0;
+		SizesCompressed = [0.0];
+		Instrumental = true;
+		Lyrics = true;
+		SyncedLyrics = true;
+		LyricsPath = new("ERROR");
+		Lore = true;
+		LoreDate = new();
+	}
+
+	[SetsRequiredMembers]
+	public SongIdentifier() { }
 
 	[SetsRequiredMembers]
 	public SongIdentifier(List<string> scriptOutput, string step)

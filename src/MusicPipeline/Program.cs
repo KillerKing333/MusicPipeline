@@ -9,7 +9,7 @@ using MusicPipeline.Orchestrator;
 // using MusicPipeline.Tools.LogEngine;
 // using System.Diagnostics;
 
-var orc = new Orchestrator();
+//var orc = new Orchestrator();
 
 
 //Console.WriteLine(orc);
@@ -34,6 +34,9 @@ using (var fs = File.Open(@"C:/Users/23fpybus_cheneyschoo/SublimeContained/Music
 }
 Console.WriteLine("Starting Orchestrator");*/
 
+Console.WriteLine(Directory.GetCurrentDirectory());
+
+var orc = new Orchestrator();
 await orc.Start();
 //Console.WriteLine(new MusicPipeline.MyPath("[$UpperRootDir]/ffmpeg/bin/"));
 

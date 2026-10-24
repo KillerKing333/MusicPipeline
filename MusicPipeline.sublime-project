@@ -12,7 +12,8 @@
 			"command": "netcoredbg", // Or absolute path like "C:/netcoredbg/netcoredbg.exe"
 			"args": ["--engineLogging"],
 			"program": "${folder}/src/MusicPipeline/bin/Debug/net10.0/MusicPipeline.dll", // Adjust target framework/dll name
-			"cwd": "${folder}",
+			"cwd": "${folder}/src/MusicPipeline",
+			"console": "internalConsole",
 			"stopAtEntry": false
 		}
 	]

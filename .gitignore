@@ -372,6 +372,7 @@ Config/cookies.txt
 Config/*.txt
 Config/*.json
 Config/*.tmp
+Config/*.conf
 Config/.env
 Config/.cache
 # Ignore local test data caches
@@ -381,6 +382,7 @@ Sandbox/Config/cookies.txt
 Sandbox/Config/*.txt
 Sandbox/Config/*.json
 Sandbox/Config/*.tmp
+Sandbox.Conifg/*.conf
 Sandbox/*.txt
 *.log
 .DS_Store

@@ -123,9 +123,20 @@ public class MyPath
 		foreach (PropertyInfo prop in typeof(MyPath).GetProperties()) {
 			if (prop.Name == "path" || prop.Name == "p" || prop.Name == "FormattedPath")
 				continue;
+			// Arguably the this in the next line could be replaced with  a new MyPath()
 			res = rawPath.Replace((string)prop.GetValue(this), prop.Name != "UserDir" ? $"[${prop.Name}]" : "~");
 		}
 		return res;
+	}
+
+
+	public string GetExtensionLess()
+	{
+		string fp = this.FormattedPath;
+		int index = fp.LastIndexOf("/");
+		if (index >= 0)
+    		return fp.Substring(0, index);
+    	return "";
 	}
 
 	[SetsRequiredMembers]

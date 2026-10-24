@@ -95,7 +95,11 @@ class Downloader
 		foreach (KeyValuePair<int, Result> r in res)
 		{ // Go through each result from each thread
 			results.Add(r.Value); // Add the result to the main list
-			songs.Add(r.Key, await GetAffectedSongInfoInThread(r.Key)); // Get the songs for that thread
+			if (!(r.Value.Error == "YTDLPProcess is Null" || r.Value.Error.Contains("Exception thrown"))){
+				songs.Add(r.Key, await GetAffectedSongInfoInThread(r.Key)); // Get the songs for that thread
+			} else {
+				songs.Add(r.Key, [new(true)]);
+			}
 			// TODO: MAKE THIS await CheckWarningsInThread(r.Key);
 		}
 		Profile currentActiveProfile = await ProfileManager.LoadActiveProfileAsync(); // A copy of the profile for changing 
@@ -346,7 +350,7 @@ class Downloader
 			DateTime end = DateTime.UtcNow;
 			TimeSpan elapsed = end - threadStart;
 			await log.Out($"elapsed = {elapsed}, end = {end}, start = {start}, threadStart = {threadStart}", DefaultColours.Debug);
-			res.Add(index, new Result("DownloaderThread", elapsed, ex.Message));
+			res.Add(index, new Result("DownloaderThread", elapsed, $"Win32Exception thrown: {ex.Message}"));
 		}
 		finally
 		{

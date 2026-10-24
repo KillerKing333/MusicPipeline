@@ -25,7 +25,7 @@ class Cookies(/*Profile activeProfile, LogEngine logEngine*/)
 	/// 	Updates YTDLP, runs a --simulate and --quiet ytdlp instance to check the cookies work.
 	/// </para>
 	/// </remarks>
-	/// <returns>Returns a List of Results</returns>
+	/// <returns>A List of Results</returns>
 	public async Task<List<Result>> CookieCheck()
 	{
 		//await LogEngine.Out("Profile Done", DefaultColours.Debug);
