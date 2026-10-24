@@ -1,8 +1,19 @@
 {
-	"folders":
-	[
+    "folders": [
 		{
-			"path": "."
+	    "path": "."
+		}
+	],
+	"debugger_configurations": [
+		{
+			"name": "C# (.NET Core)",
+			"type": "coreclr",
+			"request": "launch",
+			"command": "netcoredbg", // Or absolute path like "C:/netcoredbg/netcoredbg.exe"
+			"args": ["--engineLogging"],
+			"program": "${folder}/bin/Debug/net8.0/YourAppName.dll", // Adjust target framework/dll name
+			"cwd": "${folder}",
+			"stopAtEntry": false
 		}
 	]
 }
