@@ -6,12 +6,16 @@ namespace MusicPipeline.Pipeline.Helpers.Execute;
 
 public class Helper
 {
-	public static async Task<Process?> Execute(string path, string arguments)
+
+	public static async Task<Process?> Execute(string path, string args)
+	=> await Execute(new MyPath(path), args);
+
+	public static async Task<Process?> Execute(MyPath path, string arguments)
 	{
 		ProcessStartInfo startInfo = new ProcessStartInfo();
 		startInfo.CreateNoWindow = true;
 		startInfo.UseShellExecute = false;
-		startInfo.FileName = path;
+		startInfo.FileName = path.p;
 		startInfo.WindowStyle = ProcessWindowStyle.Hidden;
 		startInfo.RedirectStandardOutput = true;
 		startInfo.Arguments = $"{arguments}";
@@ -19,13 +23,16 @@ public class Helper
 		return Process.Start(startInfo);
 	}
 
-	public static async Task<Result> RunSilentAsync(string path, string arguments, string user, string procName)
+	public static async Task<Result> RunSilentAsync(string path, string args, string user, string procName)
+	=> await RunSilentAsync(new MyPath(path), args, user, procName);
+
+	public static async Task<Result> RunSilentAsync(MyPath path, string arguments, string user, string procName)
 	{
 		DateTime start = DateTime.UtcNow;
 		ProcessStartInfo startInfo = new ProcessStartInfo();
 		startInfo.CreateNoWindow = true;
 		startInfo.UseShellExecute = false;
-		startInfo.FileName = path;
+		startInfo.FileName = path.p;
 		startInfo.WindowStyle = ProcessWindowStyle.Hidden;
 		startInfo.RedirectStandardOutput = true;
 		startInfo.Arguments = $"{arguments}";

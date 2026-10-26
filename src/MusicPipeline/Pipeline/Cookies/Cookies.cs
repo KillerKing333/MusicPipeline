@@ -30,8 +30,8 @@ class Cookies(/*Profile activeProfile, LogEngine logEngine*/)
 	{
 		//await LogEngine.Out("Profile Done", DefaultColours.Debug);
 		Profile activeProfile = await ProfileManager.LoadActiveProfileAsync();
-		string cookieFile = activeProfile.CookieFile.p;
-		string YTDLPPath = activeProfile.YTDLPExe.p;
+		MyPath cookieFile = activeProfile.CookieFile;
+		MyPath YTDLPPath = activeProfile.YTDLPExe;
 		string testURL = activeProfile.CheckURL;
 		LogEngine l = activeProfile.LogEngine;
 		l.UserName = "Cookies";
@@ -45,12 +45,12 @@ class Cookies(/*Profile activeProfile, LogEngine logEngine*/)
 
 		await l.BuildBanner("Cookie Checker");
 
-		if (!File.Exists(cookieFile)){
+		if (!File.Exists(cookieFile.p)){
 			await l.Out("Cookie File could not be found. Please export one.", DefaultColours.Error, true);
 			res.Append(CookieDefaults.FileError(false, start));
 			return res;
 		}
-		if (!File.Exists(YTDLPPath)){
+		if (!File.Exists(YTDLPPath.p)){
 			await l.Out("YTDLP Executable could not be found.", DefaultColours.Error, true);
 			res.Append(CookieDefaults.FileError(true, start));
 			return res;
