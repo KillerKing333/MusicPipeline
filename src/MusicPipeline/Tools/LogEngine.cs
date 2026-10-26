@@ -148,7 +148,7 @@ public class LogEngine
 	public LogEngine(string LogFile, string? userName = null)
 	{
 		this.LogFile = new(LogFile, true);
-		UserName = userName;
+		UserName = userName ?? UserName;
 	}
 
 	[SetsRequiredMembers]
@@ -156,7 +156,7 @@ public class LogEngine
 	public LogEngine(MyPath LogFile, string? userName = null)
 	{
 		this.LogFile = LogFile;
-		UserName = userName;
+		UserName = userName ?? UserName;
 	}
 
 	[SetsRequiredMembers]
