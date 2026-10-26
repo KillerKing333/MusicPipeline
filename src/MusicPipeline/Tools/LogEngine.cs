@@ -29,8 +29,10 @@ public class LogEngine
 			userToUse = UserName;
 		if (userName != "")
 			userToUse = userName;
-		if (userToUse == "")
+		if (userToUse == "") {
 			await Engine("To use Out() without a user please set a user in the class", "System", DefaultColours.Error, true);
+			await Engine(message, "Error", fontColourCode, applyColourToEntireMessage);
+		}
 		else
 			await Engine(message, userToUse, fontColourCode, applyColourToEntireMessage);
 	}
