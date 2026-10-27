@@ -9,9 +9,6 @@ using MusicPipeline.Orchestrator;
 // using MusicPipeline.Tools.LogEngine;
 // using System.Diagnostics;
 
-//var orc = new Orchestrator();
-
-
 //Console.WriteLine(orc);
 /*string machineName = Environment.MachineName;
 //Console.WriteLine(machineName);
@@ -35,6 +32,9 @@ using (var fs = File.Open(@"C:/Users/23fpybus_cheneyschoo/SublimeContained/Music
 Console.WriteLine("Starting Orchestrator");*/
 
 //Console.WriteLine(Directory.GetCurrentDirectory());
+//Console.WriteLine(System.Environment.CommandLine); // Useful but not quite right "/Users/skitty/Music/MusicPipeline/src/MusicPipeline/bin/Debug/net10.0/MusicPipeline.dll"
+
+
 
 var orc = new Orchestrator();
 await orc.Start();

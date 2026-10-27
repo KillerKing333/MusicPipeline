@@ -26,6 +26,7 @@ class Downloader
 	private string downloadArguments = "Null";
 	private string YTDLPConfigFile = "Null";
 	private string customArguments = "Null";
+	private string ShellShortcut = "Null";
 	//private int sleepInterval = 0;
 	//private int maxSleepInterval = 0;
 	//private int sleepRequests = 0;
@@ -64,7 +65,8 @@ class Downloader
 		maxDownloadThreads = activeProfile.MaxDownloadThreads;
 		//I think this one (above) definitely should belong to downloader!
 		cleanSweep = activeProfile.CleanSweepDownload; // Note: Make sure that the profile value of CleanSweepDownload is correct before running
-		customArguments = activeProfile.CustomYTDLPArguments;
+		//customArguments = activeProfile.CustomYTDLPArguments;
+		ShellShortcut = activeProfile.ShellShortcut;
 
 		var iAmDebugging = true;
 
@@ -274,7 +276,7 @@ class Downloader
 		string YTDLPArgs = $"/c \"{YTDLPPath} {downloadArguments} 2>&1\"";
 		try
 		{
-			using (Process? YTDLPProcess = await Helper.Execute("cmd.exe", YTDLPArgs))
+			using (Process? YTDLPProcess = await Helper.Execute(ShellShortcut, YTDLPArgs))
 			{
 				if (YTDLPProcess is null) {
 					DateTime endError = DateTime.UtcNow;

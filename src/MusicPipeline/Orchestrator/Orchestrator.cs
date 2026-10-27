@@ -7,6 +7,7 @@ using MusicPipeline.Pipeline.Helpers.Parser;
 using MusicPipeline.StepHandler;
 using MusicPipeline.Colours; // Colours always before Logging
 using MusicPipeline.Tools.LogEngine; // Tools last
+using MusicPipeline.Tools.SafetyCheck;
 namespace MusicPipeline.Orchestrator;
 
 
@@ -22,6 +23,7 @@ public class Orchestrator
 		//Console.WriteLine($"Loading profile");
 		// Aha. ProfileManager is where the stack overflow starts
 		/* First use of Profiles*/ Profile oldActiveProfile = DefaultProfiles.DefaultProfile;
+		await SafetyCheck.HandleNullProfileFields(oldActiveProfile);
 		//Console.WriteLine(JsonSerializer.Serialize(oldActiveProfile, new JsonSerializerOptions { WriteIndented = true }));
 		MyPath logFile = oldActiveProfile.DiagLogFile;
 		//Console.WriteLine($"logFile = {logFile}");

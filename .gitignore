@@ -382,7 +382,7 @@ Sandbox/Config/cookies.txt
 Sandbox/Config/*.txt
 Sandbox/Config/*.json
 Sandbox/Config/*.tmp
-Sandbox/Conifg/*.conf
+Sandbox/Config/*.conf
 Sandbox/*.txt
 *.log
 .DS_Store

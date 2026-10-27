@@ -1,4 +1,5 @@
 using System.Reflection;
+using System.Runtime.InteropServices;
 using MusicPipeline.Colours;
 using MusicPipeline.Profiles;
 
@@ -32,7 +33,7 @@ public class SafetyCheck
 					string temp1 = p.Name;
 					await profile.LogEngine.Out(p.ToString() ?? "p was null lol", "SafetyChecker");
 					Object? temp2 = p.GetValue(profile);
-                     
+					 
 					//ok, so the line below is throwing the error.
 					//the reason is because it doesn't make any sense :)
 					//temp2 makes sense. you're getting the Name property from an instance of Profile, and Profile has a property named Name.
@@ -43,7 +44,7 @@ public class SafetyCheck
 					// I need to get a Profile from the fieldinfo
 					// 
 					
-                    Object? temp3 = p.GetValue(fields[i].GetMethod);
+					Object? temp3 = p.GetValue(fields[i].GetMethod);
 					KeyValuePair<string, Object?> temp4 = new(temp1, temp2);
 					KeyValuePair<string, Object?> temp5 = new(temp1, temp3);
 					KeyValuePair<KeyValuePair<string, Object?>, KeyValuePair<string, Object?>> temp6 = new (temp4, temp5);
@@ -67,14 +68,44 @@ public class SafetyCheck
 		// Ok
 		// So
 		// For each Profile in DefaultProfiles
-		// We need to compare all its methods
-		// To the same method in profile
+		// We need to compare all its fields
+		// To the same fields in profile
 		// We have all the data for doing this
 		// All that's left is making something that uses this data to actually do what I want
 		// "Ok what do you want?"
 		// Well it needs to output whether its the same as any
 		// Then log whats the same
+
+		// Also check for any null values
+		// ShellShortcut can be null because default can't assume it
+		bool nullFields = await HandleNullProfileFields(profile);
+
 		return false;
 		
 	}
-}
+
+	public static async Task<bool> HandleNullProfileFields(Profile profile)
+	{
+		KeyValuePair<bool, Object>? handleable = null;
+		//var handleable = ;
+		PropertyInfo[] profileFields = typeof(Profile).GetProperties();
+		foreach (PropertyInfo p in profileFields) {
+			if (p.GetValue(profile) is null) {
+				handleable = await HandleNullValue(p.Name);
+				if (handleable.HasValue && handleable.Value.Key == true) p.SetValue(profile, handleable.Value);
+			}
+		}
+		// Well that was easy
+
+		return (handleable.HasValue ? handleable.Value.Key : false); 
+	}
+
+	public static async Task<KeyValuePair<bool, Object>> HandleNullValue(string name)
+	{
+		switch (name) {
+			case "ShellShortcut":
+				return RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? new(true, Environment.GetEnvironmentVariable("COMSPEC") ?? @"C:\Windows\System32\cmd.exe") : new(true, string.IsNullOrEmpty(Environment.GetEnvironmentVariable("SHELL")) ? (File.Exists("/bin/zsh") ? "/bin/zsh" : File.Exists("/bin/bash") ? "/bin/bash" : "/bin/sh") : Environment.GetEnvironmentVariable("SHELL"));
+		}
+		return new(false, new());
+	}
+}	
